@@ -27,8 +27,6 @@ module.exports = {
 			if (args.length == 0) return message.reply("you need to send me a link to play.");
 			message.member.voiceChannel.join()
 
-			// let ytr = "/^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/"
-
 			searchYoutube(message, args.join(' '));
 		} else {
 			return message.reply("you need to join a voice channel to use this command.");
@@ -37,7 +35,10 @@ module.exports = {
 };
 
 function playYoutubeLink(message, item) {
-	if (message.member.voiceChannel.connection.speaking) return message.client.queue.push(item);
+	if (message.member.voiceChannel.connection.speaking) {
+		message.client.queue.push(item);
+		return message.reply(`added ${item.title} by ${item.channel} to the queue`)
+	} 
 	else {
 		message.client.playing = item;
 		let dispatcher = message.member.voiceChannel.connection.playStream(ytdl(item.link, { filter: 'audioonly' }));
