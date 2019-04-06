@@ -10,9 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.4.2",
+    "erlpack": "github:hammerandchisel/erlpack",
     "eslint": "^5.15.1",
     "ffmpeg-binaries": "^3.2.2-3",
     "node-opus": "^0.3.1",
+    "sodium": "^3.0.2",
+    "uws": "^100.0.1",
+    "youtube-search": "^1.1.4",
     "ytdl-core": "^0.29.1"
   }
 }

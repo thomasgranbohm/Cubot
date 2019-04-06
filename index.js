@@ -5,6 +5,7 @@ const { token, prefix } = require('./config.json');
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.queue = new Array();
+client.playing = undefined;
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
