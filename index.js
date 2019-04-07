@@ -17,6 +17,7 @@ for (const file of commandFiles) {
 const cooldowns = new Discord.Collection();
 
 client.once('ready', () => {
+	client.user.setPresence({ game: {name: 'the Office', type: 'WATCHING', url: 'https://www.imdb.com/title/tt0386676/?ref_=fn_al_tt_1'}, status: 'online'})
 	console.log('Ready!');
 });
 
