@@ -5,7 +5,8 @@ const { youtubeToken } = require('../config.json');
 
 let opts = {
 	maxResults: 1,
-	key: youtubeToken
+	key: youtubeToken,
+	type: "video"
 }
 
 class Item {
@@ -37,9 +38,11 @@ module.exports = {
 function playYoutubeLink(message, item) {
 	if (message.member.voiceChannel.connection.speaking) {
 		message.client.queue.push(item);
+		console.log(`Added ${item.title} by ${item.channel} to the queue...`)
 		return message.reply(`added ${item.title} by ${item.channel} to the queue`)
 	} 
 	else {
+		console.log(`Now playing ${item.title} by ${item.channel}...`)
 		message.client.playing = item;
 		let dispatcher = message.member.voiceChannel.connection.playStream(ytdl(item.link, { filter: 'audioonly' }));
 		dispatcher.on('end', () => {
@@ -54,8 +57,11 @@ function playYoutubeLink(message, item) {
 }
 
 function searchYoutube(message, query) {
+	console.log(`Searching YouTube for ${query}...`)
 	ytsearch(query, opts, function (err, results) {
 		if (err) return console.log(err);
+		
+		console.log(results[0])
 
 		playYoutubeLink(
 			message, new Item(
