@@ -1,29 +1,27 @@
+const Discord = require('discord.js')
+
 module.exports = {
 	name: 'help',
 	description: 'List all of my commands or info about a specific command.',
 	aliases: ['commands'],
 	usage: '[command name]',
-	cooldown: 5,
+	color: 'b5ef8a',
 	execute(message, args) {
 		const { prefix } = require('../config.json');
 
-		const data = [];
 		const { commands } = message.client;
 
 		if (!args.length) {
-			data.push('Here\'s a list of all my commands:');
-			data.push(commands.map(command => command.name).join(', '));
-			data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+			let embed = new Discord.RichEmbed()
+				.setAuthor("List of all commands:", message.client.icon)
+				.setColor(this.color)
+				.setDescription(
+					"If you want a more detailed view, use `§help <command>`.\n\n" +
+					commands.map(command => `**\`${command.name}\`:**\t  \t${command.description}`).join('\n')
+				)
+				.setFooter(`Requested by ${message.author.username}`, message.author.avatarURL)
 
-			return message.author.send(data, { split: true })
-				.then(() => {
-					if (message.channel.type === 'dm') return;
-					message.reply('I\'ve sent you a DM with all my commands!');
-				})
-				.catch(error => {
-					console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
-					message.reply('it seems like I can\'t DM you! Do you have DMs disabled?');
-				});
+			return message.channel.send(embed);
 		}
 
 		const name = args[0].toLowerCase();
@@ -33,6 +31,8 @@ module.exports = {
 			return message.reply('that\'s not a valid command!');
 		}
 
+		let data = [];
+
 		data.push(`**Name:** ${command.name}`);
 
 		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
@@ -41,7 +41,14 @@ module.exports = {
 
 		command.cooldown != undefined ? data.push(`**Cooldown:** ${command.cooldown} second(s)`) : null;
 
-		message.channel.send(data, { split: true });
-
+		let embed = new Discord.RichEmbed()
+			.setAuthor(`Detailed view about *${name}:*`, message.client.icon)
+			.setColor(this.color)
+			.setDescription(
+				data.join('\n')
+			)
+			.setFooter(`Requested by ${message.author.username}`, message.author.avatarURL)
+		
+		message.channel.send(embed);
 	},
 };

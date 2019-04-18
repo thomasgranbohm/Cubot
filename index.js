@@ -7,6 +7,12 @@ client.commands = new Discord.Collection();
 client.queue = new Array();
 client.playing = undefined;
 
+client.icon = "https://i.imgur.com/QHHu3vn.gif"
+
+let colorString = "246eb9-e63462-ee7674-b5ef8a-78fecf"
+client.colors = colorString.split("-");
+client.randomColor = () => client.colors[Math.floor(Math.random() * client.colors.length)]
+
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -17,7 +23,7 @@ for (const file of commandFiles) {
 const cooldowns = new Discord.Collection();
 
 client.once('ready', () => {
-	client.user.setPresence({ game: {name: 'the Office', type: 'WATCHING', url: 'https://www.imdb.com/title/tt0386676/?ref_=fn_al_tt_1'}, status: 'online'})
+	client.user.setPresence({ game: { name: 'Game of Thrones | §help', type: 'WATCHING', url: 'https://www.imdb.com/title/tt0944947/?ref_=nv_sr_1?ref_=nv_sr_1' }, status: 'online' })
 	console.log('Ready!');
 });
 
