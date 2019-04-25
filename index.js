@@ -1,30 +1,65 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { token, prefix } = require('./config.json');
+const schedule = require('node-schedule');
+const {
+	token,
+	prefix
+} = require('./config.json');
 
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
-client.queue = new Array();
-client.playing = undefined;
 
+client.commands = new Discord.Collection();
+client.utils = new Discord.Collection();
+client.queue = new Discord.Collection();
+client.playing = new Discord.Collection();
+client.connectionTimeout = new Discord.Collection()
 client.icon = "https://i.imgur.com/QHHu3vn.gif"
 
 let colorString = "246eb9-e63462-ee7674-b5ef8a-78fecf"
-client.colors = colorString.split("-");
-client.randomColor = () => client.colors[Math.floor(Math.random() * client.colors.length)]
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const utilFiles = fs.readdirSync('./utils').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.name, command);
 }
+for (const util of utilFiles) {
+	const command = require(`./utils/${util}`);
+	client.utils.set(command.name, command)
+}
 
 const cooldowns = new Discord.Collection();
 
+const textChannelsToSend = []
+
 client.once('ready', () => {
-	client.user.setPresence({ game: { name: 'Game of Thrones | §help', type: 'WATCHING', url: 'https://www.imdb.com/title/tt0944947/?ref_=nv_sr_1?ref_=nv_sr_1' }, status: 'online' })
+	let job = schedule.scheduleJob("00 00 11 * * 1-6", () => {
+		require('./config.json').initializedTextChannels.forEach(obj => {
+			let embed = client.utils.get("readFood")
+				.execute(client)
+			client.channels
+				.get(obj.textChannelID)
+				.send(embed)
+		})
+	})
+	client.user.setPresence({
+		game: {
+			name: `Game of Thrones | ${prefix}help`,
+			type: 'WATCHING',
+			url: 'https://www.imdb.com/title/tt0944947/?ref_=nv_sr_1?ref_=nv_sr_1'
+		},
+		status: 'online'
+	})
 	console.log('Ready!');
+});
+
+client.on('voiceStateUpdate', (oldMember, newMember) => {
+	client.voiceConnections.forEach((value, key) => {
+		if (value.channel.members.size == 1) {
+			value.channel.leave();
+		}
+	})
 });
 
 client.on('message', message => {
@@ -33,8 +68,8 @@ client.on('message', message => {
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
-	const command = client.commands.get(commandName)
-		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+	const command = client.commands.get(commandName) ||
+		client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
 	if (!command) return;
 
@@ -64,8 +99,7 @@ client.on('message', message => {
 
 	try {
 		command.execute(message, args);
-	}
-	catch (error) {
+	} catch (error) {
 		console.error(error);
 		message.reply('there was an error trying to execute that command!');
 	}

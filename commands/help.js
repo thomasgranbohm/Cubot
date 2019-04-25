@@ -17,7 +17,7 @@ module.exports = {
 				.setColor(this.color)
 				.setDescription(
 					"If you want a more detailed view, use `§help <command>`.\n\n" +
-					commands.map(command => `**\`${command.name}\`:**\t  \t${command.description}`).join('\n')
+					commands.map(command => `**\`${command.name}\`**:\t  \t${command.description}`).join('\n')
 				)
 				.setFooter(`Requested by ${message.author.username}`, message.author.avatarURL)
 

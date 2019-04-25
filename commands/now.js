@@ -6,17 +6,22 @@ module.exports = {
     aliases: ["np", "nowplaying", "playing"],
     color: "ee7674",
     async execute(message, args) {
-        if (message.member.voiceChannel && message.client.playing != undefined) {
+        if (message.member.voiceChannel && message.client.playing.get(message.member.voiceChannel.id) != undefined) {
+            const { playing } = message.client;
+
+            console.log(`Thumbnail Name: ${playing.get(message.member.voiceChannel.id).thumbnailName}`)
+
             let embed = new Discord.RichEmbed()
-                .setAuthor("Currently playing:", message.client.icon, message.client.playing.link)
-                .setTitle(`**${message.client.playing.title}**`)
-                .setDescription(`by **${message.client.playing.channel.toString()}**`)
-                .attachFiles([{ attachment: message.client.playing.thumbnail, name: message.client.playing.thumbnailName}])
-                .setThumbnail(`attachment://${message.client.playing.thumbnailName}`)
-                .setFooter(`Requested by ${message.client.playing.requester.username}`, message.client.playing.requester.displayAvatarURL)
+                .setAuthor("Currently playing:", message.client.icon, playing.get(message.member.voiceChannel.id).link)
+                .setTitle(`**${playing.get(message.member.voiceChannel.id).title}**`)
+                .setDescription(`by **${playing.get(message.member.voiceChannel.id).channel.toString()}**`)
+                .attachFiles([{ attachment: playing.get(message.member.voiceChannel.id).thumbnail, name: "ok.png"}])
+                .setThumbnail(`attachment://ok.png`)
+                .setFooter(`Requested by ${playing.get(message.member.voiceChannel.id).requester.username}`, playing.get(message.member.voiceChannel.id).requester.displayAvatarURL)
                 .setColor(this.color)
 
             message.channel.send({ embed })
+                .then(sentMessage => sentMessage.delete(15000));
             message.delete(1000).catch(err => err)
         } else {
 			message.reply('I\'m not currently playing anything. You can use `play` to make me play something!')
