@@ -17,7 +17,7 @@ client.icon = "https://i.imgur.com/QHHu3vn.gif"
 
 let colorString = "246eb9-e63462-ee7674-b5ef8a-78fecf"
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js') && !file.startsWith('.'));
 const utilFiles = fs.readdirSync('./utils').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -57,7 +57,7 @@ client.once('ready', () => {
 client.on('voiceStateUpdate', (oldMember, newMember) => {
 	client.voiceConnections.forEach((value, key) => {
 		if (value.channel.members.size == 1) {
-			value.channel.leave();
+			client.commands.get("leave").execute(undefined, undefined, key, client);
 		}
 	})
 });
@@ -71,7 +71,7 @@ client.on('message', message => {
 	const command = client.commands.get(commandName) ||
 		client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-	if (!command) return;
+	if (!command) return message.delete(5000);
 
 	if (command.args && !args.length) {
 		return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
@@ -99,6 +99,7 @@ client.on('message', message => {
 
 	try {
 		command.execute(message, args);
+		message.delete(1000);
 	} catch (error) {
 		console.error(error);
 		message.reply('there was an error trying to execute that command!');

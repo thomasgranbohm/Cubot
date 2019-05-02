@@ -11,7 +11,6 @@ module.exports = {
 
 				} else {
 					message.member.voiceChannel.connection.dispatcher.end();
-					message.delete().catch(err => err)
 				}
 			} else {
 				message.reply('I\'m not currently playing anything. You can use `play` to make me play something!')

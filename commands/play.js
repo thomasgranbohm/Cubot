@@ -18,14 +18,20 @@ let opts = {
 	type: "video"
 }
 
+let voiceChannelID;
+
 class Item {
-	constructor(link, title, channel, thumbnail, thumbnailName, requester) {
+	constructor(link, title, channel, thumbnail, thumbnailName, requester, stream = undefined, transcoder = undefined, encoder = undefined, volumer = undefined) {
 		this.link = link;
 		this.title = decodeURI(title);
 		this.channel = decodeURI(channel);
 		this.thumbnail = thumbnail;
 		this.thumbnailName = thumbnailName
 		this.requester = requester;
+		this.stream = stream;
+		this.transcoder = transcoder;
+		this.encoder = encoder;
+		this.volumer = volumer;
 	}
 }
 
@@ -37,21 +43,25 @@ module.exports = {
 	color: '78fecf',
 	execute(message, args) {
 		client = message.client;
-		if (!message.member.voiceChannel.connection) {
-			message.client.commands
-				.get("join")
-				.execute(message, [])
-		}
-		if (args.length == 0) return message.reply("you need to send me a link to play.");
-
-		if (args.join(" ").endsWith('.mp3')) {
-
-		} else {
-			try {
-				searchYoutube(message, args.join(' '));
-			} catch (err) {
-				throw err;
+		if (message.member.voiceChannel) {
+			if (!message.member.voiceChannel.connection) {
+				message.client.commands
+					.get("join")
+					.execute(message, [])
 			}
+			if (args.length == 0) args = "the office intro".split(" ")//return message.reply("you need to send me a link to play.");
+
+			if (args.join(" ").endsWith('.mp3')) {
+
+			} else {
+				try {
+					searchYoutube(message, args.join(' '));
+				} catch (err) {
+					throw err;
+				}
+			}
+		} else {
+			message.reply("you need to join a Voice Channel to use that.")
 		}
 	},
 };
@@ -72,22 +82,59 @@ function playItem(message, item) {
 			.setColor(module.exports.color);
 		message.channel.send(embed)
 			.then(sentMessage => sentMessage.delete(15000));
-		message.delete(1000).catch(err => err);
 	}
 	else {
 		console.log(`Now playing ${item.title} by ${item.channel}...`);
-		message.client.playing.set(message.member.voiceChannel.id, item);
-		message.client.commands.get("now").execute(message, []);
-		let dispatcher = message.member.voiceChannel.connection.playStream(ytdl(item.link, { filter: 'audioonly', quality: "highestaudio" }));
-		dispatcher.on('end', () => {
-			if (message.client.queue.get(message.member.voiceChannel.id).length > 0) {
-				playItem(message, message.client.queue.get(message.member.voiceChannel.id).shift())
-			} else {
-				message.member.client.playing.set(message.member.voiceChannel.id, undefined);
-			}
+
+		item.stream = ytdl(item.link, {
+			filter: 'audioonly',
+			quality: "highestaudio",
+			highWaterMark: 16384 * 64,
 		});
-		dispatcher.on('volumeChange', (oldVolume, newVolume) => {
-			message.client.utils.get("getVolume").execute(message, newVolume);
+
+		item.transcoder = new prism.FFmpeg({
+			args: [
+				'-analyzeduration', '0',
+				'-loglevel', '0',
+				'-f', 's16le',
+				'-ar', '48000',
+				'-ac', '2',
+				// '-af', 'volume=30dB'
+			],
+		});
+		item.encoder = new prism.opus.Encoder({
+			rate: 48000,
+			channels: 2,
+			frameSize: 960
+		});
+		item.volumer = new prism.VolumeTransformer({ type: 's16le', volume: message.client.playing.get(voiceChannelID) ? message.client.playing.get(voiceChannelID).volumer.volume : 1 });
+		item.stream.pipe(item.transcoder)
+		item.transcoder.on('error', (err) => console.error(err))
+		item.transcoder.once('data', () => {
+			item.transcoder.pipe(item.volumer)
+		})
+
+		item.volumer.on('error', (err) => console.error(err))
+		item.volumer.once('data', () => {
+			item.volumer.pipe(item.encoder);
+		})
+		item.encoder.once('error', (err) => console.error(err));
+		item.encoder.once('data', () => {
+			voiceChannelID = message.member.voiceChannel.id;
+			message.client.playing.set(voiceChannelID, item);
+			message.client.commands.get("now").execute(message, []);
+			let dispatcher = message.member.voiceChannel.connection
+				.playOpusStream(item.encoder)
+
+			dispatcher.on('end', () => {
+				if (message.client.queue.get(voiceChannelID).length > 0) {
+					playItem(message, message.client.queue.get(voiceChannelID).shift())
+				}
+			});
+
+			dispatcher.on('volumeChange', (oldVolume, newVolume) => {
+				message.client.utils.get("getVolume").execute(message, oldVolume);
+			});
 		});
 	}
 }

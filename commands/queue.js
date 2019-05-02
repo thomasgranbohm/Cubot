@@ -25,7 +25,6 @@ module.exports = {
 			message.channel.send({ embed })
 				.then(sentMessage => {
 					sentMessage.delete(15000)
-					message.delete(1000).catch(err => err)
 				});
 		} else {
 			message.reply('I\'m not currently playing anything. You can use `play` to make me play something!')
