@@ -1,6 +1,6 @@
-### CuBot - a Discord Bot!
+# CuBot - a Discord Bot!
 
-## Example config
+### Example config
 ```
 {
     "token": "",
