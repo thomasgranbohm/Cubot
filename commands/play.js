@@ -107,7 +107,7 @@ function playItem(message, item) {
 			channels: 2,
 			frameSize: 960
 		});
-		item.volumer = new prism.VolumeTransformer({ type: 's16le', volume: message.client.playing.get(voiceChannelID) ? message.client.playing.get(voiceChannelID).volumer.volume : 1 });
+		item.volumer = new prism.VolumeTransformer({ type: 's16le', volume: (message.client.playing.has(voiceChannelID) ? message.client.playing.get(voiceChannelID).volumer.volume : 1) });
 		item.stream.pipe(item.transcoder)
 		item.transcoder.on('error', (err) => console.error(err))
 		item.transcoder.once('data', () => {

@@ -34,7 +34,7 @@ const cooldowns = new Discord.Collection();
 const textChannelsToSend = []
 
 client.once('ready', () => {
-	let job = schedule.scheduleJob("00 00 11 * * 1-6", () => {
+	let job = schedule.scheduleJob("00 30 10 * * 1-6", () => {
 		require('./config.json').initializedTextChannels.forEach(obj => {
 			let embed = client.utils.get("readFood")
 				.execute(client)
@@ -99,7 +99,7 @@ client.on('message', message => {
 
 	try {
 		command.execute(message, args);
-		message.delete(1000);
+		message.delete(5000);
 	} catch (error) {
 		console.error(error);
 		message.reply('there was an error trying to execute that command!');

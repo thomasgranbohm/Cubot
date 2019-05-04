@@ -22,14 +22,7 @@ module.exports = {
 						`${obj.day}:
 							${(obj.lunch.length == 0 || obj.lunch.includes("Lovdag") ?
 							"Ingen mat idag." :
-							("Lunch: " + obj.lunch.substring(
-								obj.lunch.indexOf("Alternativ") + 11
-							)) +
-							"\nAlternativ:" +
-							obj.lunch.substring(
-								obj.lunch.indexOf(":") + 1,
-								obj.lunch.indexOf("Alternativ")
-							))
+							obj.lunch)
 						}`).join("\n\n")
 				)
 		} else if (dayName != undefined) {
@@ -39,12 +32,12 @@ module.exports = {
 					todayFood.lunch.length == 0 || todayFood.lunch.includes("Lovdag") ?
 						"Ingen mat idag." :
 						("𝗟𝘂𝗻𝗰𝗵: " + todayFood.lunch.substring(
-							todayFood.lunch.indexOf("Alternativ") + 11
-						)) +
-						"\n𝗔𝗹𝘁𝗲𝗿𝗻𝗮𝘁𝗶𝘃:" +
-						todayFood.lunch.substring(
 							todayFood.lunch.indexOf(":") + 1,
 							todayFood.lunch.indexOf("Alternativ")
+						)) +
+						"𝗔𝗹𝘁𝗲𝗿𝗻𝗮𝘁𝗶𝘃:" +
+						todayFood.lunch.substring(
+							todayFood.lunch.indexOf("Alternativ") + 11
 						)
 				);
 		}

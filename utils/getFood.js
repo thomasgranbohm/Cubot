@@ -45,8 +45,18 @@ request.post(options).on('response', (response) => {
 		let toJSON = []
 		days.forEach(d => toJSON.push({
 			day: d,
-			lunch: lunches[days.indexOf(d)].trim()
+			lunch: ("Lunch: " +
+				lunches[days.indexOf(d)].substring(
+					lunches[days.indexOf(d)].indexOf("Alternativ") + 11
+				) +
+				"\nAlternativ:" +
+				lunches[days.indexOf(d)].substring(
+					lunches[days.indexOf(d)].indexOf(":") + 1,
+					lunches[days.indexOf(d)].indexOf("Alternativ")
+				)).trim()
 		}))
+
+
 		fs.writeFile('/home/thomas/CuBot/utils/lunch.json', JSON.stringify(toJSON, null, 4), (err) => {
 			if (err) console.error(err)
 		})
