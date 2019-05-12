@@ -1,7 +1,7 @@
 module.exports = {
 	name: "getVolume",
 	execute(message, oldVolume = undefined) {
-		let volume = message.client.playing.get(message.member.voiceChannel.id).volumer.volume
+		let volume = message.member.voiceChannel.connection.dispatcher.volume
 		let emoji = volume <= 0.1 ?
 			":mute:" :
 			volume <= 0.4 ?

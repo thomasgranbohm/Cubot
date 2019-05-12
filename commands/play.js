@@ -21,17 +21,13 @@ let opts = {
 let voiceChannelID;
 
 class Item {
-	constructor(link, title, channel, thumbnail, thumbnailName, requester, stream = undefined, transcoder = undefined, encoder = undefined, volumer = undefined) {
+	constructor(link, title, channel, thumbnail, thumbnailName, requester) {
 		this.link = link;
 		this.title = decodeURI(title);
 		this.channel = decodeURI(channel);
 		this.thumbnail = thumbnail;
 		this.thumbnailName = thumbnailName
 		this.requester = requester;
-		this.stream = stream;
-		this.transcoder = transcoder;
-		this.encoder = encoder;
-		this.volumer = volumer;
 	}
 }
 
@@ -68,7 +64,7 @@ module.exports = {
 
 function playItem(message, item) {
 	clearTimeout(message.client.connectionTimeout.get(message.member.voiceChannel.id));
-	if (message.member.voiceChannel.connection.speaking) {
+	if (message.member.voiceChannel && message.member.voiceChannel.connection && message.member.voiceChannel.connection.speaking) {
 		message.client.queue.get(message.member.voiceChannel.id).push(item);
 
 		console.log(`Added ${item.title} by ${item.channel} to the queue...`)
@@ -86,55 +82,25 @@ function playItem(message, item) {
 	else {
 		console.log(`Now playing ${item.title} by ${item.channel}...`);
 
-		item.stream = ytdl(item.link, {
-			filter: 'audioonly',
-			quality: "highestaudio",
-			highWaterMark: 16384 * 64,
+		voiceChannelID = message.member.voiceChannel.id;
+		message.client.playing.set(voiceChannelID, item);
+		message.client.commands.get("now").execute(message, []);
+		let dispatcher = message.member.voiceChannel.connection
+			.playStream(ytdl(item.link, {
+				filter: 'audioonly',
+				quality: "highestaudio",
+				highWaterMark: 16384 * 64,
+			}))
+
+		dispatcher.on('end', () => {
+			if (message.client.queue.get(voiceChannelID).length > 0) {
+				playItem(message, message.client.queue.get(voiceChannelID).shift())
+			} else {
+				message.client.playing.set(voiceChannelID, undefined);
+			}
 		});
-
-		item.transcoder = new prism.FFmpeg({
-			args: [
-				'-analyzeduration', '0',
-				'-loglevel', '0',
-				'-f', 's16le',
-				'-ar', '48000',
-				'-ac', '2',
-				// '-af', 'volume=30dB'
-			],
-		});
-		item.encoder = new prism.opus.Encoder({
-			rate: 48000,
-			channels: 2,
-			frameSize: 960
-		});
-		item.volumer = new prism.VolumeTransformer({ type: 's16le', volume: (message.client.playing.has(voiceChannelID) ? message.client.playing.get(voiceChannelID).volumer.volume : 1) });
-		item.stream.pipe(item.transcoder)
-		item.transcoder.on('error', (err) => console.error(err))
-		item.transcoder.once('data', () => {
-			item.transcoder.pipe(item.volumer)
-		})
-
-		item.volumer.on('error', (err) => console.error(err))
-		item.volumer.once('data', () => {
-			item.volumer.pipe(item.encoder);
-		})
-		item.encoder.once('error', (err) => console.error(err));
-		item.encoder.once('data', () => {
-			voiceChannelID = message.member.voiceChannel.id;
-			message.client.playing.set(voiceChannelID, item);
-			message.client.commands.get("now").execute(message, []);
-			let dispatcher = message.member.voiceChannel.connection
-				.playOpusStream(item.encoder)
-
-			dispatcher.on('end', () => {
-				if (message.client.queue.get(voiceChannelID).length > 0) {
-					playItem(message, message.client.queue.get(voiceChannelID).shift())
-				}
-			});
-
-			dispatcher.on('volumeChange', (oldVolume, newVolume) => {
-				message.client.utils.get("getVolume").execute(message, oldVolume);
-			});
+		dispatcher.on('volumeChange', (oldVolume, newVolume) => {
+			message.client.utils.get("getVolume").execute(message, oldVolume);
 		});
 	}
 }

@@ -43,19 +43,20 @@ request.post(options).on('response', (response) => {
 		let lunches = table.split('<td valign="top" class="printSmall">').slice(1).map(obj => obj.split("</td")[0].replace(new RegExp("<br />", 'g'), " ").replace(/ +(?= )/g, ''))
 
 		let toJSON = []
-		days.forEach(d => toJSON.push({
+		days.forEach((d, i) => toJSON.push({
 			day: d,
-			lunch: ("Lunch: " +
-				lunches[days.indexOf(d)].substring(
-					lunches[days.indexOf(d)].indexOf("Alternativ") + 11
-				) +
-				"\nAlternativ:" +
-				lunches[days.indexOf(d)].substring(
-					lunches[days.indexOf(d)].indexOf(":") + 1,
-					lunches[days.indexOf(d)].indexOf("Alternativ")
-				)).trim()
+			lunch: (lunches[i].indexOf("Lunch") != -1 ?
+				("Lunch: " +
+					lunches[i].substring(
+						lunches[i].indexOf("Alternativ") + 12
+					) +
+					"\nAlternativ:" +
+					lunches[i].substring(
+						lunches[i].indexOf(":") + 1,
+						lunches[i].indexOf("Alternativ")
+					)) :
+				lunches[i]).trim().replace(/ +(?= )/g, '')
 		}))
-
 
 		fs.writeFile('/home/thomas/CuBot/utils/lunch.json', JSON.stringify(toJSON, null, 4), (err) => {
 			if (err) console.error(err)
