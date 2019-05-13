@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'rovarsproket',
 	aliases: ['rs', 'rovar', 'rövarspråket', 'rövar'],
-	description: 'Returns your given string in roversproket.',
+	description: 'Returns your given string in rövarspråket.',
 	args: true,
 	execute(message, args) {
 		let input = args.join(' ').split("");

@@ -9,7 +9,7 @@ module.exports = {
 		if (message.member.voiceChannel && message.client.playing.get(message.member.voiceChannel.id) != undefined) {
 			const { playing } = message.client;
 			let embed = new Discord.RichEmbed()
-				.setAuthor("Currently playing:", message.client.icon, playing.get(message.member.voiceChannel.id).link)
+				.setAuthor("Currently playing:", message.client.musicIcon, playing.get(message.member.voiceChannel.id).link)
 				.setTitle(`**${playing.get(message.member.voiceChannel.id).title}**`)
 				.setDescription(`by **${playing.get(message.member.voiceChannel.id).channel.toString()}**`)
 				.attachFiles([{ attachment: playing.get(message.member.voiceChannel.id).thumbnail, name: "ok.png" }])
@@ -18,7 +18,6 @@ module.exports = {
 				.setColor(this.color)
 
 			message.channel.send({ embed })
-				.then(sentMessage => sentMessage.delete(15000));
 		} else {
 			message.client.utils.get("notPlaying").execute(message);
 		}

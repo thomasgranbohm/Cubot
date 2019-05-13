@@ -35,6 +35,7 @@ module.exports = {
 	name: 'play',
 	description: 'Plays some music of your choice.',
 	usage: '[search term]',
+	args: true,
 	aliases: ['p', 'add'],
 	color: '78fecf',
 	execute(message, args) {
@@ -45,8 +46,6 @@ module.exports = {
 					.get("join")
 					.execute(message, [])
 			}
-			if (args.length == 0) args = "the office intro".split(" ")//return message.reply("you need to send me a link to play.");
-
 			if (args.join(" ").endsWith('.mp3')) {
 
 			} else {
@@ -71,13 +70,12 @@ function playItem(message, item) {
 		let embed = new Discord.RichEmbed()
 			.setTitle(`${item.title}`)
 			.setDescription(`by **${item.channel}**`)
-			.setAuthor("Added to queue:", message.client.icon)
+			.setAuthor("Added to queue:", message.client.musicIcon)
 			.attachFiles([{ attachment: item.thumbnail, name: "thumbnail.png" }])
 			.setThumbnail(`attachment://thumbnail.png`)
 			.setFooter(`Requested by ${item.requester.username}`, item.requester.avatarURL)
 			.setColor(module.exports.color);
 		message.channel.send(embed)
-			.then(sentMessage => sentMessage.delete(15000));
 	}
 	else {
 		console.log(`Now playing ${item.title} by ${item.channel}...`);

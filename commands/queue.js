@@ -8,7 +8,7 @@ module.exports = {
 	execute(message, args) {
 		if (message.member.voiceChannel && message.client.queue.has(message.member.voiceChannel.id) && message.client.playing.get(message.member.voiceChannel.id) != undefined) {
 			let embed = new Discord.RichEmbed()
-				.setAuthor("Currently playing:", message.client.icon, message.client.playing.get(message.member.voiceChannel.id).link)
+				.setAuthor("Currently playing:", message.client.musicIcon, message.client.playing.get(message.member.voiceChannel.id).link)
 				.attachFiles([{ attachment: message.client.playing.get(message.member.voiceChannel.id).thumbnail, name: "thumbnail.png" }])
 				.setThumbnail(`attachment://thumbnail.png`)
 				.setTitle(`**${message.client.playing.get(message.member.voiceChannel.id).title}**`)
@@ -23,9 +23,7 @@ module.exports = {
 				.setColor(this.color)
 
 			message.channel.send({ embed })
-				.then(sentMessage => {
-					sentMessage.delete(15000)
-				});
+
 		} else {
 			message.reply('I\'m not currently playing anything. You can use `play` to make me play something!')
 		}

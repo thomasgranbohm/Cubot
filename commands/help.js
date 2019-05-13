@@ -42,7 +42,7 @@ module.exports = {
 		command.cooldown != undefined ? data.push(`**Cooldown:** ${command.cooldown} second(s)`) : null;
 
 		let embed = new Discord.RichEmbed()
-			.setAuthor(`Detailed view about *${name}:*`, message.client.icon)
+			.setAuthor(`Detailed view about ${name}:`, message.client.icon)
 			.setColor(this.color)
 			.setDescription(
 				data.join('\n')

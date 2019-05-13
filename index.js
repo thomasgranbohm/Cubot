@@ -14,6 +14,7 @@ client.queue = new Discord.Collection();
 client.playing = new Discord.Collection();
 client.connectionTimeout = new Discord.Collection()
 client.icon = "https://i.imgur.com/QHHu3vn.gif"
+client.musicIcon = "https://media0.giphy.com/media/8FM8uY0KjydEohrjrh/giphy.gif?cid=790b76115cd926ab4b647a2f4943548e&rid=giphy.gif"
 
 let colorString = "246eb9-e63462-ee7674-b5ef8a-78fecf"
 
@@ -30,8 +31,6 @@ for (const util of utilFiles) {
 }
 
 const cooldowns = new Discord.Collection();
-
-const textChannelsToSend = []
 
 client.once('ready', () => {
 	let job = schedule.scheduleJob("00 30 10 * * 1-6", () => {
@@ -63,7 +62,13 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 });
 
 client.on('message', message => {
+	if (message.author.id == 536286702365310999 && message.author.bot) {
+		if (message.embeds.length > 0 && message.embeds[0].author.name !== 'Idag blir det:') {
+			return message.delete(15000);
+		}
+	}
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	message.delete(5000);
 
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
@@ -71,7 +76,7 @@ client.on('message', message => {
 	const command = client.commands.get(commandName) ||
 		client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-	if (!command) return message.delete(5000);
+	if (!command) return;
 
 	if (command.args && !args.length) {
 		return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
@@ -99,7 +104,6 @@ client.on('message', message => {
 
 	try {
 		command.execute(message, args);
-		message.delete(5000);
 	} catch (error) {
 		console.error(error);
 		message.reply('there was an error trying to execute that command!');

@@ -20,10 +20,8 @@ module.exports = {
 					json.initializedTextChannels.indexOf(serverObj), 1
 				);
 				message.reply("I've remove your text channel from the list!")
-					.then(sentMessage => sentMessage.delete(10000));
 			} else {
 				return message.reply("this channel isn't initialized. You can initialize it by using \`init\`!")
-					.then(sentMessage => sentMessage.delete(10000));
 			}
 			fs.writeFile('./config.json', JSON.stringify(json, null, 4), (err) => {
 				if (err) return console.error(err);

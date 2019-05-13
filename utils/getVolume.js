@@ -16,10 +16,8 @@ module.exports = {
 
 		if (oldVolume) {
 			message.channel.send(`${emoji} Changed volume from **${oldVolume * 100}%** to **${volume * 100}%**!`)
-				.then(sentMessage => sentMessage.delete(15000))
 		} else {
 			message.channel.send(`${emoji} The current volume is **${volume * 100}%**!`)
-				.then(sentMessage => sentMessage.delete(15000))
 		}
 	}
 }
