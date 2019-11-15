@@ -12,8 +12,8 @@ module.exports = {
 		const { commands } = message.client;
 
 		if (!args.length) {
-			let embed = new Discord.RichEmbed()
-				.setAuthor("List of all commands:", message.client.icon)
+			let embed = new Discord.MessageEmbed()
+				.setAuthor("List of all commands:", message.client.settingIcon)
 				.setColor(this.color)
 				.setDescription(
 					"If you want a more detailed view, use `§help <command>`.\n\n" +
@@ -35,20 +35,20 @@ module.exports = {
 
 		data.push(`**Name:** ${command.name}`);
 
-		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
+		if (command.aliases) data.push(`**Aliases:** \`${command.aliases.join('\`, \`')}\``);
 		if (command.description) data.push(`**Description:** ${command.description}`);
 		if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
 
 		command.cooldown != undefined ? data.push(`**Cooldown:** ${command.cooldown} second(s)`) : null;
 
-		let embed = new Discord.RichEmbed()
-			.setAuthor(`Detailed view about ${name}:`, message.client.icon)
+		let embed = new Discord.MessageEmbed()
+			.setAuthor(`Detailed view about ${name}:`, message.client.settingIcon)
 			.setColor(this.color)
 			.setDescription(
 				data.join('\n')
 			)
 			.setFooter(`Requested by ${message.author.username}`, message.author.avatarURL)
-		
+
 		message.channel.send(embed);
 	},
 };

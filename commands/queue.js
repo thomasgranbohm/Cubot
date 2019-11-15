@@ -6,20 +6,20 @@ module.exports = {
 	aliases: ['q', 'que'],
 	color: "ee7674",
 	execute(message, args) {
-		if (message.member.voiceChannel && message.client.queue.has(message.member.voiceChannel.id) && message.client.playing.get(message.member.voiceChannel.id) != undefined) {
-			let embed = new Discord.RichEmbed()
-				.setAuthor("Currently playing:", message.client.musicIcon, message.client.playing.get(message.member.voiceChannel.id).link)
-				.attachFiles([{ attachment: message.client.playing.get(message.member.voiceChannel.id).thumbnail, name: "thumbnail.png" }])
+		if (message.member.voice && message.client.queue.has(message.member.voice.guild.id) && message.client.playing.get(message.member.voice.guild.id) != undefined) {
+			let embed = new Discord.MessageEmbed()
+				.setAuthor("Currently playing:", message.client.musicIcon, message.client.playing.get(message.member.voice.guild.id).link)
+				.attachFiles([{ attachment: message.client.playing.get(message.member.voice.guild.id).thumbnail, name: "thumbnail.png" }])
 				.setThumbnail(`attachment://thumbnail.png`)
-				.setTitle(`**${message.client.playing.get(message.member.voiceChannel.id).title}**`)
-				.setDescription(`by **${message.client.playing.get(message.member.voiceChannel.id).channel.toString()}**` +
-					(message.client.queue.get(message.member.voiceChannel.id).length > 0 ?
-						'\n\n**Next up:**\n' + message.client.queue.get(message.member.voiceChannel.id).map(item => {
-							return `**${message.client.queue.get(message.member.voiceChannel.id).indexOf(item) + 1}.** ${item.title} by ${item.channel}`
+				.setTitle(`**${message.client.playing.get(message.member.voice.guild.id).title}**`)
+				.setDescription(`by **${message.client.playing.get(message.member.voice.guild.id).channel.toString()}**` +
+					(message.client.queue.get(message.member.voice.guild.id).length > 0 ?
+						'\n\n**Next up:**\n' + message.client.queue.get(message.member.voice.guild.id).map(item => {
+							return `**${message.client.queue.get(message.member.voice.guild.id).indexOf(item) + 1}.** ${item.title} by ${item.channel}`
 						}).join('\n\t')
 						: "")
 				)
-				.setFooter(`Requested by ${message.client.playing.get(message.member.voiceChannel.id).requester.username}`, message.client.playing.get(message.member.voiceChannel.id).requester.avatarURL)
+				.setFooter(`Requested by ${message.client.playing.get(message.member.voice.guild.id).requester.username}`, message.client.playing.get(message.member.voice.guild.id).requester.avatarURL)
 				.setColor(this.color)
 
 			message.channel.send({ embed })
