@@ -3,11 +3,13 @@ module.exports = class Play extends Command {
 	constructor() {
 		super();
 
-		this.name = "play";
-		this.usage += `${this.name} <query>`;
-		this.description = 'Plays music with an added search query';
-		this.args = true;
-		this.aliases = ['p'];
+
+		// TODO how much boost? Presets?
+		this.name = 'boost';
+		this.usage += `${this.name}`;
+		this.description = 'Bass boosts the playing track.';
+		this.args = false;
+		this.aliases = ['bass', 'eq'];
 		this.category = 'voice';
 	}
 
