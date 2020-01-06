@@ -1,5 +1,7 @@
 const Command = require("./command.js");
+const { categories } = require('../config.json')
 const { MessageEmbed } = require('discord.js')
+
 module.exports = class Help extends Command {
 	constructor() {
 		super();
@@ -9,27 +11,26 @@ module.exports = class Help extends Command {
 		this.description = 'List all commands or info about a specific command.'
 		this.args = false;
 		this.aliases = ['h'];
-		this.category = 'utils'
+		this.category = categories.UTILS;
 	}
 
 	run = (message, args) => {
 		const client = message.client
 		if (args.length == 0)
-			return message.channel.send(this.help(true)
+			return this.help(true)
 				.setTitle("List of all commands:")
-				.setDescription(client.commands
-					.sort((a, b) => String(a.name).localeCompare(b.name))
-					.filter(command => command.name !== "help")
+				.setDescription(Object.keys(client.commands)
+					.sort((a, b) => a.localeCompare(b))
+					.filter(command => command !== this.name)
+					.map(name => client.commands[name])
 					.map(command => command.help()).join('\n'))
-			)
 
 		let commandName = args[0]
-		let command = client.commands.get(commandName) ||
-			client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+		let command = client.utils.findCommand.run(client, commandName);
 
 		if (!command)
-			return message.channel.send("That command does not exist.")
+			return "That command does not exist."
 
-		message.channel.send(command.help(true))
+		return command.help(true)
 	}
 }

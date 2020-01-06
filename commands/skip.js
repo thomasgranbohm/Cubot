@@ -1,5 +1,8 @@
 const Command = require("./command.js");
-module.exports = class Play extends Command {
+const { categories } = require('../config.json')
+const { MessageEmbed } = require('discord.js')
+
+module.exports = class Skip extends Command {
 	constructor() {
 		super();
 
@@ -8,22 +11,23 @@ module.exports = class Play extends Command {
 		this.description = 'Skips the playing track.';
 		this.args = false;
 		this.aliases = ['s'];
-		this.category = 'voice';
+		this.category = categories.VOICE;
 	}
 
-	run = (message, args) => {
-		let client = message.client;
-		if (!message.member.voice.channelID)
-			message.channel.send("You are not in a voice channel.")
+	run = async (message, args) => {
+		const { client } = message;
+		const { commands, utils } = client;
+		let userCheckFail = utils.checkUserVoice.run(message);
+		if (userCheckFail) return userCheckFail;
 
-		if (client.player.get(message.guild.id) && message.member.voice.channelID !== guild.player.get(message.guild.id))
-			message.channel.send("I'm already in another voice channel.")
+		let botCheckFail = utils.checkBotVoice.run(message);
+		if (botCheckFail) return botCheckFail;
 
-		let queue = client.getServerQueue(message.guild.id)
-		if (!queue || queue.length == 0)
-			message.channel.send("I'm not playing anything.")
-
-		queue.splice(0, 1);
-		client.player.get(message.guild.id).stop();
+		await client.player.get(message.guild.id).stop();
+		let queue = utils.getServerQueue.run(client, message.guild.id).slice();
+		console.general(`Skipped track ?. New queue length for ?: ?`, queue.shift().info.title, message.guild.name, queue.length);
+		if (queue > 0)
+			return commands.now.run(message);
+		return null;
 	}
 }
