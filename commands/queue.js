@@ -1,31 +1,49 @@
-const Discord = require('discord.js');
+const Command = require('./command.js');
+const { categories } = require('../config.json')
+const { MessageEmbed } = require('discord.js')
 
-module.exports = {
-	name: 'queue',
-	description: 'List all songs in the queue.',
-	aliases: ['q', 'que'],
-	color: "ee7674",
-	execute(message, args) {
-		if (message.member.voice && message.client.queue.has(message.member.voice.guild.id) && message.client.playing.get(message.member.voice.guild.id) != undefined) {
-			let embed = new Discord.MessageEmbed()
-				.setAuthor("Currently playing:", message.client.musicIcon, message.client.playing.get(message.member.voice.guild.id).link)
-				.attachFiles([{ attachment: message.client.playing.get(message.member.voice.guild.id).thumbnail, name: "thumbnail.png" }])
-				.setThumbnail(`attachment://thumbnail.png`)
-				.setTitle(`**${message.client.playing.get(message.member.voice.guild.id).title}**`)
-				.setDescription(`by **${message.client.playing.get(message.member.voice.guild.id).channel.toString()}**` +
-					(message.client.queue.get(message.member.voice.guild.id).length > 0 ?
-						'\n\n**Next up:**\n' + message.client.queue.get(message.member.voice.guild.id).map(item => {
-							return `**${message.client.queue.get(message.member.voice.guild.id).indexOf(item) + 1}.** ${item.title} by ${item.channel}`
-						}).join('\n\t')
-						: "")
-				)
-				.setFooter(`Requested by ${message.client.playing.get(message.member.voice.guild.id).requester.username}`, message.client.playing.get(message.member.voice.guild.id).requester.avatarURL)
-				.setColor(this.color)
+module.exports = class queue extends Command {
+	constructor() {
+		super();
 
-			message.channel.send({ embed })
+		this.name = 'queue';
+		this.usage += `${this.name}`;
+		this.description = 'Lists the tracks queued on this server.';
+		this.args = false;
+		this.aliases = ['q', 'que'];
+		this.category = categories.VOICE;
+	}
+	run = (message, args) => {
+		const { client } = message;
+		const { commands, utils } = client;
 
+		let userCheckFail = utils.checkUserVoice.run(message);
+		if (userCheckFail) return userCheckFail;
+		let botCheckFail = utils.checkBotVoice.run(message);
+		if (botCheckFail) return botCheckFail;
+
+		let queue = utils.getServerQueue.run(client, message.guild.id).slice();
+		if (queue.length === 0)
+			return 'I\'m not playing anything.'
+		let currentlyPlaying = queue.shift()
+		let tracks = queue.map(track => {
+			return { title: track.info.title, uri: track.info.uri, author: track.info.author };
+		});
+
+		//TODO send now playing if queue is 1
+		// and send queue with the current track if more than 1
+
+		let toSend = new MessageEmbed()
+			.setTitle(`Queue for ${message.guild.name}`)
+			.setDescription(`**Currently playing**\n${currentlyPlaying.info.title} by ${currentlyPlaying.info.author}`)
+		// TODO Canvas bar.
+		if (queue.length !== 0) {
+			toSend
+				.addField("**Titles**", tracks.map(track => `\`${tracks.indexOf(track) + 1}\`. [${track.title}](${track.uri})`).join("\n"), true)
+				.addField("**Channel**", tracks.map(track => track.author).join('\n'), true)
 		} else {
-			message.reply('I\'m not currently playing anything. You can use `play` to make me play something!')
+			toSend.setDescription(toSend.description + `\n\nThe queue is empty.`)
 		}
-	},
-};
+		return toSend
+	}
+}

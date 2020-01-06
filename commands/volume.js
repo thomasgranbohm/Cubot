@@ -1,19 +1,45 @@
-module.exports = {
-	name: 'volume',
-	description: 'Changes the volume between 0 to 1000.',
-	aliases: ['v'],
-	color: 'e63462',
-	execute(message, args) {
-		if (message.member.voice && message.client.voice.connections.get(message.member.voice.guild.id)) {
-			if (args.length != 0 && Number.isInteger(parseInt(args.join(''))) && parseInt(args.join('')) <= 1000 && parseInt(args.join('')) >= 0) {
-				let oldVolume = message.client.voice.connections.get(message.member.voice.guild.id).dispatcher.volume //message.client.playing.get(message.member.voice.guild.id).volumer.volume
-				message.client.voice.connections.get(message.member.voice.guild.id).dispatcher.setVolume(parseInt(args.join('')) / 100);// message.client.playing.get(message.member.voice.guild.id).volumer.setVolume(parseInt(args.join('')) / 100);
-				message.client.utils.get("getVolume").execute(message, oldVolume);
-			} else {
-				message.client.utils.get("getVolume").execute(message);
-			}
+const Command = require('./command.js');
+const { categories } = require('../config.json')
+const { MessageEmbed } = require('discord.js')
+
+module.exports = class volume extends Command {
+	constructor() {
+		super();
+
+		this.name = 'volume';
+		this.usage += `${this.name}`;
+		this.description = 'Changes the volume of the playing track.';
+		this.args = false;
+		this.aliases = ['v', 'vol'];
+		this.category = categories.VOICE;
+	}
+	run = (message, args) => {
+		const { client } = message;
+		const { commands, utils } = client;
+
+		let userCheckFail = utils.checkUserVoice.run(message);
+		if (userCheckFail) return userCheckFail;
+		let botCheckFail = utils.checkBotVoice.run(message);
+		if (botCheckFail) return botCheckFail;
+
+		const player = client.player.get(message.guild.id);
+		const volume = player.state.volume;
+
+		let toSend = new MessageEmbed()
+
+		if (args) {
+			const newVolume = parseInt(args.split(" ")[0])
+			if (newVolume > 100 || newVolume < 0)
+				return 'The volume cannot to be above 100 or below 0.';
+
+			player.volume(newVolume)
+
+			toSend.setTitle('Changed volume')
+				.setDescription(`From ${volume} to ${newVolume}!`)
 		} else {
-			return message.reply("you need to join a voice channel to use this command.");
+			toSend.setTitle('Current volume')
+				.setDescription(`${volume}%`)
 		}
-	},
-};
+		return toSend;
+	}
+}

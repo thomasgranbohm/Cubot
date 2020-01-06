@@ -64,3 +64,4 @@ config.json
 ecosystem.config.js
 downloads/*.png
 lunch.json
+.vscode

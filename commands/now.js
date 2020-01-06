@@ -1,25 +1,34 @@
-const Discord = require('discord.js');
+const Command = require('./command.js');
+const { categories } = require('../config.json')
+const { MessageEmbed } = require('discord.js');
 
-module.exports = {
-	name: 'now',
-	description: 'Displays the playing song.',
-	aliases: ["np", "nowplaying", "playing"],
-	color: "ee7674",
-	async execute(message, args) {
-		if (message.member.voice && message.client.playing.get(message.member.voice.guild.id) != undefined) {
-			const { playing } = message.client;
-			let embed = new Discord.MessageEmbed()
-				.setAuthor("Currently playing:", message.client.musicIcon, playing.get(message.member.voice.guild.id).link)
-				.setTitle(`**${playing.get(message.member.voice.guild.id).title}**`)
-				.setDescription(`by **${playing.get(message.member.voice.guild.id).channel.toString()}**`)
-				.attachFiles([{ attachment: playing.get(message.member.voice.guild.id).thumbnail, name: "ok.png" }])
-				.setThumbnail(`attachment://ok.png`)
-				.setFooter(`Requested by ${playing.get(message.member.voice.guild.id).requester.username}`, playing.get(message.member.voice.guild.id).requester.avatarURL({ format: "gif", size: 1024 }))
-				.setColor(this.color)
+module.exports = class now extends Command {
+	constructor() {
+		super();
 
-			message.channel.send({ embed })
-		} else {
-			message.client.utils.get("notPlaying").execute(message);
-		}
-	},
-};
+		this.name = 'now';
+		this.usage += `${this.name}`;
+		this.description = 'Returns the currently playing track.';
+		this.args = false;
+		this.aliases = ['np', 'nowPlaying'];
+		this.category = categories.VOICE;
+	}
+	run = async (message, args) => {
+		const { client } = message;
+		const { commands, utils } = client;
+
+		let userCheckFail = utils.checkUserVoice.run(message);
+		if (userCheckFail) return userCheckFail;
+
+		let botCheckFail = utils.checkBotVoice.run(message);
+		if (botCheckFail) return botCheckFail;
+
+		let queue = await utils.getServerQueue.run(client, message.guild.id)
+		let currentTrack = queue[0];
+		return new MessageEmbed()
+			.setTitle("Now playing")
+			.setDescription(`**${currentTrack.info.title}** by ${currentTrack.info.author}${queue.length > 1 ? `\n\n**Next up**\n${queue[1].info.title}` : ''}`)
+			.setThumbnail(`https://i.ytimg.com/vi/${currentTrack.info.identifier}/hqdefault.jpg`)
+			.setFooter(`Track requested by ${message.author.username}`, message.author.avatarURL({ size: 1024 }))
+	}
+}
