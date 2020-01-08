@@ -10,7 +10,9 @@ module.exports = class queueLoop extends Util {
 		player.play(queue[0].track)
 
 		player.once('end', async () => {
+			if (data.reason === "REPLACED") return;
 			queue = client.servers[message.guild.id].queue;
+			console.general(`Ended track ? in ?. New queue length is now: ?`, queue.shift().info.title, message.guild.name, queue.length)
 			if (queue.length > 0) {
 				client.utils.queueLoop.run(client, message, queue, player);
 			}

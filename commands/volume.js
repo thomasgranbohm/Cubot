@@ -29,8 +29,8 @@ module.exports = class volume extends Command {
 
 		if (args) {
 			const newVolume = parseInt(args.split(" ")[0])
-			if (newVolume > 100 || newVolume < 0)
-				return 'The volume cannot to be above 100 or below 0.';
+			if (newVolume > 200 || newVolume < 0)
+				return 'The volume cannot to be above 200 or below 0.';
 
 			player.volume(newVolume)
 
