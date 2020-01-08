@@ -35,11 +35,11 @@ module.exports = class queue extends Command {
 
 		let toSend = new MessageEmbed()
 			.setTitle(`Queue for ${message.guild.name}`)
-			.setDescription(`**Currently playing**\n${currentlyPlaying.info.title} by ${currentlyPlaying.info.author}`)
+			.setDescription(`**[Currently playing](${currentlyPlaying.info.uri})**\n**${currentlyPlaying.info.title}** by ${currentlyPlaying.info.author}`)
 		// TODO Canvas bar.
 		if (queue.length !== 0) {
 			toSend
-				.addField("**Titles**", tracks.map(track => `\`${tracks.indexOf(track) + 1}\`. [${track.title}](${track.uri})`).join("\n"), true)
+				.addField("**Titles**", tracks.map(track => `\`${tracks.indexOf(track) + 1}.\` [${track.title}](${track.uri})`).join("\n"), true)
 				.addField("**Channel**", tracks.map(track => track.author).join('\n'), true)
 		} else {
 			toSend.setDescription(toSend.description + `\n\nThe queue is empty.`)
