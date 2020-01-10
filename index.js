@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 const axios = require('axios')
+const WebServer = require('./webserver/index')
 const Lavalink = require('discord.js-lavalink');
 const { PlayerManager } = Lavalink;
 
@@ -9,6 +10,7 @@ const config = require('./config.json');
 const fs = require('fs');
 const chalk = require('chalk');
 
+client.log = [];
 client.servers = {}
 client.commands = {}, client.utils = {};
 
@@ -66,21 +68,29 @@ client.on('message', async (message) => {
 })
 
 client.on('ready', () => {
-	console.error = (error) => console.log(chalk.redBright(`[${error.name}]`) + error.stack.substring(error.name.length + 1))
-	console.general = (baseString, ...args) => {
+	console.error = (error) => console.otherLog(error.name, error.stack.substring(error.name.length + 1))
+	console.web = (baseString, ...args) => console.otherLog('Web', baseString, ...args)
+	console.general = (baseString, ...args) => console.otherLog('General', baseString, ...args)
+	console.otherLog = (category, baseString, ...args) => {
 		let argIndex = 0;
 		baseString = new String(baseString)
-		console.log(chalk.greenBright('[General] ') + (args ?
-			baseString.split(' ')
-				.map(string => {
-					if (string.includes('?')) {
-						return string.slice(0, string.indexOf('?'))
-							+ chalk.magentaBright(args[argIndex++])
-							+ string.slice(1 + string.indexOf('?'))
-					}
-					return string
-				}).join(' ') :
-			baseString))
+		let toPrint = chalk.greenBright(`[${category}] `) + (
+			args ?
+				baseString.split(' ')
+					.map(string => {
+						if (string.includes('?')) {
+							return string.slice(0, string.indexOf('?'))
+								+ chalk.magentaBright(args[argIndex++])
+								+ string.slice(1 + string.indexOf('?'))
+						}
+						return string
+					}).join(' ') :
+				baseString
+		)
+		client.log.push(toPrint)
+		if (client.log.length > 25)
+			client.log.shift();
+		console.log(toPrint)
 	}
 	process.on('uncaughtException', (err) => console.error(err))
 	process.on('unhandledRejection', (reason) => console.error(reason))
@@ -139,6 +149,8 @@ client.on('ready', () => {
 
 	client.user.setActivity('bass bOwOsted music!', { type: 'LISTENING' })
 
+	let web = new WebServer(client);
+
 	console.log(` ______     __  __     ______     ______     ______  
 /\\  ___\\   /\\ \\/\\ \\   /\\  == \\   /\\  __ \\   /\\__  _\\ 
 \\ \\ \\____  \\ \\ \\_\\ \\  \\ \\  __<   \\ \\ \\/\\ \\  \\/_/\\ \\/ 
@@ -147,6 +159,7 @@ client.on('ready', () => {
 	)
 
 	console.general("I'm running!")
+	web.start();
 })
 
 client.login(config.token);

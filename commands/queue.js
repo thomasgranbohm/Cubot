@@ -35,7 +35,8 @@ module.exports = class queue extends Command {
 
 		let toSend = new MessageEmbed()
 			.setTitle(`Queue for ${message.guild.name}`)
-			.setDescription(`**[Currently playing](${currentlyPlaying.info.uri})**\n**${currentlyPlaying.info.title}** by ${currentlyPlaying.info.author}`)
+			.setDescription(`**[Currently playing](${currentlyPlaying.info.uri})**\n - **${currentlyPlaying.info.title}** by ${currentlyPlaying.info.author}`)
+			.setFooter(`Track requested by ${currentlyPlaying.requester.username}`, currentlyPlaying.requester.avatarURL({ size: 1024 }))
 		// TODO Canvas bar.
 		if (queue.length !== 0) {
 			toSend

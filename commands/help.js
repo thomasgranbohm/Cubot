@@ -25,11 +25,11 @@ module.exports = class Help extends Command {
 					.map(name => client.commands[name])
 					.map(command => command.help()).join('\n'))
 
-		let commandName = args[0]
+		let commandName = args.split(" ")[0]
 		let command = client.utils.findCommand.run(client, commandName);
 
 		if (!command)
-			return "That command does not exist."
+			return "That command does not exist.";
 
 		return command.help(true)
 	}

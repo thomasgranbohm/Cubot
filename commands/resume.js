@@ -25,7 +25,10 @@ module.exports = class resume extends Command {
 
 		const player = client.player.get(message.guild.id)
 		const queue = utils.getServerQueue.run(client, message.guild.id)
-		player.pause(false)
+		if (player.paused)
+			player.pause(false)
+		else return new MessageEmbed()
+			.setTitle(`I'm already playing.`)
 		return new MessageEmbed()
 			.setTitle(`Resumed ${queue[0].info.title}.`)
 	}

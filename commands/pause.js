@@ -25,7 +25,10 @@ module.exports = class pause extends Command {
 
 		const player = client.player.get(message.guild.id)
 		const queue = utils.getServerQueue.run(client, message.guild.id)
-		player.pause(true)
+		if (!player.paused)
+			player.pause(true)
+		else return new MessageEmbed()
+			.setTitle(`I'm already paused.`)
 		return new MessageEmbed()
 			.setTitle(`Paused ${queue[0].info.title}.`)
 	}

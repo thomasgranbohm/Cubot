@@ -30,7 +30,7 @@ module.exports = class play extends Command {
 
 		if (!track[0]) return String('No results found.');
 		if (!queue[0]) isFirst = true;
-		track.requester = message.author
+		track[0].requester = message.author
 		queue.push(track[0]);
 
 		if (isFirst) {
