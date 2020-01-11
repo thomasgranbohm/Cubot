@@ -159,7 +159,7 @@ client.on('ready', () => {
 	)
 
 	console.general("I'm running!")
-	web.start();
+	// web.start();
 })
 
 client.login(config.token);

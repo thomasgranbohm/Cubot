@@ -23,11 +23,12 @@ module.exports = class Skip extends Command {
 		let botCheckFail = utils.checkBotVoice.run(message);
 		if (botCheckFail) return botCheckFail;
 
-		await client.player.get(message.guild.id).stop();
-		let queue = utils.getServerQueue.run(client, message.guild.id).slice();
+		await client.player.get(message.guild.id).stop()
+		let queue = await utils.getServerQueue.run(client, message.guild.id).slice();
+
 		console.general('Skipped track ?. New queue length for ?: ?', queue.shift().info.title, message.guild.name, queue.length);
 		if (queue.length > 0)
-			return commands.now.run(message);
+			return utils.nowEmbed.run(queue);
 		return null;
 	}
 }
