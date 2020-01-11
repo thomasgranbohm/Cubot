@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 const axios = require('axios')
-const WebServer = require('./webserver/index')
+// const WebServer = require('./webserver/index')
 const Lavalink = require('discord.js-lavalink');
 const { PlayerManager } = Lavalink;
 
@@ -149,7 +149,7 @@ client.on('ready', () => {
 
 	client.user.setActivity('bass bOwOsted music!', { type: 'LISTENING' })
 
-	let web = new WebServer(client);
+	// let web = new WebServer(client);
 
 	console.log(` ______     __  __     ______     ______     ______  
 /\\  ___\\   /\\ \\/\\ \\   /\\  == \\   /\\  __ \\   /\\__  _\\ 
