@@ -1,6 +1,9 @@
 const Command = require('./command.js');
 const { categories } = require('../config.json')
 const { MessageEmbed } = require('discord.js')
+const jimp = require('jimp')
+const axios = require('axios')
+const fs = require('fs')
 
 module.exports = class play extends Command {
 	constructor() {
@@ -26,7 +29,8 @@ module.exports = class play extends Command {
 		await utils.initiatePlayer.run(client, message.guild.id);
 
 		let queue = await utils.getServerQueue.run(client, message.guild.id);
-		let track = await utils.getAudio.run(args.startsWith('http') ? args : `ytsearch:${args}`)
+		let playlist = args.includes('list')
+		let track = await utils.getAudio.run(args.startsWith('http') ? args : `ytsearch:${args}`, playlist)
 
 		if (!track[0])
 			return new Error('No results found. Please try again!');
@@ -35,6 +39,14 @@ module.exports = class play extends Command {
 			track[0].info.title = track[0].info.title.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
 
 		track[0].requester = message.author
+
+		if (track[0].info.uri.includes("youtube")) {
+			track[0] = await utils.getThumbnail.run(client, track[0]);
+		} else {
+			console.log(client.runningDir)
+			track[0].thumbnail = `${client.runningDir}/thumbnails/Error.png`
+		}
+
 		queue.push(track[0]);
 
 		if (isFirst) {
@@ -62,7 +74,10 @@ module.exports = class play extends Command {
 				.setTitle('Added to queue')
 				.setDescription(`**${track[0].info.title}** by ${track[0].info.author}\n\nThere ${(queue.length - 1) > 1 ? `are ${queue.length - 1} tracks` : `is ${queue.length - 1} track`} before it.`)
 				// TODO youtube regex for thumbnail
-				.setThumbnail(`https://i.ytimg.com/vi/${track[0].info.identifier}/hqdefault.jpg`)
+				.attachFiles([
+					{ attachment: track[0].thumbnail, name: `thumbnail.jpg` }
+				])
+				.setThumbnail(`attachment://thumbnail.jpg`)
 		}
 	}
 }
