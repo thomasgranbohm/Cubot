@@ -11,11 +11,16 @@
 	"license": "ISC",
 	"dependencies": {
 		"axios": "^0.19.0",
+		"canvas": "^2.6.1",
 		"chalk": "^3.0.0",
 		"discord.js": "github:discordjs/discord.js",
 		"discord.js-lavalink": "^2.2.3",
 		"ejs": "^3.0.1",
 		"express": "^4.17.1",
-		"opusscript": "0.0.7"
+		"image-downloader": "^3.5.0",
+		"jimp": "^0.9.3",
+		"opusscript": "0.0.7",
+		"request": "^2.88.0",
+		"request-promise": "^4.2.5"
 	}
 }

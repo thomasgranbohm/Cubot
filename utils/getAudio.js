@@ -7,12 +7,16 @@ module.exports = class getAudio extends Util {
 
 		this.name = 'getAudio';
 	}
-	run = async (query) => {
+	run = async (query, playlist = false) => {
 		const res = await axios.get(`http://${config.lavalink.host}:${config.lavalink.port}/loadtracks?identifier=${encodeURIComponent(query)}`, {
 			headers: {
 				Authorization: config.lavalink.password
 			}
 		})
+		// TODO playlist support
 		return res.data.tracks;
+		// if (playlist)
+		// 	return res.data.tracks
+		// return res.data.tracks[0];
 	}
 }
