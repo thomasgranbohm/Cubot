@@ -63,6 +63,5 @@ typings/
 config.json
 ecosystem.config.js
 thumbnails/*
-!thumbnails/Error.png
 test/
 lunch.json

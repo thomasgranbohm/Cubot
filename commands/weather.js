@@ -57,8 +57,9 @@ module.exports = class weather extends Command {
 				.addField('Feels like', `${Math.round(json.main.feels_like - 273.15)} °C`, true)
 				.addField('Humidity', `${json.main.humidity}%`, true);
 		} catch (error) {
-			console.error(error)
-			return error;
+			if (error.name === 'StatusCodeError' && error.message.startsWith('404'))
+				return new Error('That city isn\'t in the database.')
+			throw error;
 		}
 	}
 }

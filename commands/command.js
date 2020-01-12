@@ -3,6 +3,10 @@ const { categories } = require('../config.json')
 Discord = require('discord.js')
 
 module.exports = class Command {
+
+	// TODO rework command classes
+	// TODO Shortdesc for help
+	// desc for longer desc
 	constructor() {
 		this.name = "";
 		this.usage = config.prefix;

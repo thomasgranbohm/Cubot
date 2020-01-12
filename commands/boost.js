@@ -9,8 +9,6 @@ module.exports = class Boost extends Command {
 
 		this.name = 'boost';
 		this.usage += `${this.name}`;
-		// TODO Shortdesc for help
-		// desc for longer desc
 		this.description = 'Turns bass boosting on or off.';
 		this.args = false;
 		this.aliases = ['bass', 'eq'];

@@ -1,9 +1,6 @@
 const Command = require('./command.js');
 const { categories } = require('../config.json')
 const { MessageEmbed } = require('discord.js')
-const jimp = require('jimp')
-const axios = require('axios')
-const fs = require('fs')
 
 module.exports = class play extends Command {
 	constructor() {
@@ -40,12 +37,11 @@ module.exports = class play extends Command {
 
 		track[0].requester = message.author
 
-		if (track[0].info.uri.includes("youtube")) {
+		if (track[0].info.uri.includes("youtube"))
 			track[0] = await utils.getThumbnail.run(client, track[0]);
-		} else {
-			console.log(client.runningDir)
-			track[0].thumbnail = `${client.runningDir}/thumbnails/Error.png`
-		}
+		else
+			track[0].thumbnail = `${client.runningDir}/utils/media/thumbnailError.png`
+
 
 		queue.push(track[0]);
 
@@ -73,7 +69,6 @@ module.exports = class play extends Command {
 			return new MessageEmbed()
 				.setTitle('Added to queue')
 				.setDescription(`**${track[0].info.title}** by ${track[0].info.author}\n\nThere ${(queue.length - 1) > 1 ? `are ${queue.length - 1} tracks` : `is ${queue.length - 1} track`} before it.`)
-				// TODO youtube regex for thumbnail
 				.attachFiles([
 					{ attachment: track[0].thumbnail, name: `thumbnail.jpg` }
 				])

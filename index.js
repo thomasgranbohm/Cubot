@@ -41,11 +41,27 @@ client.on('message', async (message) => {
 		if (toSend instanceof Error)
 			toSend = new Discord.MessageEmbed()
 				.setTitle(toSend.toString().substring(toSend.toString().indexOf(':') + 2))
-				.setColor('RED');
+				.setColor('RED')
 		message.channel.send(toSend)
 	} catch (error) {
-		console.error(error)
-		message.reply('there was an error trying to execute that command!');
+		(await client.dev.createDM())
+			.send(
+				new Discord.MessageEmbed()
+					.setTitle('Ran into some problems chief')
+					.setDescription(`Here is the stack trace:\n\`\`\`${error.stack}\`\`\``)
+					.setColor('RED')
+					.setTimestamp()
+			)
+		message.channel.send(
+			new Discord.MessageEmbed()
+				.setTitle("Oops, an actual error...")
+				.setDescription("Sorry about that. Please try again!")
+				.attachFiles([
+					{ attachment: `${client.runningDir}/utils/media/error.png`, name: `error.png` }
+				])
+				.setColor('RED')
+				.setThumbnail('attachment://error.png')
+		)
 	}
 })
 
@@ -80,6 +96,8 @@ client.on('ready', () => {
 		user: client.user.id,
 		shards: (client.shard && client.shard.count) || 1
 	})
+
+	client.dev = client.users.get('284754083049504770');
 
 	client.runningDir = __dirname;
 
