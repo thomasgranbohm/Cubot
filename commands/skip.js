@@ -15,7 +15,10 @@ exports.command = {
 		let botCheckFail = utils.checkBotVoice.run(message);
 		if (botCheckFail) return botCheckFail;
 
-		await client.player.get(message.guild.id).stop()
+		const player = client.player.get(message.guild.id);
+		if (player.loop)
+			player.loop = !player.loop;
+		await player.stop()
 		let queue = await utils.getServerQueue.run(client, message.guild.id).slice();
 
 		console.general('Skipped track ?. New queue length for ?: ?', queue.shift().info.title, message.guild.name, queue.length);

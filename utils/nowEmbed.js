@@ -5,7 +5,7 @@ exports.util = {
 	run(queue) {
 		let currentTrack = queue[0];
 
-		console.log((Date.now() - currentTrack.startedAt) / currentTrack.info.length)
+		console.log(currentTrack)
 
 		const XOFFSET = 25;
 		const YOFFSET = 0;
