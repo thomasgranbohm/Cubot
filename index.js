@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js')
 const client = new Discord.Client();
 
 const axios = require('axios')
@@ -44,20 +44,21 @@ client.on('message', async (message) => {
 				.setColor('RED')
 		message.channel.send(toSend)
 	} catch (error) {
-		(await client.dev.createDM())
-			.send(
-				new Discord.MessageEmbed()
-					.setTitle('Ran into some problems chief')
-					.setDescription(`Here is the stack trace:\n\`\`\`${error.stack}\`\`\``)
-					.setColor('RED')
-					.setTimestamp()
-			)
+		// (await client.dev.createDM())
+		// 	.send(
+		// 		new Discord.MessageEmbed()
+		// 			.setTitle('Ran into some problems chief')
+		// 			.setDescription(`Here is the stack trace:\n\`\`\`${error.stack}\`\`\``)
+		// 			.setColor('RED')
+		// 			.setTimestamp()
+		// 	)
+		console.error(error)
 		message.channel.send(
 			new Discord.MessageEmbed()
 				.setTitle("Oops, an actual error...")
 				.setDescription("Sorry about that. Please try again!")
 				.attachFiles([
-					{ attachment: `${client.runningDir}/utils/media/error.png`, name: `error.png` }
+					{ attachment: `${client.runningDir}/utils/static/error.png`, name: `error.png` }
 				])
 				.setColor('RED')
 				.setThumbnail('attachment://error.png')
@@ -65,7 +66,7 @@ client.on('message', async (message) => {
 	}
 })
 
-client.on('ready', () => {
+client.on('ready', async () => {
 	console.error = (error) => console.otherLog(chalk.red(`[${error.name}]`), error.stack.substring(error.name.length + 1))
 	console.web = (baseString, ...args) => console.otherLog(chalk.green('[Web]'), baseString, ...args)
 	console.general = (baseString, ...args) => console.otherLog(chalk.green('[General]'), baseString, ...args)
@@ -105,18 +106,18 @@ client.on('ready', () => {
 	client.servers = {}
 	client.commands = {}, client.utils = {};
 
-	const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js') && (!file.startsWith('command') && !file.startsWith('.')));
+	const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js') && (!file.startsWith('command') && !file.startsWith('.'))).map(file => file.replace('.js', ''));
 	for (const file of commandFiles) {
-		const c = require(`./commands/${file}`);
-		const command = new c();
-		client.commands[command.name] = command;
+		const { command } = require(`./commands/${file}`);
+		command.name = file;
+		client.commands[file] = command;
 	}
 
-	const utilFiles = fs.readdirSync('./utils').filter(file => file.endsWith('.js') && (!file.startsWith('command') && !file.startsWith('.')));
+	const utilFiles = fs.readdirSync('./utils').filter(file => file.endsWith('.js') && (!file.startsWith('command') && !file.startsWith('.'))).map(file => file.replace('.js', ''));
 	for (const file of utilFiles) {
-		const c = require(`./utils/${file}`);
-		const command = new c();
-		client.utils[command.name] = command;
+		const { util } = require(`./utils/${file}`);
+		util.name = file;
+		client.utils[file] = util;
 	}
 
 	client.on('voiceStateUpdate', async (oldState, newState) => {

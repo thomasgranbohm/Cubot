@@ -1,20 +1,12 @@
-const Command = require("./command.js");
-const { categories } = require('../config.json')
-const { MessageEmbed } = require('discord.js')
+const { categories } = require('../config.json');
+const { MessageEmbed } = require('discord.js');
 
-module.exports = class Skip extends Command {
-	constructor() {
-		super();
-
-		this.name = 'skip';
-		this.usage += `${this.name}`;
-		this.description = 'Skips the playing track.';
-		this.args = false;
-		this.aliases = ['s'];
-		this.category = categories.VOICE;
-	}
-
-	run = async (message, args) => {
+exports.command = {
+	shortDesc: 'Skips the playing track.',
+	args: false,
+	aliases: ['s'],
+	category: categories.VOICE,
+	async run(message, args) {
 		const { client } = message;
 		const { commands, utils } = client;
 		let userCheckFail = utils.checkUserVoice.run(message);

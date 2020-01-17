@@ -1,21 +1,13 @@
-const Command = require("./command.js");
-const { categories } = require('../config.json')
-const { MessageEmbed } = require('discord.js')
+const { categories } = require('../config.json');
+const { MessageEmbed } = require('discord.js');
 
-module.exports = class Boost extends Command {
-	constructor() {
-		super();
+exports.command = {
+	shortDesc: 'Turns bass boosting on or off.',
+	args: false,
+	aliases: ['bass', 'eq'],
+	category: categories.VOICE,
 
-
-		this.name = 'boost';
-		this.usage += `${this.name}`;
-		this.description = 'Turns bass boosting on or off.';
-		this.args = false;
-		this.aliases = ['bass', 'eq'];
-		this.category = categories.VOICE;
-	}
-
-	run = async (message, args) => {
+	async run(message, args) {
 		const { client } = message;
 		const { commands, utils } = client;
 

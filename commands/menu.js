@@ -2,14 +2,17 @@ const { categories } = require('../config.json');
 const { MessageEmbed } = require('discord.js');
 
 exports.command = {
-	shortDesc: 'You know what you want.',
+	shortDesc: 'Returns the week\'s menu',
 	args: false,
-	aliases: ['ear'],
-	category: categories.VOICE,
+	aliases: ['m'],
+	category: categories.MISC,
 	async run(message, args) {
 		const { client } = message;
 		const { commands, utils } = client;
-
-		return utils.changeEqualizer.run(message, client.equalizers.earrape)
+		try {
+			return await utils.foodEmbed.run(true);
+		} catch (error) {
+			throw error;
+		}
 	}
 }

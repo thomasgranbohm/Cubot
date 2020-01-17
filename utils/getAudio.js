@@ -1,16 +1,11 @@
-const Util = require('./util.js');
-const axios = require('axios')
-const config = require('../config.json')
-module.exports = class getAudio extends Util {
-	constructor() {
-		super();
+const axios = require('axios');
+const { lavalink } = require('../config.json')
 
-		this.name = 'getAudio';
-	}
-	run = async (query, playlist = false) => {
-		const res = await axios.get(`http://${config.lavalink.host}:${config.lavalink.port}/loadtracks?identifier=${encodeURIComponent(query)}`, {
+exports.util = {
+	async run(query) {
+		const res = await axios.get(`http://${lavalink.host}:${lavalink.port}/loadtracks?identifier=${encodeURIComponent(query)}`, {
 			headers: {
-				Authorization: config.lavalink.password
+				Authorization: lavalink.password
 			}
 		})
 		// TODO playlist support

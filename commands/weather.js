@@ -1,21 +1,14 @@
-const Command = require("./command.js");
 const { categories, openWeatherAPI } = require('../config.json')
 const { MessageEmbed } = require('discord.js')
 const request = require('request-promise');
 
-module.exports = class weather extends Command {
-	constructor() {
-		super();
-
-		this.name = 'weather';
-		this.usage += `${this.name} <city>`;
-		this.description = 'Returns the weather.';
-		this.args = false;
-		this.aliases = ['w'];
-		this.category = categories.MISC;
-	}
-
-	run = async (message, args) => {
+exports.command = {
+	usage: `<city>`,
+	shortDesc: 'Returns the weather.',
+	args: false,
+	aliases: ['w'],
+	category: categories.MISC,
+	async run(message, args) {
 		const { client } = message;
 		const { commands, utils } = client;
 		try {

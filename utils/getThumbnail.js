@@ -1,13 +1,8 @@
-const Util = require('./util.js');
+const jimp = require('jimp');
 const download = require('image-downloader')
-const jimp = require('jimp')
-module.exports = class getThumbnail extends Util {
-	constructor() {
-		super();
 
-		this.name = 'getThumbnail';
-	}
-	run = (client, track) => {
+exports.util = {
+	run(client, track) {
 		return new Promise(async (resolve, rej) => {
 			let res = [
 				'maxres',
@@ -15,10 +10,10 @@ module.exports = class getThumbnail extends Util {
 				'hq',
 				'mq',
 			]
+			let dest;
 			for await (let resolution of res) {
-				let dest = `${client.runningDir}/thumbnails/${track.info.identifier}-${resolution}.jpg`;
+				dest = `${client.runningDir}/thumbnails/${track.info.identifier}-${resolution}.jpg`;
 				try {
-					console.log(`https://i.ytimg.com/vi/${track.info.identifier}/${resolution}default.jpg`);
 					let img = await jimp.read(
 						(await download.image({
 							url: `https://i.ytimg.com/vi/${track.info.identifier}/${resolution}default.jpg`,
@@ -30,14 +25,13 @@ module.exports = class getThumbnail extends Util {
 						.quality(100)
 						.crop(0, offset, img.getWidth(), img.getHeight() - (2 * offset))
 						.write(dest);
-					console.log("Found thumbnail in", resolution, "default")
-					track.thumbnail = dest;
+					console.general("Found thumbnail in ? default", resolution)
 					break;
 				} catch (err) {
 					continue;
 				}
 			}
-			resolve(track)
+			resolve(dest)
 		})
 	}
 }

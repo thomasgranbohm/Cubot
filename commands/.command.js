@@ -10,7 +10,7 @@ module.exports = class Command {
 	constructor() {
 		this.name = "";
 		this.usage = config.prefix;
-		this.description = "";
+		this.shortDesc = "";
 		this.args = false;
 		this.aliases = [];
 		this.category = null;
@@ -21,12 +21,12 @@ module.exports = class Command {
 			return new Discord.MessageEmbed()
 				.setTitle(`Detailed view about ${this.name}`)
 				.addField('**Name**', this.name, true)
-				.addField('**Description**', this.description, true)
+				.addField('**shortDesc**', this.shortDesc, true)
 				.addField('**Category**', Object.keys(categories).find(key => categories[key] === this.category), true)
 				.addField('**Aliases**', this.aliases.join(', '), true)
 				.addField('**Usage**', `\`${this.usage}\``, true)
 				.addField('**Needs args**', this.args ? "Yes, it does." : "No, it doesn't.", true)
 
-		return `**${this.name}** - ${this.description}`
+		return `**${this.name}** - ${this.shortDesc}`
 	}
 }

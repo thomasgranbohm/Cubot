@@ -1,13 +1,5 @@
-const Util = require('./util.js');
-const { MessageEmbed } = require('discord.js')
-
-module.exports = class changeEqualizer extends Util {
-	constructor() {
-		super();
-
-		this.name = 'changeEqualizer';
-	}
-	run = async (message, equalizer) => {
+exports.util = {
+	async run(message, equalizer) {
 		const { client } = message;
 		const { commands, utils } = client;
 
