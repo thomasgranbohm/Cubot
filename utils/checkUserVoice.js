@@ -1,12 +1,5 @@
-const Command = require("./util.js");
-module.exports = class checkUserVoice extends Command {
-	constructor() {
-		super();
-
-		this.name = 'checkUserVoice';
-	}
-
-	run = (message) => {
+exports.util = {
+	run(message) {
 		let client = message.client;
 		if (!message.member.voice.channelID) {
 			return new Error("You are not in a voice channel.");

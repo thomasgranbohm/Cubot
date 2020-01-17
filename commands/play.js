@@ -1,19 +1,13 @@
-const Command = require('./command.js');
-const { categories } = require('../config.json')
-const { MessageEmbed } = require('discord.js')
+const { categories } = require('../config.json');
+const { MessageEmbed } = require('discord.js');
 
-module.exports = class play extends Command {
-	constructor() {
-		super();
-
-		this.name = 'play';
-		this.usage += `${this.name} <query>`;
-		this.description = 'Plays music with an added search query';
-		this.args = true;
-		this.aliases = ['p'];
-		this.category = categories.VOICE;
-	}
-	run = async (message, args) => {
+exports.command = {
+	usage: `<query>`,
+	shortDesc: 'Plays music with an added search query',
+	args: true,
+	aliases: ['p'],
+	category: categories.VOICE,
+	async run(message, args) {
 		const { client } = message;
 		const { commands, utils } = client;
 		let isFirst = false;
@@ -38,9 +32,9 @@ module.exports = class play extends Command {
 		track[0].requester = message.author
 
 		if (track[0].info.uri.includes("youtube"))
-			track[0] = await utils.getThumbnail.run(client, track[0]);
+			track[0].thumbnail = await utils.getThumbnail.run(client, track[0]);
 		else
-			track[0].thumbnail = `${client.runningDir}/utils/media/thumbnailError.png`
+			track[0].thumbnail = `${client.runningDir}/utils/static/thumbnailError.png`
 
 
 		queue.push(track[0]);
@@ -52,12 +46,18 @@ module.exports = class play extends Command {
 				host: utils.getIdealHost.run(client)
 			})
 
+			player.loop = false;
+
 			player.on('leave', () => delete client.servers[message.guild.id])
 			player.once('end', async (data) => {
 				if (data.reason === "REPLACED") return;
+				let endedTrack = null;
+				if (!player.loop)
+					endedTrack = client.servers[message.guild.id].queue.shift();
+				else
+					endedTrack = client.servers[message.guild.id].queue[0];
+				console.general(`Ended track ? in ?. New queue length is now: ?`, endedTrack.info.title, message.guild.name, queue.length)
 				queue = client.servers[message.guild.id].queue;
-				console.general(`Ended track ? in ?. New queue length is now: ?`, queue.shift().info.title, message.guild.name, queue.length)
-				client.servers[message.guild.id].queue = queue
 				if (queue.length > 0) {
 					client.utils.queueLoop.run(client, message, queue, player);
 				}

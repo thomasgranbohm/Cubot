@@ -1,11 +1,5 @@
-const Util = require('./util.js');
-module.exports = class checkBotVoice extends Util {
-	constructor() {
-		super();
-
-		this.name = 'checkBotVoice';
-	}
-	run = (message) => {
+exports.util = {
+	run(message) {
 		const { client } = message;
 		if (!client.player.get(message.guild.id))
 			return new Error("I'm not in a voice channel.");

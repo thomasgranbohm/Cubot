@@ -1,10 +1,10 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js')
 const fs = require('fs');
 
 module.exports = {
 	name: 'readFood',
 	color: "e9f542",
-	execute(client, args = undefined) {
+	execute(client, args: undefined) {
 		let embed = new Discord.MessageEmbed()
 			.setColor(this.color)
 		let food = JSON.parse(fs.readFileSync('./utils/lunch.json'));

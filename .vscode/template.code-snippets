@@ -1,6 +1,6 @@
 {
 	// Place your CuBot workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
-	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// shortDesc. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
 	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
 	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
 	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
@@ -13,52 +13,38 @@
 	// 		"console.log('$1');",
 	// 		"$2"
 	// 	],
-	// 	"description": "Log output to console"
+	// 	"shortDesc": "Log output to console"
 	// }
 	"Command Template": {
 		"prefix": "tcommand",
 		"body": [
-			"const Command = require(\"./command.js\");",
-			"const { categories } = require('../config.json')",
-			"const { MessageEmbed } = require('discord.js')",
+			"const { categories } = require('../config.json');",
+			"const { MessageEmbed } = require('discord.js');",
 			"",
-			"module.exports = class ${1} extends Command {",
-			"\tconstructor() {",
-			"\t\tsuper();",
-			"",
-			"\t\tthis.name = '${1}';",
-			"\t\tthis.usage += `${this.name}${2}`;",
-			"\t\tthis.description = '${3}';",
-			"\t\tthis.args = ${4:false};",
-			"\t\tthis.aliases = [${5}];",
-			"\t\tthis.category = categories.${6:MISC};",
-			"\t}",
-			"",
-			"\trun = async (message, args) => {",
-			"\t\tconst { client } = message;",
-			"\t\tconst { commands, utils } = client;",
+			"exports.command = {",
+			"\tusage: '${1}',",
+			"\tshortDesc: '${2}',",
+			"\targs: ${3:false},",
+			"\taliases: ['${4}'],",
+			"\tcategory: categories.${5:MISC},",
+			"\tasync run(message, args) {",
 			"\t\t${0}",
-			"\t\treturn;",
 			"\t}",
 			"}"
 		],
-		"description": "Command Template"
+		"shortDesc": "Command Template"
 	},
 	"Util Template": {
 		"prefix": "tutil",
 		"body": [
-			"const Util = require('./util.js');",
-			"module.exports = class ${1} extends Util {",
-			"\tconstructor() {",
-			"\t\tsuper();",
-			"",
-			"\t\tthis.name = '${1}';",
-			"\t}",
-			"\trun = (${2}) => {",
-			"              ${0}",
+			"exports.command = {name:[__filename.replace(`${__dirname}/`, '').replace('.js', '')],",
+			"\tname: __filename.replace(`${__dirname}/`, '').replace('.js', ''),",
+			"\tasync run(${1}) {",
+			"\t\t${0}",
+			"\t\treturn null;",
 			"\t}",
 			"}"
 		],
-		"description": "Util Template"
+		"shortDesc": "Util Template"
 	}
 }

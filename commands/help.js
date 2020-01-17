@@ -1,29 +1,27 @@
-const Command = require("./command.js");
-const { categories } = require('../config.json')
-const { MessageEmbed } = require('discord.js')
+const { categories } = require('../config.json');
+const { MessageEmbed } = require('discord.js');
 
-module.exports = class Help extends Command {
-	constructor() {
-		super();
-
-		this.name = 'help';
-		this.usage += `${this.name} [command]`
-		this.description = 'List all commands or info about a specific command.'
-		this.args = false;
-		this.aliases = ['h'];
-		this.category = categories.UTILS;
-	}
-
-	run = (message, args) => {
+exports.command = {
+	usage: `[command]`,
+	shortDesc: 'List all commands or info about a specific command.',
+	longDesc: 'When supplied with a command, returns the info about a specific command.',
+	args: false,
+	aliases: ['h'],
+	category: categories.UTILS,
+	async run(message, args) {
 		const client = message.client
+		const { commands, utils } = client;
 		if (args.length == 0)
-			return this.help(true)
+			return utils.getHelp.run(this, true)
 				.setTitle("List of all commands:")
-				.setDescription(Object.keys(client.commands)
-					.sort((a, b) => a.localeCompare(b))
-					.filter(command => command !== this.name)
-					.map(name => client.commands[name])
-					.map(command => command.help()).join('\n'))
+				.setDescription(
+					Object.keys(client.commands)
+						.sort((a, b) => a.localeCompare(b))
+						.filter(command => command !== this.name)
+						.map(name => client.commands[name])
+						.map(command => utils.getHelp.run(command))
+						.join('\n')
+				)
 
 		let commandName = args.split(" ")[0]
 		let command = client.utils.findCommand.run(client, commandName);
@@ -31,6 +29,6 @@ module.exports = class Help extends Command {
 		if (!command)
 			return "That command does not exist.";
 
-		return command.help(true)
+		return utils.getHelp.run(command, true)
 	}
 }
