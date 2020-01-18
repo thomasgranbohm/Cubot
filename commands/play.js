@@ -49,19 +49,6 @@ exports.command = {
 			player.loop = false;
 
 			player.on('leave', () => delete client.servers[message.guild.id])
-			player.once('end', async (data) => {
-				if (data.reason === "REPLACED") return;
-				let endedTrack = null;
-				if (!player.loop)
-					endedTrack = client.servers[message.guild.id].queue.shift();
-				else
-					endedTrack = client.servers[message.guild.id].queue[0];
-				console.general(`Ended track ? in ?. New queue length is now: ?`, endedTrack.info.title, message.guild.name, queue.length)
-				queue = client.servers[message.guild.id].queue;
-				if (queue.length > 0) {
-					client.utils.queueLoop.run(client, message, queue, player);
-				}
-			})
 			return await utils.queueLoop.run(client, message, queue, player);
 		} else {
 			client.servers[message.guild.id].queue = queue

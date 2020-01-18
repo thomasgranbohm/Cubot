@@ -5,7 +5,7 @@ exports.command = {
 	usage: '',
 	shortDesc: 'Toggles the loop function',
 	args: false,
-	aliases: ['repeat'],
+	aliases: ['repeat', 'lööp'],
 	category: categories.MISC,
 	async run(message, args) {
 		const { client } = message;
