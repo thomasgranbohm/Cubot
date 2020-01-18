@@ -5,8 +5,6 @@ exports.util = {
 	run(queue) {
 		let currentTrack = queue[0];
 
-		console.log(currentTrack)
-
 		const XOFFSET = 25;
 		const YOFFSET = 0;
 		const BARHEIGHT = 10;
