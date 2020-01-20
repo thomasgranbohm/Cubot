@@ -1,10 +1,12 @@
 {
-	"name": "cubot",
+	"name": "CuBot",
 	"version": "2.0.0",
-	"shortDesc": "CuBot is a bot",
+	"shortDesc": "CuBot is a discord-bot",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "NODE_ENV=development node index.js",
+		"prod": "NODE_ENV=production node index.js"
 	},
 	"keywords": [],
 	"author": "Tokxhu",
@@ -15,14 +17,8 @@
 		"chalk": "^3.0.0",
 		"discord.js": "github:discordjs/discord.js",
 		"discord.js-lavalink": "^2.2.3",
-		"ejs": "^3.0.1",
-		"express": "^4.17.1",
-		"form-data": "^3.0.0",
 		"image-downloader": "^3.5.0",
 		"jimp": "^0.9.3",
-		"jsdom": "^15.2.1",
-		"opusscript": "0.0.7",
-		"request": "^2.88.0",
-		"request-promise": "^4.2.5"
+		"opusscript": "0.0.7"
 	}
 }
