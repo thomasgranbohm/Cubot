@@ -10,6 +10,9 @@ exports.command = {
 		const { client } = message;
 		const { commands, utils } = client;
 
+		// TODO Remove now embed after the song is finished
+		// Also works with skip
+
 		let userCheckFail = utils.checkUserVoice.run(message);
 		if (userCheckFail) return userCheckFail;
 

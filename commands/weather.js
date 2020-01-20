@@ -1,6 +1,6 @@
 const { categories, openWeatherAPI } = require('../config.json')
 const { MessageEmbed } = require('discord.js')
-const request = require('request-promise');
+const axios = require('axios');
 
 exports.command = {
 	usage: `<city>`,
@@ -13,7 +13,7 @@ exports.command = {
 		const { commands, utils } = client;
 		try {
 			let city = args.length > 0 ? args : "Stockholm";
-			let json = JSON.parse(await request(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openWeatherAPI}`), null, 4);
+			let json = (await axios(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openWeatherAPI}`)).data;
 			switch (Math.floor((json.wind.deg + 22.5) / 45)) {
 				case 0:
 					json.wind.deg = 'North';

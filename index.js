@@ -13,6 +13,7 @@ const chalk = require('chalk');
 client.on('message', async (message) => {
 	let content = message.content.split("");
 	if (content.shift() !== config.prefix) return null;
+	message.delete({ timeout: 3000 })
 	content = content.join("").split(" ")
 	let args = message.content.slice(config.prefix.length).split(/ +/);
 	let commandName = args.shift().toLowerCase();
@@ -42,18 +43,24 @@ client.on('message', async (message) => {
 			toSend = new Discord.MessageEmbed()
 				.setTitle(toSend.toString().substring(toSend.toString().indexOf(':') + 2))
 				.setColor('RED')
-		message.channel.send(toSend)
+
+		let sentMessage = await message.channel.send(toSend);
+
+		sentMessage.delete({
+			timeout: 5000
+		})
 	} catch (error) {
-		// (await client.dev.createDM())
-		// 	.send(
-		// 		new Discord.MessageEmbed()
-		// 			.setTitle('Ran into some problems chief')
-		// 			.setDescription(`Here is the stack trace:\n\`\`\`${error.stack}\`\`\``)
-		// 			.setColor('RED')
-		// 			.setTimestamp()
-		// 	)
+		if (process.env.NODE_ENV === 'production')
+			(await client.dev.createDM())
+				.send(
+					new Discord.MessageEmbed()
+						.setTitle('Ran into some problems chief')
+						.setDescription(`Here is the stack trace:\n\`\`\`${error.stack}\`\`\``)
+						.setColor('RED')
+						.setTimestamp()
+				)
 		console.error(error)
-		message.channel.send(
+		let sentMessage = await message.channel.send(
 			new Discord.MessageEmbed()
 				.setTitle("Oops, an actual error...")
 				.setDescription("Sorry about that. Please try again!")
@@ -62,7 +69,11 @@ client.on('message', async (message) => {
 				])
 				.setColor('RED')
 				.setThumbnail('attachment://error.png')
-		)
+		);
+
+		sentMessage.delete({
+			timeout: 10000
+		})
 	}
 })
 
@@ -102,9 +113,7 @@ client.on('ready', async () => {
 
 	client.runningDir = __dirname;
 
-	client.log = [];
-	client.servers = {}
-	client.commands = {}, client.utils = {};
+	client.servers = {}, client.commands = {}, client.utils = {};
 
 	const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js') && (!file.startsWith('command') && !file.startsWith('.'))).map(file => file.replace('.js', ''));
 	for (const file of commandFiles) {
@@ -129,7 +138,7 @@ client.on('ready', async () => {
 		}
 	});
 
-	client.user.setActivity('bass bOwOsted music!', { type: 'LISTENING' })
+	client.user.setActivity('bass boosted music!', { type: 'LISTENING' })
 
 	console.log(
 		` ______     __  __     ______     ______     ______  
