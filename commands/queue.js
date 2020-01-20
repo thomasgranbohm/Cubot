@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 exports.command = {
 	shortDesc: 'Lists the tracks queued on this server.',
 	args: false,
-	aliases: ['q', 'que'],
+	aliases: ['q', 'que', 'list'],
 	category: categories.VOICE,
 	run(message, args) {
 		const { client } = message;
@@ -37,7 +37,7 @@ exports.command = {
 		// TODO Canvas bar.
 		if (queue.length !== 0) {
 			toSend
-				.addField("**Titles**", tracks.map(track => `\`${tracks.indexOf(track) + 1}.\` [${track.title}](${track.uri})`).join("\n"), true)
+				.addField("**Titles\t\t\t\t\tok**", tracks.map(track => `\`${tracks.indexOf(track) + 1}.\` [${track.title}](${track.uri})`).join("\n"), true)
 				.addField("**Channel**", tracks.map(track => track.author).join('\n'), true)
 		} else {
 			toSend.setDescription(toSend.description + `\n\nThe queue is empty.`)
