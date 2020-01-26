@@ -22,7 +22,7 @@ exports.command = {
 		let queue = await utils.getServerQueue.run(client, message.guild.id).slice();
 
 		console.general('Skipped track ?. New queue length for ?: ?', queue.shift().info.title, message.guild.name, queue.length);
-		if (queue.length > 0 || !client.player.get(message.guild.id).loop)
+		if (queue.length > 0)
 			return utils.nowEmbed.run(queue);
 		return null;
 	}
