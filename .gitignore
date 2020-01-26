@@ -65,3 +65,4 @@ ecosystem.config.js
 thumbnails/*
 test/
 lunch.json
+database.sqlite
