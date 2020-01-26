@@ -15,10 +15,13 @@
 		"axios": "^0.19.1",
 		"canvas": "^2.6.1",
 		"chalk": "^3.0.0",
+		"cron": "^1.8.2",
 		"discord.js": "github:discordjs/discord.js",
 		"discord.js-lavalink": "^2.2.3",
 		"image-downloader": "^3.5.0",
 		"jimp": "^0.9.3",
-		"opusscript": "0.0.7"
+		"opusscript": "0.0.7",
+		"sequelize": "^5.21.3",
+		"sqlite3": "^4.1.1"
 	}
 }
