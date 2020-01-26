@@ -63,6 +63,7 @@ typings/
 config.json
 ecosystem.config.js
 thumbnails/*
+!thumbnails/.gitkeep
 test/
 lunch.json
 database.sqlite
