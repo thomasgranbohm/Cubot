@@ -10,6 +10,11 @@ const config = require('./config.json');
 const fs = require('fs');
 const chalk = require('chalk');
 
+// Database
+const dbInit = require('./models/init')
+
+const CronJob = require('cron').CronJob;
+
 client.on('message', async (message) => {
 	let content = message.content.split("");
 	if (content.shift() !== config.prefix) return null;
@@ -113,7 +118,15 @@ client.on('ready', async () => {
 
 	client.runningDir = __dirname;
 
-	client.servers = {}, client.commands = {}, client.utils = {};
+	client.models = {}, client.servers = {}, client.commands = {}, client.utils = {};
+
+	let { models, database } = await dbInit()
+	models.forEach(model => {
+		model.sync()
+			.then((model) => {
+				client.models[model.name] = model;
+			});
+	})
 
 	const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js') && (!file.startsWith('command') && !file.startsWith('.'))).map(file => file.replace('.js', ''));
 	for (const file of commandFiles) {
@@ -137,6 +150,14 @@ client.on('ready', async () => {
 				client.player.leave(oldState.guild.id)
 		}
 	});
+
+	new CronJob('0 30 10 * * 1-5', async () => {
+		let objs = await client.models.channels.findAll()
+		let lunch = await client.utils.foodEmbed.run();
+		objs.forEach(obj => {
+			client.channels.get(obj.channelID).send(lunch)
+		})
+	}).start();
 
 	client.user.setActivity('bass boosted music!', { type: 'LISTENING' })
 
