@@ -18,7 +18,7 @@ const CronJob = require('cron').CronJob;
 client.on('message', async (message) => {
 	let content = message.content.split("");
 	if (content.shift() !== config.prefix) return null;
-	message.delete({ timeout: 3000 })
+	message.delete({ timeout: 3000 });
 	content = content.join("").split(" ")
 	let args = message.content.slice(config.prefix.length).split(/ +/);
 	let commandName = args.shift().toLowerCase();
@@ -51,9 +51,10 @@ client.on('message', async (message) => {
 
 		let sentMessage = await message.channel.send(toSend);
 
-		sentMessage.delete({
-			timeout: 5000
-		})
+		if (!(sentMessage.embeds.length > 0 && sentMessage.embeds[0].title.startsWith('Lunch on')))
+			sentMessage.delete({
+				timeout: 15000
+			})
 	} catch (error) {
 		if (process.env.NODE_ENV === 'production')
 			(await client.dev.createDM())
@@ -118,15 +119,10 @@ client.on('ready', async () => {
 
 	client.runningDir = __dirname;
 
-	client.models = {}, client.servers = {}, client.commands = {}, client.utils = {};
+	client.servers = {}, client.commands = {}, client.utils = {};
 
 	let { models, database } = await dbInit()
-	models.forEach(model => {
-		model.sync()
-			.then((model) => {
-				client.models[model.name] = model;
-			});
-	})
+	client.models = models;
 
 	const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js') && (!file.startsWith('command') && !file.startsWith('.'))).map(file => file.replace('.js', ''));
 	for (const file of commandFiles) {
