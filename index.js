@@ -119,7 +119,7 @@ client.on('ready', async () => {
 
 	client.runningDir = __dirname;
 
-	client.servers = {}, client.commands = {}, client.utils = {};
+	client.models = {}, client.servers = {}, client.commands = {}, client.utils = {};
 
 	let { models, database } = await dbInit()
 	client.models = models;
