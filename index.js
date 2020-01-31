@@ -110,14 +110,14 @@ client.on('ready', async () => {
 		}
 	});
 
-//	new CronJob('0 30 10 * * 1-5', async () => {
+	new CronJob('0 30 10 * * 1-5', async () => {
 		let channels = await client.models.channels.findAll()
 		let lunch = await client.utils.lunchEmbed.run();
 		channels.forEach(dbChannel => {
 			let channel = client.channels.get(dbChannel.channelID);
 			client.utils.sendMessage.run(channel, lunch, config.categories.MISC);
 		})
-//	}).start();
+	}).start();
 
 	client.user.setActivity('bass boosted music!', { type: 'LISTENING' })
 
