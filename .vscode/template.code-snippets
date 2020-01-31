@@ -37,8 +37,7 @@
 	"Util Template": {
 		"prefix": "tutil",
 		"body": [
-			"exports.command = {name:[__filename.replace(`${__dirname}/`, '').replace('.js', '')],",
-			"\tname: __filename.replace(`${__dirname}/`, '').replace('.js', ''),",
+			"exports.command = {",
 			"\tasync run(${1}) {",
 			"\t\t${0}",
 			"\t\treturn null;",

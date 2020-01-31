@@ -27,59 +27,22 @@ client.on('message', async (message) => {
 
 	if (!command) return;
 
+	let { author, channel } = message;
+
 	if (command.args && !args.length) {
-		return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+		return channel.send(`You didn't provide any arguments, ${author}!`);
 	}
 
 	try {
 		let toSend = await command.run(message, args.join(" "));
-
-		if (toSend instanceof Promise)
-			toSend = await toSend
-		if (toSend === null)
-			return
-
-		if (toSend instanceof Discord.MessageEmbed) {
-			toSend.setColor(command.category)
-			if (!toSend.footer)
-				toSend.setFooter(`Requested by ${message.author.username}`, message.author.avatarURL({ size: 1024 }))
-		}
-		if (toSend instanceof Error)
-			toSend = new Discord.MessageEmbed()
-				.setTitle(toSend.toString().substring(toSend.toString().indexOf(':') + 2))
-				.setColor('RED')
-
-		let sentMessage = await message.channel.send(toSend);
-
-		if (!(sentMessage.embeds.length > 0 && sentMessage.embeds[0].title.startsWith('Lunch on')))
-			sentMessage.delete({
-				timeout: 15000
-			})
-	} catch (error) {
-		if (process.env.NODE_ENV === 'production')
-			(await client.dev.createDM())
-				.send(
-					new Discord.MessageEmbed()
-						.setTitle('Ran into some problems chief')
-						.setDescription(`Here is the stack trace:\n\`\`\`${error.stack}\`\`\``)
-						.setColor('RED')
-						.setTimestamp()
-				)
-		console.error(error)
-		let sentMessage = await message.channel.send(
-			new Discord.MessageEmbed()
-				.setTitle("Oops, an actual error...")
-				.setDescription("Sorry about that. Please try again!")
-				.attachFiles([
-					{ attachment: `${client.runningDir}/utils/static/error.png`, name: `error.png` }
-				])
-				.setColor('RED')
-				.setThumbnail('attachment://error.png')
+		client.utils.sendMessage.run(
+			channel,
+			toSend,
+			command.category,
+			author
 		);
-
-		sentMessage.delete({
-			timeout: 10000
-		})
+	} catch (error) {
+		await client.utils.sendError.run(message, error)
 	}
 })
 
@@ -148,10 +111,11 @@ client.on('ready', async () => {
 	});
 
 	new CronJob('0 30 10 * * 1-5', async () => {
-		let objs = await client.models.channels.findAll()
-		let lunch = await client.utils.foodEmbed.run();
-		objs.forEach(obj => {
-			client.channels.get(obj.channelID).send(lunch)
+		let channels = await client.models.channels.findAll()
+		let lunch = await client.utils.lunchEmbed.run();
+		channels.forEach(dbChannel => {
+			let channel = client.channels.get(dbChannel.channelID);
+			client.utils.sendMessage.run(channel, lunch, config.categories.MISC);
 		})
 	}).start();
 
