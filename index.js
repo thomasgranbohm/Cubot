@@ -27,37 +27,22 @@ client.on('message', async (message) => {
 
 	if (!command) return;
 
+	let { author, channel } = message;
+
 	if (command.args && !args.length) {
-		return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+		return channel.send(`You didn't provide any arguments, ${author}!`);
 	}
 
 	try {
 		let toSend = await command.run(message, args.join(" "));
-	} catch (error) {
-		if (process.env.NODE_ENV === 'production')
-			(await client.dev.createDM())
-				.send(
-					new Discord.MessageEmbed()
-						.setTitle('Ran into some problems chief')
-						.setDescription(`Here is the stack trace:\n\`\`\`${error.stack}\`\`\``)
-						.setColor('RED')
-						.setTimestamp()
-				)
-		console.error(error)
-		let sentMessage = await message.channel.send(
-			new Discord.MessageEmbed()
-				.setTitle("Oops, an actual error...")
-				.setDescription("Sorry about that. Please try again!")
-				.attachFiles([
-					{ attachment: `${client.runningDir}/utils/static/error.png`, name: `error.png` }
-				])
-				.setColor('RED')
-				.setThumbnail('attachment://error.png')
+		utils.sendMessage.run(
+			channel,
+			toSend,
+			command.category,
+			author
 		);
-
-		sentMessage.delete({
-			timeout: 10000
-		})
+	} catch (error) {
+		await utils.sendError.run(message, error)
 	}
 })
 
@@ -126,10 +111,11 @@ client.on('ready', async () => {
 	});
 
 	new CronJob('0 30 10 * * 1-5', async () => {
-		let objs = await client.models.channels.findAll()
-		let lunch = await client.utils.foodEmbed.run();
-		objs.forEach(obj => {
-			client.channels.get(obj.channelID).send(lunch)
+		let channels = await client.models.channels.findAll()
+		let lunch = await client.utils.lunchEmbed.run();
+		channels.forEach(dbChannel => {
+			let channel = client.channels.get(dbChannel.channelID);
+			client.utils.sendMessage.run(channel, lunch, config.categories.MISC);
 		})
 	}).start();
 

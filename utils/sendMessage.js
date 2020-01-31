@@ -1,28 +1,27 @@
-const {MessageEmbed} = require('discord.js')
+const { MessageEmbed } = require('discord.js')
 
 exports.util = {
-	async run(message, toSend, category) {
+	async run(channel, toSend, category, author = null) {
 		if (toSend instanceof Promise)
 			toSend = await toSend
-		if (toSend === null)
+		if (toSend == null)
 			return
 
-		if (toSend instanceof Discord.MessageEmbed) {
+		if (toSend instanceof MessageEmbed) {
 			toSend.setColor(category)
-			if (!toSend.footer)
-				toSend.setFooter(`Requested by ${message.author.username}`, message.author.avatarURL({ size: 1024 }))
+			if (!toSend.footer && author)
+				toSend.setFooter(`Requested by ${author.username}`, author.avatarURL({ size: 1024 }))
 		}
 		if (toSend instanceof Error)
-			toSend = new Discord.MessageEmbed()
+			toSend = new MessageEmbed()
 				.setTitle(toSend.toString().substring(toSend.toString().indexOf(':') + 2))
 				.setColor('RED')
 
-		let sentMessage = await message.channel.send(toSend);
+		let sentMessage = await channel.send(toSend);
 
 		if (!(sentMessage.embeds.length > 0 && sentMessage.embeds[0].title.startsWith('Lunch on')))
 			sentMessage.delete({
 				timeout: 15000
 			})
-		return null;
 	}
 }

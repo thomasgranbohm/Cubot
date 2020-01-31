@@ -10,7 +10,7 @@ exports.command = {
 		const { client } = message;
 		const { commands, utils } = client;
 		try {
-			return await utils.foodEmbed.run(true);
+			return await utils.lunchEmbed.run(true);
 		} catch (error) {
 			throw error;
 		}
