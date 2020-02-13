@@ -1,9 +1,9 @@
 {
-	// Place your CuBot workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
-	// shortDesc. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
-	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
-	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
-	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Place your CuBot workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+	// shortDesc. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
 	// Placeholders with the same ids are connected.
 	// Example:
 	// "Print to console": {
@@ -21,29 +21,31 @@
 			"const { categories } = require('../config.json');",
 			"const { MessageEmbed } = require('discord.js');",
 			"",
-			"exports.command = {",
-			"\tusage: '${1}',",
-			"\tshortDesc: '${2}',",
-			"\targs: ${3:false},",
-			"\taliases: ['${4}'],",
-			"\tcategory: categories.${5:MISC},",
-			"\tasync run(message, args) {",
-			"\t\t${0}",
-			"\t}",
-			"}"
-		],
-		"shortDesc": "Command Template"
+			"let ${1} = async (message, args) => {",
+			"\tconst { client } = message;",
+			"\tconst { commands, utils } = client;",
+			"",
+			"\t${0}",
+			"}",
+			"${1}.shortDesc = '${2}';",
+			"${1}.args = ${3:false};",
+			"${1}.aliases = [${4}];",
+			"${1}.category = categories.${5:MISC};",
+			"",
+			"module.exports = ${1};"
+		]
 	},
 	"Util Template": {
 		"prefix": "tutil",
 		"body": [
-			"exports.command = {",
-			"\tasync run(${1}) {",
-			"\t\t${0}",
-			"\t\treturn null;",
-			"\t}",
+			"const { MessageEmbed } = require('discord.js')",
+			"",
+			"module.exports = ${1} = async (message, equalizer) => {",
+			"\tconst { client } = message;",
+			"\tconst { commands, utils } = client;",
+			"",
+			"\t${0}",
 			"}"
-		],
-		"shortDesc": "Util Template"
+		]
 	}
 }

@@ -1,5 +1,1 @@
-exports.util = {
-	run(client, guildID) {
-		return client.servers[guildID].queue;
-	}
-}
+module.exports = getServerQueue = (client, guildID) => client.servers[guildID].queue;

@@ -1,28 +1,25 @@
 const { categories } = require('../config.json');
 const { MessageEmbed } = require('discord.js');
 
-exports.command = {
-	shortDesc: 'Resumes the paused track.',
-	args: false,
-	aliases: [],
-	category: categories.VOICE,
-	run(message, args) {
-		const { client } = message;
-		const { commands, utils } = client;
+let resume = async (message, args) => {
+	const { client } = message;
+	const { commands, utils } = client;
 
-		let userCheckFail = utils.checkUserVoice.run(message);
-		if (userCheckFail) return userCheckFail;
+	let userCheckFail = await utils.checkUserVoice(message);
+	if (userCheckFail) return userCheckFail;
 
-		let botCheckFail = utils.checkBotVoice.run(message);
-		if (botCheckFail) return botCheckFail;
+	let botCheckFail = await utils.checkBotVoice(message);
+	if (botCheckFail) return botCheckFail;
 
-		const player = client.player.get(message.guild.id)
-		const queue = utils.getServerQueue.run(client, message.guild.id)
-		if (player.paused)
-			player.pause(false)
-		else return new MessageEmbed()
-			.setTitle(`I'm already playing.`)
-		return new MessageEmbed()
-			.setTitle(`Resumed ${queue[0].info.title}.`)
-	}
-}
+	const player = client.player.get(message.guild.id);
+	const queue = utils.getServerQueue(client, message.guild.id);
+	if (player.paused) player.pause(false);
+	else return new MessageEmbed().setTitle(`I'm already playing.`);
+	return new MessageEmbed().setTitle(`Resumed ${queue[0].info.title}.`);
+};
+resume.shortDesc = 'Resumes the paused track.';
+resume.args = false;
+resume.aliases = [];
+resume.category = categories.VOICE;
+
+module.exports = resume;

@@ -1,16 +1,15 @@
 const { categories } = require('../config.json');
 const { MessageEmbed } = require('discord.js');
 
-exports.command = {
-	shortDesc: 'Turns bass boosting on or off.',
-	args: false,
-	aliases: ['bass', 'eq'],
-	category: categories.VOICE,
+let boost = (message, args) => {
+	const { client } = message;
+	const { commands, utils } = client;
 
-	async run(message, args) {
-		const { client } = message;
-		const { commands, utils } = client;
+	return utils.changeEqualizer(message, client.equalizers.bassboost);
+};
+boost.shortDesc = 'Turns bass boosting on or off.';
+boost.args = false;
+boost.aliases = ['bass', 'eq'];
+boost.category = categories.VOICE;
 
-		return utils.changeEqualizer.run(message, client.equalizers.bassboost)
-	}
-}
+module.exports = boost;
