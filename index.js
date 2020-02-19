@@ -29,12 +29,12 @@ client.on('message', async (message) => {
 
 	let { author, channel } = message;
 
-	if (command.args && !args.length) {
-		return channel.send(`You didn't provide any arguments, ${author}!`);
-	}
-
 	try {
-		let toSend = await command(message, args.join(' '));
+		let toSend;
+		if (command.category === config.categories.ADMIN && author.id !== client.dev.id) toSend = new Error("You dont have permission to run that command.")
+		else if (command.args && !args.length) toSend = new Error(`You didn't provide any arguments.`);
+		else toSend = await command(message, args.join(' '));
+
 		client.utils.sendMessage(channel, toSend, command.category, author);
 	} catch (error) {
 		await client.utils.sendError(message, error);
