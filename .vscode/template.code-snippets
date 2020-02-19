@@ -40,7 +40,7 @@
 		"body": [
 			"const { MessageEmbed } = require('discord.js')",
 			"",
-			"module.exports = ${1} = async (message, equalizer) => {",
+			"module.exports = ${1} = async (message${2}) => {",
 			"\tconst { client } = message;",
 			"\tconst { commands, utils } = client;",
 			"",
