@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const { categories } = require('../config.json')
 
 module.exports = sendMessage = async (channel, toSend, category, author = null) => {
 	if (toSend instanceof Promise)
@@ -8,7 +9,7 @@ module.exports = sendMessage = async (channel, toSend, category, author = null) 
 
 	if (toSend instanceof MessageEmbed) {
 		toSend.setColor(category)
-		if (!toSend.footer && !toSend.timestamp && author)
+		if (!toSend.footer && !toSend.timestamp && category !== categories.ADMIN && author)
 			toSend.setFooter(`Requested by ${author.username}`, author.avatarURL({ size: 1024 }))
 	}
 	if (toSend instanceof Error)

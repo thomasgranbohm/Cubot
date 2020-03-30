@@ -1,4 +1,4 @@
-const { categories, openWeatherAPI } = require('../config.json');
+const { categories } = require('../config.json');
 const { MessageEmbed } = require('discord.js');
 const axios = require('axios');
 
@@ -7,7 +7,7 @@ let weather = async (message, args) => {
 		let city = args.length > 0 ? args : 'Stockholm';
 		let json = (
 			await axios(
-				`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openWeatherAPI}`
+				`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.OW_TOKEN}`
 			)
 		).data;
 		switch (Math.floor((json.wind.deg + 22.5) / 45)) {

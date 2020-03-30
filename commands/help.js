@@ -1,5 +1,4 @@
 const { categories } = require('../config.json');
-const { MessageEmbed } = require('discord.js');
 
 let help = function (message, args) {
 	const client = message.client;

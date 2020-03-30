@@ -1,0 +1,22 @@
+{
+	"prefix": "!",
+	"lavalink": {
+		"host": "localhost",
+		"port": 2333,
+		"password": "youshallnotpass",
+		"nodes": [
+			{
+				"host": "localhost",
+				"port": 2333,
+				"region": "amsterdam",
+				"password": "youshallnotpass"
+			}
+		]
+	},
+	"categories": {
+		"VOICE": "85e89d",
+		"UTILS": "f97583",
+		"MISC": "f692ce",
+		"ADMIN": "ffea7f"
+	}
+}

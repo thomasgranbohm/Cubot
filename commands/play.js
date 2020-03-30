@@ -12,11 +12,11 @@ let play = async (message, args) => {
 		return "You didn't send me anything to play."
 
 	await utils.initiatePlayer(client, message.guild.id);
-
-	console.log("wower")
+	
+	let query = args.join(" ");
 	let queue = utils.getServerQueue(client, message.guild.id);
-	let playlist = args.includes('list')
-	let track = await utils.getAudio(args.startsWith('http') ? args : `ytsearch:${args}`, playlist)
+	let playlist = query.includes('list')
+	let track = await utils.getAudio(query.startsWith('http') ? query : `ytsearch:${query}`, playlist)
 
 	if (!track[0])
 		return new Error('No results found. Please try again!');

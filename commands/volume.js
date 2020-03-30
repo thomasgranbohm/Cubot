@@ -15,8 +15,8 @@ let volume = async (message, args) => {
 
 	let toSend = new MessageEmbed();
 
-	if (args) {
-		const newVolume = parseInt(args.split(' ')[0]);
+	if (args.length > 0) {
+		const newVolume = parseInt(args[0]);
 		if (newVolume > 200 || newVolume < 0)
 			return 'The volume cannot to be above 200 or below 0.';
 
@@ -35,5 +35,6 @@ volume.longDesc = 'Returns the current volume if no args included.';
 volume.args = false;
 volume.aliases = ['v', 'vol'];
 volume.category = categories.VOICE;
+volume.usage = `<volume>`
 
 module.exports = volume;

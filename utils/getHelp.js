@@ -14,3 +14,6 @@ module.exports = getHelp = (command, extended = false) => {
 
 	return `**${command.name}** - ${command.shortDesc}`;
 }
+
+
+ 

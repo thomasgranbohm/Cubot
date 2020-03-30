@@ -5,7 +5,7 @@ let lunch = async (message, args) => {
 	const { client } = message;
 	const { commands, utils, models } = client;
 
-	if (args.split(" ")[0] == "init") {
+	if (args[0] == "init") {
 		if (!message.channel instanceof TextChannel)
 			return new MessageEmbed()
 				.setTitle('DM channels are not supported yet.')
@@ -38,17 +38,13 @@ let lunch = async (message, args) => {
 	}
 
 	try {
+		if (process.env.QUARANTINE) throw new Error("We're in quarantine så ")
 		return await utils.lunchEmbed();
 	} catch (error) {
 		throw error;
 	}
 }
 lunch.shortDesc = 'Returns the lunch.';
-// TODO Optional Args array
-// optionalArgs: [
-// 	{ 'arg': "desc" }
-// ],
-
 lunch.args = false;
 lunch.aliases = ['l', 'food', 'f'];
 lunch.category = categories.MISC;
