@@ -1,5 +1,6 @@
 const { categories } = require('../config.json');
 const { MessageEmbed } = require('discord.js');
+const logger = require('../cli/logger.js')
 
 let play = async (message, args) => {
 	const { client } = message;
@@ -12,7 +13,7 @@ let play = async (message, args) => {
 		return "You didn't send me anything to play."
 
 	await utils.initiatePlayer(client, message.guild.id);
-	
+
 	let query = args.join(" ");
 	let queue = utils.getServerQueue(client, message.guild.id);
 	let playlist = query.includes('list')
@@ -47,7 +48,7 @@ let play = async (message, args) => {
 		return await utils.queueLoop(client, message, queue, player);
 	} else {
 		client.servers[message.guild.id].queue = queue
-		console.general(`Added ? to ?'s queue. New queue length for ?: ?`, track[0].info.title, message.guild.name, message.guild.name, queue.length)
+		logger.log(`Added %s to %s's queue. New queue length for %s: %d`, track[0].info.title, message.guild.name, message.guild.name, queue.length)
 		return new MessageEmbed()
 			.setTitle('Added to queue')
 			.setDescription(`**${track[0].info.title}** by ${track[0].info.author}\n\nThere ${(queue.length - 1) > 1 ? `are ${queue.length - 1} tracks` : `is ${queue.length - 1} track`} before it.`)

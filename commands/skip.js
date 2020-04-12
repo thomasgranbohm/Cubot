@@ -1,4 +1,5 @@
 const { categories } = require('../config.json');
+const logger = require('../cli/logger.js')
 
 let skip = async (message, args) => {
 	const { client } = message;
@@ -14,8 +15,8 @@ let skip = async (message, args) => {
 	await player.stop();
 	let queue = utils.getServerQueue(client, message.guild.id).slice();
 
-	console.general(
-		'Skipped track ?. New queue length for ?: ?',
+	logger.log(
+		'Skipped track %s. New queue length for %s: %d',
 		queue.shift().info.title,
 		message.guild.name,
 		queue.length,
