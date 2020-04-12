@@ -9,7 +9,7 @@ let skip = async (message, args) => {
 	let botCheckFail = await utils.checkBotVoice(message);
 	if (botCheckFail) return botCheckFail;
 
-	const player = client.player.get(message.guild.id);
+	const player = client.manager.players.get(message.guild.id);
 	if (player.loop) player.loop = !player.loop;
 	await player.stop();
 	let queue = utils.getServerQueue(client, message.guild.id).slice();

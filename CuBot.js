@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const client = (module.exports = new Discord.Client());
 
 const Lavalink = require('discord.js-lavalink');
-const { PlayerManager } = Lavalink;
+const { Manager } = require("@lavacord/discord.js");
 
 const config = require('./config.json');
 const fs = require('fs');
@@ -147,9 +147,14 @@ client.on('ready', async () => {
 		],
 	};
 
-	client.player = new PlayerManager(client, config.lavalink.nodes, {
+	client.manager = new Manager(client, config.lavalink.nodes, {
 		user: client.user.id,
 		shards: (client.shard && client.shard.count) || 1,
+	});
+
+	await client.manager.connect();
+	client.manager.on("error", (error, node) => {
+		console.error(error, node)
 	});
 
 	client.dev = await client.users.fetch('284754083049504770');
@@ -193,11 +198,11 @@ client.on('ready', async () => {
 		});
 
 	client.on('voiceStateUpdate', async (oldState, newState) => {
-		let player = await client.player.get(oldState.guild.id);
+		let player = await client.manager.players.get(oldState.guild);
 		if (player) {
 			let guild = client.guilds.get(oldState.guild.id);
 			if (guild.channels.get(player.channel).members.size === 1)
-				client.player.leave(oldState.guild.id);
+				client.manager.leave(oldState.guild.id);
 		}
 	});
 

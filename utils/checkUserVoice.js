@@ -4,7 +4,8 @@ module.exports = checkUserVoice = async (message) => {
 		return new Error("You are not in a voice channel.");
 	}
 	// TODO shouldnt this be in checkBotVoice?
-	if (client.player.get(message.guild.id) && message.member.voice.channelID !== client.player.get(message.guild.id).channel)
+	// if (message.guild.me.voice) console.log(message.guild.me.voice, message.guild.me.voice.channelID, message.member.voice.channelID)
+	if (message.guild.me.voice && message.guild.me.voice.channelID && message.member.voice.channelID !== message.guild.me.voice.channelID)
 		return new Error("I'm already in another voice channel.");
 
 	return null;
