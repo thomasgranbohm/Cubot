@@ -11,7 +11,7 @@ let resume = async (message, args) => {
 	let botCheckFail = await utils.checkBotVoice(message);
 	if (botCheckFail) return botCheckFail;
 
-	const player = client.player.get(message.guild.id);
+	const player = client.manager.players.get(message.guild.id);
 	const queue = utils.getServerQueue(client, message.guild.id);
 	if (player.paused) player.pause(false);
 	else return new MessageEmbed().setTitle(`I'm already playing.`);

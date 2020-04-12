@@ -36,11 +36,13 @@ let play = async (message, args) => {
 	queue.push(track[0]);
 
 	if (isFirst) {
-		const player = await client.player.join({
+		console.log("Creating player...")
+		const player = await client.manager.join({
 			guild: message.guild.id,
 			channel: message.member.voice.channelID,
-			host: await utils.getIdealHost(client)
+			node: "1"
 		})
+		console.log("Created player.")
 
 		player.loop = false;
 

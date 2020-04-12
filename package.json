@@ -12,6 +12,7 @@
 	"author": "Tokxhu",
 	"license": "ISC",
 	"dependencies": {
+		"@lavacord/discord.js": "0.0.5",
 		"axios": "^0.19.2",
 		"canvas": "^2.6.1",
 		"chalk": "^3.0.0",
@@ -21,9 +22,9 @@
 		"dotenv": "^8.2.0",
 		"image-downloader": "^3.5.0",
 		"jimp": "^0.9.8",
+		"lavacord": "^1.1.7",
 		"opusscript": "0.0.7",
-		"readline-sync": "^1.4.10",
-		"sequelize": "^5.21.5",
+		"sequelize": "^5.21.6",
 		"sqlite3": "^4.1.1"
 	}
 }

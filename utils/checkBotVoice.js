@@ -1,6 +1,6 @@
 module.exports = checkBotVoice = async (message) => {
 	const { client } = message;
-	if (!client.player.get(message.guild.id))
+	if (!message.guild.voice)
 		return new Error("I'm not in a voice channel.");
 
 	let queue = client.utils.getServerQueue(client, message.guild.id)
