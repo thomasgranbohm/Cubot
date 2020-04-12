@@ -5,8 +5,8 @@ const Lavalink = require('discord.js-lavalink');
 const { PlayerManager } = Lavalink;
 
 const config = require('./config.json');
-const fs = require('fs');
-const chalk = require('chalk');
+const { promises } = require('fs');
+const logger = require('./cli/logger.js')
 
 // Database
 const dbInit = require('./models/init');
@@ -15,42 +15,6 @@ const CronJob = require('cron').CronJob;
 
 // Loads tokens and such
 require('dotenv').config();
-
-
-console.error = (error) => {
-	console.log(error);
-	console.otherLog(
-		chalk.red(`[${error.name}]`),
-		error.stack.substring(error.name.length + 1),
-	);
-};
-console.web = (baseString, ...args) =>
-	console.otherLog(chalk.green('[Web]'), baseString, ...args);
-console.general = (baseString, ...args) =>
-	console.otherLog(chalk.green('[General]'), baseString, ...args);
-console.otherLog = (category, baseString, ...args) => {
-	let argIndex = 0;
-	console.log(
-		category,
-		args
-			? baseString
-				.split(' ')
-				.map((string) => {
-					if (string.includes('?')) {
-						return (
-							string.slice(0, string.indexOf('?')) +
-							chalk.magentaBright(args[argIndex++]) +
-							string.slice(1 + string.indexOf('?'))
-						);
-					}
-					return string;
-				})
-				.join(' ')
-			: baseString,
-	);
-};
-
-
 
 client.on('message', async (message) => {
 	let content = message.content.split('');
@@ -81,17 +45,17 @@ client.on('message', async (message) => {
 });
 
 client.on('ready', async () => {
-	console.log(` ______     __  __     ______     ______     ______  
-/\\  ___\\   /\\ \\/\\ \\   /\\  == \\   /\\  __ \\   /\\__  _\\ 
-\\ \\ \\____  \\ \\ \\_\\ \\  \\ \\  __<   \\ \\ \\/\\ \\  \\/_/\\ \\/ 
- \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\    \\ \\_\\ 
-  \\/_____/   \\/_____/   \\/_____/   \\/_____/     \\/_/ \n`);
+	logger.print(`   ___     ___      _   
+  / __|  _| _ ) ___| |_ 
+ | (_| || | _ \\/ _ \\  _|
+  \\___\\_,_|___/\\___/\\__|
+`);
 
 	// Setup webserver
 	//	require('./webserver/server')
 
-	process.on('uncaughtException', (err) => console.error(err));
-	process.on('unhandledRejection', (reason) => console.error(reason));
+	process.on('uncaughtException', (err) => logger.error(err));
+	process.on('unhandledRejection', (reason) => logger.error(reason));
 
 	client.equalizers = {
 		earrape: [
@@ -164,8 +128,8 @@ client.on('ready', async () => {
 	let { models, database } = await dbInit();
 	client.models = models;
 
-	await fs
-		.readdirSync('./commands')
+	(await promises
+		.readdir('./commands'))
 		.filter(
 			(file) =>
 				file.endsWith('.js') &&
@@ -178,8 +142,8 @@ client.on('ready', async () => {
 			client.commands[command.name] = command;
 		});
 
-	await fs
-		.readdirSync('./utils')
+	(await promises
+		.readdir('./utils'))
 		.filter(
 			(file) =>
 				file.endsWith('.js') &&
@@ -213,7 +177,7 @@ client.on('ready', async () => {
 
 	client.user.setActivity('you. !help', { type: 'WATCHING' });
 
-	console.general("I'm running!");
+	logger.log("I'm running!");
 });
 
 client.on('guildCreate', async (guild) => {

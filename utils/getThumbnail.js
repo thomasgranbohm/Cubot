@@ -1,5 +1,6 @@
 const jimp = require('jimp');
 const download = require('image-downloader')
+const logger = require('../cli/logger.js')
 
 module.exports = getThumbnail = async (client, track) => {
 	return new Promise(async (resolve, rej) => {
@@ -24,7 +25,7 @@ module.exports = getThumbnail = async (client, track) => {
 					.quality(100)
 					.crop(0, offset, img.getWidth(), img.getHeight() - (2 * offset))
 					.write(dest);
-				console.general("Found thumbnail in ? default", resolution)
+					logger.log("Found thumbnail in %s default", resolution)
 				break;
 			} catch (err) {
 				continue;

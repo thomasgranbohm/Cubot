@@ -1,5 +1,7 @@
+const logger = require('../cli/logger.js')
+
 module.exports = queueLoop = async (client, message, queue, player) => {
-	console.general(`Playing ? in ?`, queue[0].info.title, message.guild.name)
+	logger.log(`Playing %s in %s`, queue[0].info.title, message.guild.name)
 	queue[0].startedAt = Date.now()
 	player.play(queue[0].track)
 
@@ -7,7 +9,7 @@ module.exports = queueLoop = async (client, message, queue, player) => {
 		if (data.reason === "REPLACED") return;
 		if (!player.loop) {
 			var endedTrack = queue.shift();
-			console.general(`Ended track ? in ?. New queue length is now: ?`, endedTrack.info.title, message.guild.name, queue.length)
+			logger.log(`Ended track %s in %s. New queue length is now: %d`, endedTrack.info.title, message.guild.name, queue.length)
 		}
 		if (queue.length > 0) {
 			client.utils.queueLoop(client, message, queue, player);

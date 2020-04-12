@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const logger = require('../cli/logger.js')
 
 module.exports = sendError = async (message, error) => {
 	let { client } = message;
@@ -11,7 +12,7 @@ module.exports = sendError = async (message, error) => {
 					.setColor('RED')
 					.setTimestamp()
 			)
-	console.error(error)
+	logger.error(error)
 	let sentMessage = await message.channel.send(
 		new MessageEmbed()
 			.setTitle("Oops, an actual error...")
