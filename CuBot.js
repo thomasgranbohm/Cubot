@@ -1,11 +1,9 @@
 const Discord = require('discord.js');
 const client = (module.exports = new Discord.Client());
 
-const Lavalink = require('discord.js-lavalink');
 const { Manager } = require("@lavacord/discord.js");
 
 const config = require('./config.json');
-const { promises } = require('fs');
 const logger = require('./cli/logger.js')
 
 // Database
