@@ -28,5 +28,6 @@ skip.shortDesc = 'Skips the playing track.';
 skip.args = false;
 skip.aliases = ['s'];
 skip.category = categories.VOICE;
+skip.allowedChannels = ['text']
 
 module.exports = skip;

@@ -36,5 +36,6 @@ volume.args = false;
 volume.aliases = ['v', 'vol'];
 volume.category = categories.VOICE;
 volume.usage = `<volume>`
+volume.allowedChannels = ['text']
 
 module.exports = volume;

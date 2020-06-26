@@ -19,6 +19,7 @@ loop.usage = '';
 loop.shortDesc = 'Toggles the loop function';
 loop.args = false;
 loop.aliases = ['repeat', 'lööp'];
-loop.category = categories.MISC;
+loop.category = categories.VOICE;
+loop.allowedChannels = ['text']
 
 module.exports = loop;

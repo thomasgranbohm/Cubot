@@ -36,17 +36,14 @@ let play = async (message, args) => {
 	queue.push(track[0]);
 
 	if (isFirst) {
-		console.log("Creating player...")
 		const player = await client.manager.join({
 			guild: message.guild.id,
 			channel: message.member.voice.channelID,
-			node: "1"
+			node: await utils.getIdealHost(client)
 		})
-		console.log("Created player.")
 
 		player.loop = false;
 
-		player.on('leave', () => delete client.servers[message.guild.id])
 		return await utils.queueLoop(client, message, queue, player);
 	} else {
 		client.servers[message.guild.id].queue = queue
@@ -65,5 +62,6 @@ play.shortDesc = 'Plays music with an added search query';
 play.args = true;
 play.aliases = ['p'];
 play.category = categories.VOICE;
+play.allowedChannels = ['text']
 
 module.exports = play;

@@ -66,5 +66,6 @@ queue.shortDesc = 'Lists the tracks queued on this server.';
 queue.args = false;
 queue.aliases = ['q', 'que', 'list'];
 queue.category = categories.VOICE;
+queue.allowedChannels = ['text']
 
 module.exports = queue;

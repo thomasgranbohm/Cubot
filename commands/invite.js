@@ -21,5 +21,6 @@ invite.shortDesc = 'Generates an invite for this bot.';
 invite.args = false;
 invite.aliases = ['i'];
 invite.category = categories.MISC;
+invite.allowedChannels = ['text', 'dm']
 
 module.exports = invite;

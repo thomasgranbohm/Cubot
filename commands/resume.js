@@ -21,5 +21,6 @@ resume.shortDesc = 'Resumes the paused track.';
 resume.args = false;
 resume.aliases = [];
 resume.category = categories.VOICE;
+resume.allowedChannels = ['text']
 
 module.exports = resume;

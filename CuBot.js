@@ -19,7 +19,9 @@ require('dotenv').config();
 client.on('message', async (message) => {
 	let content = message.content.split('');
 	if (content.shift() !== config.prefix) return null;
-	message.delete({ timeout: 3000 });
+	let channelType = message.channel.type;
+	if (channelType == 'text')
+		message.delete({ timeout: 3000 });
 	content = content.join('').split(' ');
 	let args = message.content.slice(config.prefix.length).split(/ +/);
 	let commandName = args.shift().toLowerCase();
@@ -37,7 +39,11 @@ client.on('message', async (message) => {
 		else if (command.args && !args.length) {
 			toSend = new Error(`You didn't provide any arguments.`);
 		}
+		else if (command.allowedChannels.includes(channelType) == false) {
+			toSend = new Error(`This command cannot be used in this channel.`)
+		}
 		else toSend = await command(message, args);
+
 		client.utils.sendMessage(channel, toSend, command.category, author);
 	} catch (error) {
 		await client.utils.sendError(message, error);
@@ -126,49 +132,14 @@ client.on('ready', async () => {
 	client.runningDir = __dirname;
 
 	(client.models = {}),
-		(client.servers = {}),
-		(client.commands = {}),
-		(client.utils = {});
+		(client.servers = {});
 
-	let { models, database } = await dbInit();
+	let { models } = await dbInit();
 	client.models = models;
 
-	(await promises
-		.readdir('./commands'))
-		.filter(
-			(file) =>
-				file.endsWith('.js') &&
-				!file.startsWith('command') &&
-				!file.startsWith('.'),
-		)
-		.map((file) => file.replace('.js', ''))
-		.forEach((file) => {
-			let command = require(`./commands/${file}`);
-			client.commands[command.name] = command;
-		});
+	client.commands = require('./commands/');
 
-	(await promises
-		.readdir('./utils'))
-		.filter(
-			(file) =>
-				file.endsWith('.js') &&
-				!file.startsWith('command') &&
-				!file.startsWith('.'),
-		)
-		.map((file) => file.replace('.js', ''))
-		.forEach((file) => {
-			let util = require(`./utils/${file}`);
-			client.utils[util.name] = util;
-		});
-
-	client.on('voiceStateUpdate', async (oldState, newState) => {
-		let player = await client.manager.players.get(oldState.guild);
-		if (player) {
-			let guild = client.guilds.get(oldState.guild.id);
-			if (guild.channels.get(player.channel).members.size === 1)
-				client.manager.leave(oldState.guild.id);
-		}
-	});
+	client.utils = require('./utils/');
 
 	new CronJob('0 30 10 * * 1-5', async () => {
 		if (process.env.QUARANTINE) return;
@@ -183,6 +154,34 @@ client.on('ready', async () => {
 	client.user.setActivity('you. !help', { type: 'WATCHING' });
 
 	logger.log("I'm running!");
+});
+
+client.on('voiceStateUpdate', async (oldState, newState) => {
+	let guild = client.guilds.cache.get(oldState.guild.id);
+	if (!guild)
+		return;
+
+	let voiceChannelID;
+	if (oldState.channel) voiceChannelID = oldState.channel.id;
+	else if (newState.channel) voiceChannelID = newState.channel.id;
+	else return logger.log("NO ID:::::")
+
+	let channel = guild.channels.cache.get(voiceChannelID);
+	if (!channel)
+		return;
+
+	let isInVoiceChannel = channel.members.get(client.user.id) !== undefined;
+	let onlyPersonInVC = (channel.members.size <= 1 && isInVoiceChannel);
+	let justLeftVC = !isInVoiceChannel && channel.members.size >= 1 && oldState.member.user == client.user;
+	if (onlyPersonInVC || justLeftVC) {
+		logger.log("Manager left...")
+		client.manager.leave(oldState.guild.id);
+
+		if (client.servers[oldState.guild.id]) {
+			logger.log("Deleted server...")
+			delete client.servers[oldState.guild.id]
+		}
+	}
 });
 
 client.on('guildCreate', async (guild) => {

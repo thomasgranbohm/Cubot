@@ -24,5 +24,6 @@ pause.shortDesc = 'Pauses the playing track.';
 pause.args = false;
 pause.aliases = ['stop'];
 pause.category = categories.VOICE;
+pause.allowedChannels = ['text']
 
 module.exports = pause;

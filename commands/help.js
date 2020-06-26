@@ -15,10 +15,10 @@ let help = function (message, args) {
 					.join('\n'),
 			);
 
-	let commandName = args.split(' ')[0];
+	let commandName = args[0];
 	let command = client.utils.findCommand(client, commandName);
 
-	if (!command) return 'That command does not exist.';
+	if (!command) return new Error('That command does not exist.');
 
 	return utils.getHelp(command, true);
 };
@@ -29,5 +29,6 @@ help.longDesc =
 help.args = false;
 help.aliases = ['h'];
 help.category = categories.UTILS;
+help.allowedChannels = ['text', 'dm']
 
 module.exports = help;

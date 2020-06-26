@@ -21,5 +21,6 @@ now.shortDesc = 'Returns the currently playing track.';
 now.args = false;
 now.aliases = ['np', 'nowPlaying'];
 now.category = categories.VOICE;
+now.allowedChannels = ['text']
 
 module.exports = now;

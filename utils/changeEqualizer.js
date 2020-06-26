@@ -16,12 +16,12 @@ module.exports = changeEqualizer = async (message, equalizer) => {
 	let currentEqualizer = client.servers[message.guild.id].equalizer;
 	if (currentEqualizer !== equalizer) {
 		await player
-			.setEQ(equalizer);
+			.equalizer(equalizer);
 		client.servers[message.guild.id].equalizer = equalizer
 	}
 	else {
 		await player
-			.setEQ(client.equalizers.flat);
+			.equalizer(client.equalizers.flat);
 		client.servers[message.guild.id].equalizer = client.equalizers.flat
 	}
 	return new MessageEmbed()
