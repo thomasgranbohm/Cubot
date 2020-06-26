@@ -139,16 +139,6 @@ client.on('ready', async () => {
 
 	client.utils = require('./utils/');
 
-	new CronJob('0 30 10 * * 1-5', async () => {
-		if (process.env.QUARANTINE) return;
-		let channels = await client.models.channels.findAll();
-		let lunch = await client.utils.lunchEmbed();
-		channels.forEach((dbChannel) => {
-			let channel = client.channels.get(dbChannel.channelID);
-			client.utils.sendMessage(channel, lunch, config.categories.MISC);
-		});
-	}).start();
-
 	client.user.setActivity('you. !help', { type: 'WATCHING' });
 
 	logger.log("I'm running!");

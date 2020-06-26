@@ -63,5 +63,4 @@ typings/
 thumbnails/*
 !thumbnails/.gitkeep
 test/
-lunch.json
 database.sqlite

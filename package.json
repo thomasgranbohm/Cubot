@@ -1,5 +1,5 @@
 {
-	"name": "CuBot",
+	"name": "cubot",
 	"version": "2.0.0",
 	"shortDesc": "CuBot is a discord-bot",
 	"main": "CuBot.js",
