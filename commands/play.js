@@ -41,6 +41,7 @@ let play = async (message, args) => {
 			channel: message.member.voice.channelID,
 			node: await utils.getIdealHost(client)
 		})
+		console.log("Created player.")
 
 		player.loop = false;
 
