@@ -5,8 +5,9 @@ module.exports = queueLoop = async (client, message, queue, player) => {
 	queue[0].startedAt = Date.now()
 	player.play(queue[0].track)
 
+
 	player.once('end', async (data) => {
-		if (data.reason === "REPLACED") return;
+		if (data.reason === "REPLACED") return logger.log("Track was replaced...");
 		if (!player.loop) {
 			var endedTrack = queue.shift();
 			logger.log(`Ended track %s in %s. New queue length is now: %d`, endedTrack.info.title, message.guild.name, queue.length)

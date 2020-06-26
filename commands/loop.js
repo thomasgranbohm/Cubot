@@ -10,7 +10,7 @@ let loop = async (message, args) => {
 	let botCheckFail = await utils.checkBotVoice(message);
 	if (botCheckFail) return botCheckFail;
 
-	const player = client.player.get(message.guild.id)
+	const player = client.manager.players.get(message.guild.id)
 	player.loop = !player.loop;
 	return new MessageEmbed()
 		.setTitle(player.loop ? `Playing on repeat :repeat:` : `Playing like a normal person :speaker:`)
@@ -19,6 +19,7 @@ loop.usage = '';
 loop.shortDesc = 'Toggles the loop function';
 loop.args = false;
 loop.aliases = ['repeat', 'lööp'];
-loop.category = categories.MISC;
+loop.category = categories.VOICE;
+loop.allowedChannels = ['text']
 
 module.exports = loop;

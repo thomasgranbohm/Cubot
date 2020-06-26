@@ -12,5 +12,6 @@ earrape.shortDesc = 'You know what you want.';
 earrape.args = false;
 earrape.aliases = ['ear'];
 earrape.category = categories.VOICE;
+earrape.allowedChannels = ['text']
 
 module.exports = earrape;

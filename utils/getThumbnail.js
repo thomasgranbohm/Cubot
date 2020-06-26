@@ -25,7 +25,7 @@ module.exports = getThumbnail = async (client, track) => {
 					.quality(100)
 					.crop(0, offset, img.getWidth(), img.getHeight() - (2 * offset))
 					.write(dest);
-					logger.log("Found thumbnail in %s default", resolution)
+				// logger.log("Found thumbnail in %s default", resolution)
 				break;
 			} catch (err) {
 				continue;

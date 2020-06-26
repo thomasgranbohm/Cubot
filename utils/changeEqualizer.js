@@ -9,19 +9,19 @@ module.exports = changeEqualizer = async (message, equalizer) => {
 	let botCheckFail = await utils.checkBotVoice(message);
 	if (botCheckFail) return botCheckFail;
 
-	const player = client.player.get(message.guild.id)
+	const player = client.manager.players.get(message.guild.id)
 	if (!player)
 		return new Error("I'm not playing anything.");
 
 	let currentEqualizer = client.servers[message.guild.id].equalizer;
 	if (currentEqualizer !== equalizer) {
 		await player
-			.setEQ(equalizer);
+			.equalizer(equalizer);
 		client.servers[message.guild.id].equalizer = equalizer
 	}
 	else {
 		await player
-			.setEQ(client.equalizers.flat);
+			.equalizer(client.equalizers.flat);
 		client.servers[message.guild.id].equalizer = client.equalizers.flat
 	}
 	return new MessageEmbed()

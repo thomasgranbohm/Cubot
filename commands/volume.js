@@ -10,7 +10,7 @@ let volume = async (message, args) => {
 	let botCheckFail = await utils.checkBotVoice(message);
 	if (botCheckFail) return botCheckFail;
 
-	const player = client.player.get(message.guild.id);
+	const player = client.manager.players.get(message.guild.id);
 	const volume = player.state.volume;
 
 	let toSend = new MessageEmbed();
@@ -36,5 +36,6 @@ volume.args = false;
 volume.aliases = ['v', 'vol'];
 volume.category = categories.VOICE;
 volume.usage = `<volume>`
+volume.allowedChannels = ['text']
 
 module.exports = volume;

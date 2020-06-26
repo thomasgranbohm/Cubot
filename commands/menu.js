@@ -14,5 +14,6 @@ menu.shortDesc = 'Returns the week\'s menu';
 menu.args = false;
 menu.aliases = ['m'];
 menu.category = categories.MISC;
+menu.allowedChannels = ['text', 'dm']
 
 module.exports = menu;

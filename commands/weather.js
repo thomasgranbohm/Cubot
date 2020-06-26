@@ -74,5 +74,6 @@ weather.shortDesc = 'Returns the weather.';
 weather.args = false;
 weather.aliases = ['w'];
 weather.category = categories.MISC;
+weather.allowedChannels = ['text', 'dm']
 
 module.exports = weather;

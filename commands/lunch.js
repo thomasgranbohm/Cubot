@@ -48,5 +48,6 @@ lunch.shortDesc = 'Returns the lunch.';
 lunch.args = false;
 lunch.aliases = ['l', 'food', 'f'];
 lunch.category = categories.MISC;
+lunch.allowedChannels = ['text', 'dm']
 
 module.exports = lunch;

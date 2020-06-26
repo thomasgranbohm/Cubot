@@ -6,9 +6,9 @@
 		"password": "youshallnotpass",
 		"nodes": [
 			{
+				"id": "1",
 				"host": "localhost",
 				"port": 2333,
-				"region": "amsterdam",
 				"password": "youshallnotpass"
 			}
 		]

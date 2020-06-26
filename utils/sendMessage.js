@@ -19,7 +19,7 @@ module.exports = sendMessage = async (channel, toSend, category, author = null) 
 
 	let sentMessage = await channel.send(toSend);
 
-	if (author)
+	if (author && channel.type !== 'dm')
 		sentMessage.delete({
 			timeout: 15000
 		})
