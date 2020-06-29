@@ -3,7 +3,7 @@ const { promises } = require('fs')
 const { stdin, stdout } = process;
 const readline = require('readline');
 const { format } = require('util')
-const client = require("../CuBot.js")
+const client = require("../bot.js")
 
 let commands = {};
 let selectedGuild = undefined;
@@ -19,9 +19,9 @@ let start = async () => {
 	if (process.stdin.isTTY) {
 		process.stdin.setRawMode(true);
 	}
-	let commandFiles = await promises.readdir(process.cwd() + "/cli/commands");
+	let commandFiles = await promises.readdir(process.cwd() + "/logger/commands");
 	await commandFiles.filter(file => file.endsWith(".js"))
-		.map(file => require(`${process.cwd()}/cli/commands/${file}`))
+		.map(file => require(`${process.cwd()}/logger/commands/${file}`))
 		.sort((a, b) => a.name.localeCompare(b.name))
 		.forEach(command => module.exports.commands[command.name] = command);
 	printPrompt()

@@ -1,6 +1,6 @@
 const { categories } = require('../config.json');
 const { MessageEmbed } = require('discord.js');
-const logger = require('../cli/logger.js')
+const logger = require('../logger/')
 
 let play = async (message, args) => {
 	const { client } = message;

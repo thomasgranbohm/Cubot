@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js')
-const logger = require('../cli/logger.js')
+const logger = require('../logger/')
 
 module.exports = sendError = async (message, error) => {
 	let { client } = message;

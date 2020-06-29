@@ -1,5 +1,5 @@
 const { categories } = require('../config.json');
-const logger = require('../cli/logger.js')
+const logger = require('../logger/')
 
 let skip = async (message, args) => {
 	const { client } = message;

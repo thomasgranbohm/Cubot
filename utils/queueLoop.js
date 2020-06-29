@@ -1,4 +1,4 @@
-const logger = require('../cli/logger.js')
+const logger = require('../logger/')
 
 module.exports = queueLoop = async (client, message, queue, player) => {
 	logger.log(`Playing %s in %s`, queue[0].info.title, message.guild.name)

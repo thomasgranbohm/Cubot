@@ -4,12 +4,7 @@ const client = (module.exports = new Discord.Client());
 const { Manager } = require("@lavacord/discord.js");
 
 const config = require('./config.json');
-const logger = require('./cli/logger.js')
-
-// Database
-const dbInit = require('./models/init');
-
-const CronJob = require('cron').CronJob;
+const logger = require('./logger/')
 
 // Loads tokens and such
 require('dotenv').config();
@@ -54,9 +49,6 @@ client.on('ready', async () => {
  | (_| || | _ \\/ _ \\  _|
   \\___\\_,_|___/\\___/\\__|
 `);
-
-	// Setup webserver
-	//	require('./webserver/server')
 
 	process.on('uncaughtException', (err) => logger.error(err));
 	process.on('unhandledRejection', (reason) => logger.error(reason));
@@ -129,15 +121,11 @@ client.on('ready', async () => {
 
 	client.runningDir = __dirname;
 
-	(client.models = {}),
-		(client.servers = {});
+	client.servers = {};
 
-	let { models } = await dbInit();
-	client.models = models;
+	client.commands = require('./commands');
 
-	client.commands = require('./commands/');
-
-	client.utils = require('./utils/');
+	client.utils = require('./utils');
 
 	client.user.setActivity('you. !help', { type: 'WATCHING' });
 
@@ -173,37 +161,11 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 });
 
 client.on('guildCreate', async (guild) => {
-	let welcomeEmbed = new Discord.MessageEmbed();
 	let logs = await guild.fetchAuditLogs();
 	let addingEntry = logs.entries.first();
 	let { executor } = addingEntry;
-	let { commands, utils } = client;
-	let { categories, prefix } = config;
-	welcomeEmbed.setTimestamp()
-		.setTitle(`Thanks for inviting me, ${executor.username} :relaxed:`)
-		.setDescription(
-			`Here is a little something to help you get started.
+	let welcomeEmbed = utils.welcomeEmbed(client, executor);
 
-My prefix is \`${prefix}\`, and use it like this \`${prefix}[command]\`
-
-**These are my most essential commands:**
- - ${utils.getHelp(commands.boost)}
- - ${utils.getHelp(commands.invite)}
- - ${utils.getHelp(commands.now)}
- - ${utils.getHelp(commands.play)}
- - ${utils.getHelp(commands.skip)}
- - ${utils.getHelp(commands.volume)}
- - ${utils.getHelp(commands.weather)}
-
-**Oh yea, I have equalizers, but only three at the moment.**
- - Flat
- - Boost
- - Earrape
-
-To get the full list of commands, just run \`${prefix}${commands.help.name}\`.`
-		)
-		.setColor(categories.MISC)
-		.setFooter(`Created by ${client.dev.username}`, client.dev.avatarURL())
 	guild.systemChannel.send(welcomeEmbed);
 })
 

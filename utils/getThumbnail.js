@@ -1,6 +1,6 @@
 const jimp = require('jimp');
 const download = require('image-downloader')
-const logger = require('../cli/logger.js')
+const logger = require('../logger/')
 
 module.exports = getThumbnail = async (client, track) => {
 	return new Promise(async (resolve, rej) => {

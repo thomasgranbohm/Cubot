@@ -1,4 +1,4 @@
-const logger = require('../logger.js');
+const logger = require('../');
 const chalk = require('chalk')
 
 let toString = command => ` - ${chalk.italic(command.name)}: ${command.desc}`;

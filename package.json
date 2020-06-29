@@ -2,11 +2,11 @@
 	"name": "cubot",
 	"version": "2.0.0",
 	"shortDesc": "CuBot is a discord-bot",
-	"main": "CuBot.js",
+	"main": "bot.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "NODE_ENV=development node CuBot.js",
-		"prod": "NODE_ENV=production node CuBot.js"
+		"dev": "NODE_ENV=development node bot.js",
+		"prod": "NODE_ENV=production node bot.js"
 	},
 	"keywords": [],
 	"author": "Tokxhu",
@@ -14,16 +14,12 @@
 	"dependencies": {
 		"@lavacord/discord.js": "0.0.5",
 		"axios": "^0.19.2",
-		"canvas": "^2.6.1",
 		"chalk": "^3.0.0",
-		"cron": "^1.8.2",
-		"discord.js": "github:discordjs/discord.js",
+		"discord.js": "^12.2.0",
 		"dotenv": "^8.2.0",
 		"image-downloader": "^3.6.0",
 		"jimp": "^0.9.8",
 		"lavacord": "^1.1.9",
-		"opusscript": "0.0.7",
-		"sequelize": "^5.21.10",
-		"sqlite3": "^4.2.0"
+		"opusscript": "0.0.7"
 	}
 }
