@@ -8,7 +8,7 @@ module.exports = sendError = async (message, error) => {
 			.send(
 				new MessageEmbed()
 					.setTitle('Ran into some problems chief')
-					.setDescription(`Here is the stack trace:\n\`\`\`${error.stack}\`\`\``)
+					.setDescription(`**${message.author.tag}** tried to run \`${message.content}\` in ${message.guild.name}.\n\nHere is the stack trace:\n\`\`\`${error.stack}\`\`\``)
 					.setColor('RED')
 					.setTimestamp()
 			)
