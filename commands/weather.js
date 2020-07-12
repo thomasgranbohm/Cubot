@@ -3,11 +3,16 @@ const { MessageEmbed } = require('discord.js');
 const axios = require('axios');
 
 let weather = async (message, args) => {
+	let { OW_TOKEN } = process.env;
+
+	if (!OW_TOKEN)
+		return new Error("Weather not implemented by bot owner.");
+
 	try {
 		let city = args.length > 0 ? args : 'Stockholm';
 		let json = (
 			await axios(
-				`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.OW_TOKEN}`
+				`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OW_TOKEN}`
 			)
 		).data;
 		switch (Math.floor((json.wind.deg + 22.5) / 45)) {

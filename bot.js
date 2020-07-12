@@ -4,7 +4,7 @@ const client = (module.exports = new Discord.Client());
 const { Manager } = require("@lavacord/discord.js");
 
 const config = require('./config.json');
-const logger = require('./logger/')
+const logger = require('./logger/');
 
 // Loads tokens and such
 require('dotenv').config();
@@ -129,7 +129,7 @@ client.on('ready', async () => {
 
 	client.user.setActivity('you. !help', { type: 'WATCHING' });
 
-	logger.log("I'm running!");
+	logger.log("I'm running! 😊");
 });
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
@@ -140,7 +140,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 	let voiceChannelID;
 	if (oldState.channel) voiceChannelID = oldState.channel.id;
 	else if (newState.channel) voiceChannelID = newState.channel.id;
-	else return logger.log("NO ID:::::")
+	else return
 
 	let channel = guild.channels.cache.get(voiceChannelID);
 	if (!channel)
@@ -150,11 +150,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 	let onlyPersonInVC = (channel.members.size <= 1 && isInVoiceChannel);
 	let justLeftVC = !isInVoiceChannel && channel.members.size >= 1 && oldState.member.user == client.user;
 	if (onlyPersonInVC || justLeftVC) {
-		logger.log("Manager left...")
 		client.manager.leave(oldState.guild.id);
 
 		if (client.servers[oldState.guild.id]) {
-			logger.log("Deleted server...")
 			delete client.servers[oldState.guild.id]
 		}
 	}

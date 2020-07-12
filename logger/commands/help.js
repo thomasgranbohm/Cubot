@@ -1,7 +1,7 @@
 const logger = require('../');
 const chalk = require('chalk')
 
-let toString = command => ` - ${chalk.italic(command.name)}: ${command.desc}`;
+let toString = command => ` - ${chalk.bold(command.name)}: ${command.desc}`;
 
 const help = (client, ...args) => {
 	const { commands } = logger;
@@ -19,4 +19,3 @@ const help = (client, ...args) => {
 help.desc = "Lists all commands";
 
 module.exports = help;
-
