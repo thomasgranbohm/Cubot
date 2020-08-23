@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
 
 let { NODE_ENV, PUBLIC_URL } = process.env;
@@ -14,5 +13,3 @@ ReactDOM.render(
 	</BrowserRouter>,
 	document.getElementById('root')
 );
-
-serviceWorker.unregister();
