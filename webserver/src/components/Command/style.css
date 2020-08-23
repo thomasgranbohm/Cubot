@@ -1,0 +1,130 @@
+
+.command {
+	width: 100vmin;
+	max-width: 20em;
+	height: 16em;
+	border-radius: 0.5em;
+	/* box-shadow: 0 0 16px -4px #33333388;  */
+	border: 1px solid rgb(209, 213, 218);	
+	box-sizing: border-box;
+	transition: all 0.25s;
+	overflow-y: hidden;
+	line-break: strict;
+	word-break: normal;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	color: var(--color);
+	position: relative;
+	overflow: hidden;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+
+	margin: 0.5em;
+}
+
+.command-inner {
+	--center: calc(50% - 0.5em);
+
+	position: relative;
+	width: 200%;
+	height: 100%;
+	transition: left 0.2s ease-in-out;
+	background: linear-gradient(
+		90deg,
+		var(--alt-background-color) var(--center),
+		var(--gradient-color) var(--center),
+		var(--gradient-color) calc(var(--center) + 1em),
+		var(--alt-background-color) calc(var(--center) + 1em)
+	);
+	left: -100%;
+
+	display: flex;
+	justify-content: space-evenly;
+	flex-direction: row-reverse;
+}
+
+.command-front {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 0.25em 1em;
+}
+
+.command-back {
+	padding: 0.5em 1em;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+}
+
+.command  .divider {
+	margin: 0.5em 0;
+	width: 100%;
+}
+
+.command.slided .command-inner {
+	left: 0;
+}
+
+/* .command:hover {
+	transform: scale(1.05);
+} */
+
+.command-back, .command-front {
+	width: 50%;
+	height: 100%;
+}
+.usage {
+	user-select: unset !important;
+}
+
+@media (prefers-color-scheme: dark) {
+	.command {
+		border: 1px solid rgb(27, 30, 34);
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	.command {
+		overflow: hidden;
+
+		height: 6em;
+		transition: height 0.2s ease-in-out;
+	}
+
+	.command-inner {
+		flex-direction: column;
+
+		left: initial;
+		height: auto;
+		width: 100%;
+
+		background: linear-gradient(
+			90deg,
+			var(--gradient-color) 0.5em,
+			var(--alt-background-color) 0.5em,
+			var(--alt-background-color) 100%
+		);
+	}
+
+	.command-front, .command-back {
+		width: 100%;
+	}
+
+	.command-front {
+		height: 6em;
+	}
+
+	.command-back {
+		height: 12em;
+		justify-content: space-between;
+	}
+	.command.slided {
+		height: 18em;
+	}
+
+}

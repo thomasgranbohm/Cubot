@@ -1,0 +1,73 @@
+.guild {
+	width: 100%;
+	max-width: 20em;
+
+	height: 6em;
+	margin: 0.5em;
+	background-color: var(--alt-background-color);
+
+	border-radius: 0.5em;
+
+	box-sizing: border-box;
+	overflow: hidden;
+
+	transition: height 0.2s;
+}
+
+.guild-inner {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.guild-front, .guild-back {
+	width: 100%;
+}
+
+.guild-front {
+	height: 6em;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.guild-icon {
+	height: 4em;
+	width: auto;
+	border-radius: 100%;
+	margin: 0 1em;
+	background-color: var(--color);
+}
+
+.title {
+	height: auto;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.guild-back {
+	height: 12em;
+	padding: 1em;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.guild.clicked {
+	height: 18em;
+}
+
+.guild .divider {
+	width: calc(100% - 2em);
+	margin: 0;
+}
+
+@media only screen and (min-width: 600px) {
+	.guild {
+		height: 18em;
+	}
+}
