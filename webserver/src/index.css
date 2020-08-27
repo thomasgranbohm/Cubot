@@ -5,10 +5,13 @@
 }
 
 :root {
-	--color: #24292e;
+	/* --color: #24292e;
 	--background-color: rgb(250, 250, 250);
-	--alt-background-color: #fff;
-	--link-color: #00e;
+	--alt-background-color: #fff;*/
+	--link-color: #00e; 
+	--color: #23272A;
+	--background-color: #FFFFFF;
+	--alt-background-color: rgb(242, 243, 245);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,6 +20,9 @@
 		--background-color: #282828;
 		--color: white;
 		--link-color: #09f;
+		--color: #FFFFFF;
+		--background-color: #23272A;
+		--alt-background-color: #2C2F33;
 	}
 }
 

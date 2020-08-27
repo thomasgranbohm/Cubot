@@ -30,12 +30,11 @@ class Command extends Component {
 				id={command.name}
 				onClick={() => this.toggleSlided()} >
 				<div className="command-inner"
-					style={{ "--gradient-color": `#${command.category}` }}>
+					style={{ "--gradient-color": `#${command.category.color}` }}>
 					<div className="command-front">
 						<h2 className="title">{command.name}</h2>
-						<div className="divider"></div>
-						<code>Category: {command.category.name}</code>
 					</div>
+					<div className="divider"></div>
 					<div className="command-back py-2 px-3 d-flex flex-column flex-justify-evenly">
 						<div>
 							<h5>Description</h5>

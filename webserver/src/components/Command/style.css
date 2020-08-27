@@ -4,8 +4,6 @@
 	max-width: 20em;
 	height: 16em;
 	border-radius: 0.5em;
-	/* box-shadow: 0 0 16px -4px #33333388;  */
-	border: 1px solid rgb(209, 213, 218);	
 	box-sizing: border-box;
 	transition: all 0.25s;
 	overflow-y: hidden;
@@ -26,23 +24,24 @@
 }
 
 .command-inner {
-	--center: calc(50% - 0.5em);
+	--center: calc(50% - 0.25em);
 
 	position: relative;
-	width: 200%;
+	width: calc(200% - 0.5em);
 	height: 100%;
 	transition: left 0.2s ease-in-out;
 	background: linear-gradient(
 		90deg,
 		var(--alt-background-color) var(--center),
 		var(--gradient-color) var(--center),
-		var(--gradient-color) calc(var(--center) + 1em),
-		var(--alt-background-color) calc(var(--center) + 1em)
+		var(--gradient-color) calc(var(--center) + 0.5em),
+		var(--alt-background-color) calc(var(--center) + 0.5em)
 	);
-	left: -100%;
+	left: calc(-100% + 0.5em);
 
 	display: flex;
 	justify-content: space-evenly;
+	align-items: center;
 	flex-direction: row-reverse;
 }
 
@@ -62,8 +61,9 @@
 }
 
 .command  .divider {
-	margin: 0.5em 0;
-	width: 100%;
+	width: calc(100% - 2em);
+	margin-left: 0.5em;
+	display: none;
 }
 
 .command.slided .command-inner {
@@ -82,12 +82,12 @@
 	user-select: unset !important;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
 	.command {
 		border: 1px solid rgb(27, 30, 34);
 	}
 }
-
+ */
 @media only screen and (max-width: 600px) {
 	.command {
 		overflow: hidden;
@@ -111,6 +111,10 @@
 		);
 	}
 
+	.command-inner .divider {
+		display: block;
+	}
+
 	.command-front, .command-back {
 		width: 100%;
 	}
@@ -121,7 +125,7 @@
 
 	.command-back {
 		height: 12em;
-		justify-content: space-between;
+		justify-content: space-around;
 	}
 	.command.slided {
 		height: 18em;

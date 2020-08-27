@@ -26,7 +26,9 @@ class Guilds extends Component {
 	}
 
 	componentDidMount() {
-		fetch('/api/guilds')
+		let { PUBLIC_URL, NODE_ENV } = process.env;
+		let link = (NODE_ENV === "production" ? PUBLIC_URL : '') + '/api/guilds'
+		fetch(link)
 			.then(resp => resp.json())
 			.then(json => this.setState({ guilds: json }))
 			.catch(err => {

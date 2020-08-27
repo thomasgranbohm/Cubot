@@ -1,0 +1,51 @@
+.main {
+	width: 100%;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.main .logo {
+	width: 24em;
+	height: 24em;
+	border-radius: 12em;
+
+	padding: 2em;
+	margin-top: 4em;
+}
+
+.titles {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.titles .title {
+	font-size: 4em;
+	width: auto;
+}
+
+.invite-link {
+	text-decoration: none;
+}
+
+.info {
+	margin-bottom: 1em;
+}
+
+.invite-link .text{
+	width: 12em;
+	height: 4em;
+	
+	background-color: #7289DA;
+	color: white;
+	
+	border-radius: 4px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

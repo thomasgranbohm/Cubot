@@ -38,16 +38,13 @@ class Guild extends Component {
 					<div className="divider"></div>
 					<div className="guild-back">
 						<div>
-							<h5>Members</h5>
-							<code>{guild.members}</code>
+							<p><b>Members:</b> <span>{guild.members}</span></p>
 						</div>
 						<div>
-							<h5>Channels</h5>
-							<code>{guild.channels}</code>
+							<p><b>Channels:</b> <span>{guild.channels}</span></p>
 						</div>
 						<div>
-							<h5>Owner</h5>
-							<code>{guild.owner.displayName}</code>
+							<p><b>Owner:</b> <span>{guild.owner.tag}</span></p>
 						</div>
 					</div>
 				</div>

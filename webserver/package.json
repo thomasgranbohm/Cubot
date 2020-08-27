@@ -2,7 +2,7 @@
 	"name": "webserver",
 	"version": "0.1.0",
 	"private": true,
-	"homepage": "/",
+	"homepage": "/cubot/",
 	"proxy": "http://localhost:1337",
 	"dependencies": {
 		"@testing-library/jest-dom": "^4.2.4",

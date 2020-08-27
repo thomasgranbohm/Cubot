@@ -1,3 +1,9 @@
+nav.color-palette {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
 div.commands {
 	display: flex;
 	
