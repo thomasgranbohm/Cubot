@@ -13,7 +13,6 @@
 	border-radius: 12em;
 
 	padding: 2em;
-	margin-top: 4em;
 }
 
 .titles {
@@ -33,7 +32,7 @@
 }
 
 .info {
-	margin-bottom: 1em;
+	margin-bottom: 1.5em;
 }
 
 .invite-link .text{
@@ -46,6 +45,27 @@
 	border-radius: 4px;
 
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
+}
+
+.invite-link .text img {
+	width: 3em;
+	height: 3em;
+	margin: 0 0.5em;
+}
+.invite-link .text b {
+	margin-right: 2.5em;
+}
+
+@media only screen and (max-width: 600px) {
+
+	.main .logo {
+		width: 16em;
+		height: 16em;
+		border-radius: 12em;
+
+		padding: 2em;
+	}
+
 }

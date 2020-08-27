@@ -29,6 +29,8 @@ app.start = () => {
 
 	const api = express.Router();
 
+	app.use('/public', express.static(path.join(__dirname, 'public')))
+
 	app.use(express.static(path.join(__dirname, 'build')));
 
 	app.use('/api', api);

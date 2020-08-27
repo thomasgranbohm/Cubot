@@ -31,13 +31,7 @@ class Commands extends Component {
 		let link = (NODE_ENV === "production" ? PUBLIC_URL : '') + '/api/commands'
 		fetch(link)
 			.then(resp => resp.json())
-			.then(json => {
-				console.log(json)
-				this.setState({
-					commands: json.commands,
-					categories: json.categories
-				})
-			});
+			.then(({ commands, categories }) => this.setState({ commands, categories }));
 	}
 
 	render() {
@@ -54,7 +48,7 @@ class Commands extends Component {
 		return (
 			<div>
 				<nav className="color-palette">
-					{this.state.categories.map(c => <Color {...c} />)}
+					{this.state.categories.map(c => <Color {...c} key={c.name} />)}
 				</nav>
 				<div className="commands">
 					{commands}

@@ -5,9 +5,6 @@
 }
 
 :root {
-	/* --color: #24292e;
-	--background-color: rgb(250, 250, 250);
-	--alt-background-color: #fff;*/
 	--link-color: #00e; 
 	--color: #23272A;
 	--background-color: #FFFFFF;
@@ -16,11 +13,8 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--alt-background-color: rgb(28, 28, 28);
-		--background-color: #282828;
-		--color: white;
-		--link-color: #09f;
 		--color: #FFFFFF;
+		--link-color: #09f;
 		--background-color: #23272A;
 		--alt-background-color: #2C2F33;
 	}
@@ -35,7 +29,9 @@ body {
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 	background-color: var(--background-color);
-	color: var(--color)
+	color: var(--color);
+	
+	overflow-x: hidden;
 }
 
 code {

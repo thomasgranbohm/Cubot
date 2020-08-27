@@ -35,7 +35,8 @@ class Command extends Component {
 						<h2 className="title">{command.name}</h2>
 					</div>
 					<div className="divider"></div>
-					<div className="command-back py-2 px-3 d-flex flex-column flex-justify-evenly">
+					{/* <div className="divider" style={{ backgroundColor: `#${command.category.color}` }}></div> */}
+					<div className="command-back">
 						<div>
 							<h5>Description</h5>
 							<code className="description">{command.shortDesc} </code>
