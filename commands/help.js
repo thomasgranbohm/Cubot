@@ -4,14 +4,15 @@ let help = function (message, args) {
 	const client = message.client;
 	const { commands, utils } = client;
 	if (args.length == 0)
-		return utils.getHelp(help, true)
+		return utils
+			.getHelp(help, true)
 			.setTitle('List of all commands:')
 			.setDescription(
 				Object.keys(client.commands)
 					.sort((a, b) => a.localeCompare(b))
-					.filter(command => command !== this.name)
-					.map(name => client.commands[name])
-					.map(command => utils.getHelp(command))
+					.filter((command) => command !== this.name)
+					.map((name) => client.commands[name])
+					.map((command) => utils.getHelp(command))
 					.join('\n'),
 			);
 
