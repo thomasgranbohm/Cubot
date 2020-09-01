@@ -14,11 +14,9 @@ if (lastParam === "no-logger")
 app.use(cors());
 
 const categories = Object.entries(require('../config.json').categories)
-    .map(([key, value]) => {
+    .map(([name, color]) => {
         return {
-            // name: key.substr(0, 1).toUpperCase() + key.substr(1).toLowerCase(),
-            name: key,
-            color: value
+            name, color
         }
     });
 
