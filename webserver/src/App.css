@@ -1,0 +1,47 @@
+nav {
+	width: 100%;
+	display: flex;
+	height: 4em;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.link {
+	margin: 0 1em;
+	text-decoration: none;
+	color: var(--link-color);
+}
+
+.link img {
+	height: 2em;
+	width: 2em;
+	fill: var(--color);
+}
+
+.link img {
+	height: 1.75em;
+	width: 1.75em;
+	filter: invert(0%) sepia(85%) saturate(7454%) hue-rotate(310deg) brightness(87%) contrast(100%);	
+}
+
+.link.active img {
+	filter: invert(40%) sepia(63%) saturate(2780%) hue-rotate(183deg) brightness(104%) contrast(105%);
+}
+
+.link:hover {
+	color: var(--color);
+}
+
+.container {
+	width: 100%;
+	max-width: 297mm;
+
+	margin: 0 auto;
+}
+
+@media (prefers-color-scheme: dark) {
+	.link img {
+		filter: invert(93%) sepia(93%) saturate(29%) hue-rotate(39deg) brightness(106%) contrast(108%);
+	}
+
+}

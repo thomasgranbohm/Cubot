@@ -1,13 +1,20 @@
+// Loads tokens and such
+require('dotenv').config();
+
 const Discord = require('discord.js');
-const client = (module.exports = new Discord.Client());
+const client = new Discord.Client();
 
 const { Manager } = require("@lavacord/discord.js");
 
 const config = require('./config.json');
 const logger = require('./logger/');
 
-// Loads tokens and such
-require('dotenv').config();
+const webserver = require('./webserver');
+
+client.commands = {},
+	client.utils = {};
+
+module.exports = client;
 
 client.on('message', async (message) => {
 	let content = message.content.split('');
@@ -128,6 +135,8 @@ client.on('ready', async () => {
 	client.utils = require('./utils');
 
 	client.user.setActivity('you. !help', { type: 'WATCHING' });
+
+	webserver.start();
 
 	logger.log("I'm running! 😊");
 });

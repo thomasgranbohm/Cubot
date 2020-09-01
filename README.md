@@ -12,12 +12,13 @@
  - [x] Custom logger
  - [ ] Playlist support 
  - [ ] Server customizable prefix
- - [ ] Monitoring via web server
+ - [x] Monitoring via web server
 
 ## Example `.env` file
 ```.properties
 DISCORD_TOKEN=<your Discord bot token>
 OW_TOKEN=<your OpenWeather key>
+WEBSERVER_PORT=<port>
 ```
 
 ## Usage
