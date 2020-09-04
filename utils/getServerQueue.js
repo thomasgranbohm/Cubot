@@ -1,1 +1,0 @@
-module.exports = getServerQueue = (client, guildID) => client.servers[guildID].queue;
