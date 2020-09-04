@@ -6,13 +6,13 @@
  - [Lavalink](https://github.com/Frederikam/Lavalink) <= v3.3.1
 
 ## Features
- - [x] YouTube, SoundCloud, audio file playback.
- - [x] Equalizers
- - [x] Weather information
- - [x] Custom logger
+ - [ ] YouTube, SoundCloud, audio file playback.
+ - [ ] Equalizers
+ - [ ] Weather information
+ - [ ] Custom logger
  - [ ] Playlist support 
  - [ ] Server customizable prefix
- - [x] Monitoring via web server
+ - [ ] Monitoring via web server
 
 ## Example `.env` file
 ```.properties
