@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Bot } from "../index";
 import { Command } from "../classes";
-import { Categories } from "../types";
+import { Categories } from "../config";
 import { NoTrackPlayingError as NotPlayingError } from "../errors";
 import { checkUserVoice, checkBotVoice, getServerQueue, nowPlayingEmbed } from "../utils";
 

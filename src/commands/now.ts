@@ -1,7 +1,7 @@
 import { Command } from "../classes";
 import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
-import { Categories } from "../types";
+import { Categories } from "../config";
 
 export class Now extends Command {
 

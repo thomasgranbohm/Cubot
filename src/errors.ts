@@ -58,3 +58,8 @@ export class VolumeNotBetweenThresholdError extends Error {
 	name: string = "VolumeNotBetweenThreshold";
 	message: string = "Volume needs to be between 0 and 200";
 }
+
+export class MissingPermissionsError extends Error {
+	name: string = "MissingPermissionsError";
+	message: string = `Please give me the the missing permissions.`;
+}

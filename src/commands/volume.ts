@@ -1,10 +1,10 @@
 import { Command } from "../classes";
 import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
-import { Categories } from "../types";
+import { Categories } from "../config";
 import { checkUserVoice, checkBotVoice } from "../utils";
 import { NoTrackPlayingError, VolumeNotBetweenThresholdError } from "../errors";
-import { UPPER_VOLUME_LIMIT } from "../config";
+import { UPPER_VOLUME_LIMIT } from "../constants";
 
 export class Volume extends Command {
 

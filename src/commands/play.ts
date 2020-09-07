@@ -1,9 +1,10 @@
 import { Command, TrackEmbed } from "../classes";
 import { Bot } from "../index";
 import { Message, MessageEmbed, User } from "discord.js";
-import { Categories, TrackObject } from "../types";
+import { Categories } from "../config";
 import { ResultError as NoResultsError, NoGuildFoundError } from "../errors";
 import { checkUserVoice, initiatePlayer, getServerQueue, getTracks, setServerQueue, getIdealHost, queueLoop, getThumbnail } from "../utils";
+import { TrackObject } from "../types";
 
 let setTrackInfo = (track: TrackObject, author: User): TrackObject => {
 	track.title = track.title.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');

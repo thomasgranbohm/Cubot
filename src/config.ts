@@ -1,8 +1,20 @@
-import { config } from "dotenv";
-import { resolve } from "path";
-config({ path: resolve(process.cwd(), '.env') })
+export const Categories = {
+	VOICE: "85e89d",
+	UTILS: "f97583",
+	MISC: "f692ce",
+	ADMIN: "ffea7f",
+};
 
-export const DISCORD_TOKEN = process.env.DISCORD_TOKEN || "INSERT YOUR TOKEN IN THE .env FILE";
-export const PREFIX = "?";
-export const OWNER = "284754083049504770";
-export const UPPER_VOLUME_LIMIT = 300;
+export const LavalinkConfig = {
+	host: "192.168.1.147",
+	port: 2333,
+	password: "youshallnotpass",
+	nodes: [
+		{
+			id: "1",
+			host: "192.168.1.147",
+			port: 2333,
+			password: "youshallnotpass"
+		}
+	]
+}

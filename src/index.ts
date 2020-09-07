@@ -1,13 +1,15 @@
 import { Client, Collection, Message } from "discord.js";
 import { Manager } from "@lavacord/discord.js";
 
-import { DISCORD_TOKEN, OWNER, PREFIX } from "./config";
-import { BotOptions, LavalinkConfig, ServerObject } from "./types";
-import { ArgumentError, OwnerError, PermissionError } from "./errors";
+import { DISCORD_TOKEN, OWNER, PREFIX } from "./constants";
+import { BotOptions, ServerObject } from "./types";
+import { ArgumentError, OwnerError, PermissionError, MissingPermissionsError } from "./errors";
 
 import { Command } from "./classes";
 import * as commands from "./commands";
 import { sendMessage } from "./utils";
+import { LavalinkConfig } from "./config";
+import sendError from "./utils/sendError";
 
 export class Bot extends Client {
 	public owner: string;
@@ -35,8 +37,6 @@ export class Bot extends Client {
 		this.on('ready', this.onReady)
 		this.on('message', this.onMessage)
 
-		this.user?.setActivity
-
 		this.login(token).then(() => console.log(`Ready at ${new Date().toString().substr(16, 8)}`));
 	}
 
@@ -55,10 +55,18 @@ export class Bot extends Client {
 	}
 
 	async onMessage(message: Message): Promise<void> {
-		const { content, channel, author } = message;
+		const { content, channel, author, guild } = message;
 
 		const isBot = author.bot;
 		if (isBot) return;
+
+		// TODO permission check
+		// let guildMember = await message.guild?.members.fetch(this.user as User);
+		// let rolesOfMember = guildMember?.roles.cache.find((role, key) => role.permissions.DEFAULT === PERMISSIONS_INTEGER);
+		// if (guildMember) {
+		// 	let permissions = (channel as GuildChannel).permissionsFor(guildMember)
+		// 	console.log(permissions)
+		// }
 
 		const hasPrefix = content.startsWith(this.prefix);
 		if (!hasPrefix) return console.warn("Has no prefix");
@@ -87,7 +95,20 @@ export class Bot extends Client {
 
 		if (!returningMessage) return;
 
-		sendMessage(channel, returningMessage, command.group, author);
+		message
+			.delete({ timeout: 3000 })
+			.catch(err => {
+				console.error(err)
+				if (guild) {
+					sendError(this, new MissingPermissionsError(), message)
+				}
+			});
+
+		if (message instanceof Error) {
+			sendError(this, returningMessage, message);
+		} else {
+			sendMessage(channel, returningMessage, command.group, author);
+		}
 	}
 }
 

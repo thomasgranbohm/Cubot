@@ -1,10 +1,11 @@
 import { Command } from "../classes";
 import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
-import { Categories, TrackObject } from "../types";
+import { Categories } from "../config";
 import { TrackEmbed } from "../classes";
 import { NoTrackPlayingError } from "../errors";
 import { checkBotVoice, checkUserVoice, getServerQueue, getUserAvatar } from "../utils";
+import { TrackObject } from "../types";
 
 export class Queue extends Command {
 
