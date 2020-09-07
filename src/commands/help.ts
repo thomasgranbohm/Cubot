@@ -1,4 +1,4 @@
-import { Command } from "../classes/command";
+import { Command } from "../classes";
 import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
 import { Categories } from "../types";

@@ -1,12 +1,9 @@
-import { Command } from "../classes/command";
-import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
+import { Bot } from "../index";
+import { Command } from "../classes";
 import { Categories } from "../types";
-import checkUserVoice from "../utils/checkUserVoice";
-import checkBotVoice from "../utils/checkBotVoice";
 import { NoTrackPlayingError as NotPlayingError } from "../errors";
-import getServerQueue from "../utils/getServerQueue";
-import nowPlayingEmbed from "../utils/nowPlayingEmbed";
+import { checkUserVoice, checkBotVoice, getServerQueue, nowPlayingEmbed } from "../utils";
 
 export class Skip extends Command {
 

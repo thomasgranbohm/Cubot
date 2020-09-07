@@ -14,5 +14,5 @@ export default function (client: Bot, message: Message): string {
 	if (!queue || queue.length == 0)
 		throw new NoTrackPlayingError();
 
-	return guildId
+	return guildId;
 }

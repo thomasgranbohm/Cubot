@@ -1,0 +1,45 @@
+{
+	"Create Command": {
+		"prefix": "cc",
+		"body": [
+			"import { Command } from \"../classes\";",
+			"import { Bot } from \"../index\";",
+			"import { Message, MessageEmbed } from \"discord.js\";",
+			"import { Categories } from \"../types\";",
+			"",
+			"export class $1 extends Command {",
+			"",
+			"\tconstructor(client: Bot) {",
+			"\t\tsuper(client, {",
+			"\t\t\taliases: [\"$2\"],",
+			"\t\t\tdescription: \"$3\",",
+			"\t\t\tgroup: Categories.${4:MISC}",
+			"\t\t})",
+			"\t}",
+			"\t",
+			"\tasync run(message: Message, args?: string[]): Promise<string | MessageEmbed | null> {",
+			"\t\t${0:throw new Error(\"Method not implemented.\");}",
+			"\t}",
+			"",
+			"}"
+		],
+		"description": "Create Command"
+	},
+	"Create Error": {
+		"prefix": "err",
+		"body": [
+			"export class $1Error extends Error {",
+			"\tname: string = \"$1\";",
+			"\tmessage: string = \"$2\";",
+			"}"
+		]
+	},
+	"Create Util": {
+		"prefix": "util",
+		"body": [
+			"export default function ($1) {",
+			"\t$0",
+			"}"
+		]
+	}
+}

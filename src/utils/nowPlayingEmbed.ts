@@ -2,7 +2,7 @@ import { TrackObject } from "../types";
 import { MessageEmbed } from "discord.js";
 import { NoTrackPlayingError } from "../errors";
 import getUserAvatar from "./getUserAvatar";
-import { TrackEmbed } from "../classes/trackembed";
+import { TrackEmbed } from "../classes";
 
 export default function (currentTrack: TrackObject): MessageEmbed {
 	if (!currentTrack) throw new NoTrackPlayingError();

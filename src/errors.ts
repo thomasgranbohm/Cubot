@@ -1,4 +1,4 @@
-import { Command } from "./classes/command";
+import { Command } from "./classes";
 
 export class ArgumentError extends Error {
 	name: string = "ArgumentError";
@@ -52,4 +52,9 @@ export class BotNotInVoiceError extends Error {
 export class BotInAnotherVoiceError extends Error {
 	name: string = "BotInAnotherVoice";
 	message: string = "I'm already in another voice channel.";
+}
+
+export class VolumeNotBetweenThresholdError extends Error {
+	name: string = "VolumeNotBetweenThreshold";
+	message: string = "Volume needs to be between 0 and 200";
 }

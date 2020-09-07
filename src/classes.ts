@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
-import { CommandOptions } from "../types";
-import { Bot } from "../index";
+import { Bot } from "src";
+import { CommandOptions, TrackObject } from "./types";
 
 export abstract class Command {
 	names: string[];
@@ -70,5 +70,21 @@ export abstract class Command {
 		if (this.needsArgs && this.examples.length > 0)
 			string += ` ${this.examples.pop()}`;
 		return string;
+	}
+}
+
+export class TrackEmbed extends MessageEmbed {
+	constructor(track: TrackObject) {
+		super();
+		let { thumbnail } = track;
+
+
+		if (thumbnail) {
+			this
+				.attachFiles([
+					{ attachment: thumbnail, name: `thumbnail.jpg` },
+				])
+				.setThumbnail(`attachment://thumbnail.jpg`);
+		}
 	}
 }

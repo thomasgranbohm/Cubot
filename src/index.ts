@@ -1,11 +1,13 @@
-import { DISCORD_TOKEN, OWNER, PREFIX } from "./config.bot";
 import { Client, Collection, Message } from "discord.js";
-import { Command } from "./classes/command";
-import { BotOptions, LavalinkConfig, ServerObject } from "./types";
-import * as commands from "./commands";
-import { ArgumentError, OwnerError, PermissionError } from "./errors";
 import { Manager } from "@lavacord/discord.js";
-import sendMessage from "./utils/sendMessage";
+
+import { DISCORD_TOKEN, OWNER, PREFIX } from "./config";
+import { BotOptions, LavalinkConfig, ServerObject } from "./types";
+import { ArgumentError, OwnerError, PermissionError } from "./errors";
+
+import { Command } from "./classes";
+import * as commands from "./commands";
+import { sendMessage } from "./utils";
 
 export class Bot extends Client {
 	public owner: string;
@@ -39,7 +41,6 @@ export class Bot extends Client {
 	}
 
 	loadCommands(): void {
-
 		const entries = Object.entries(commands);
 		for (let [name, command] of entries) {
 			this.commands.set(name.toLowerCase(), new command(this));

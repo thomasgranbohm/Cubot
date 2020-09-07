@@ -1,17 +1,9 @@
-import { Command } from "../classes/command";
+import { Command, TrackEmbed } from "../classes";
 import { Bot } from "../index";
 import { Message, MessageEmbed, User } from "discord.js";
 import { Categories, TrackObject } from "../types";
-import checkUserVoice from "../utils/checkUserVoice";
-import initiatePlayer from "../utils/initiatePlayer";
-import getServerQueue from "../utils/getServerQueue";
-import getTracks from "../utils/getTracks";
 import { ResultError as NoResultsError, NoGuildFoundError } from "../errors";
-import getIdealHost from "../utils/getIdealHost";
-import queueLoop from "../utils/queueLoop";
-import getThumbnail from "../utils/getThumbnail";
-import { TrackEmbed } from "../classes/trackembed";
-import setServerQueue from "../utils/setServerQueue";
+import { checkUserVoice, initiatePlayer, getServerQueue, getTracks, setServerQueue, getIdealHost, queueLoop, getThumbnail } from "../utils";
 
 let setTrackInfo = (track: TrackObject, author: User): TrackObject => {
 	track.title = track.title.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
