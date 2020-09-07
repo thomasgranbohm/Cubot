@@ -2,27 +2,30 @@
 	"name": "cubot",
 	"version": "2.0.0",
 	"shortDesc": "CuBot is a discord-bot",
-	"main": "bot.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "NODE_ENV=development node bot.js",
-		"prod": "NODE_ENV=production node bot.js"
-	},
 	"keywords": [],
-	"author": "Tokxhu",
-	"license": "ISC",
+	"author": "thomasgranbohm",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"watch": "tsc -w",
+		"dev": "nodemon dist/index.js"
+	},
+	"devDependencies": {
+		"@types/better-sqlite3": "^5.4.0",
+		"@types/node": "^14.6.3",
+		"@types/ws": "^7.2.6",
+		"nodemon": "^2.0.4",
+		"typescript": "^4.0.2"
+	},
 	"dependencies": {
-		"@lavacord/discord.js": "0.0.5",
-		"axios": "^0.19.2",
-		"chalk": "^3.0.0",
-		"cors": "^2.8.5",
+		"@lavacord/discord.js": "^0.0.7",
+		"@types/sharp": "^0.25.1",
+		"axios": "^0.20.0",
+		"better-sqlite3": "^7.1.0",
 		"discord.js": "^12.3.1",
 		"dotenv": "^8.2.0",
-		"express": "^4.17.1",
-		"image-downloader": "^3.6.0",
-		"jimp": "^0.9.8",
-		"lavacord": "^1.1.9",
-		"morgan": "^1.10.0",
-		"opusscript": "0.0.7"
+		"image-downloader": "^4.0.1",
+		"sharp": "^0.26.0",
+		"sqlite": "^4.0.14"
 	}
 }
