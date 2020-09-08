@@ -1,17 +1,15 @@
 import { TrackObject } from "../types";
 import { resolve } from "path";
 import axios from "axios";
-import { opendir, mkdir } from 'fs/promises';
-import { createWriteStream } from "fs";
+import { opendirSync, mkdirSync, writeFileSync, createWriteStream } from 'fs';
 import sharp from "sharp";
-import { writeFile } from "fs/promises";
 
 let download = function (uri: string, path: string, filename: string): Promise<string> {
 	return new Promise(async (res, rej) => {
 		try {
-			await opendir(path);
+			await opendirSync(path);
 		} catch (err) {
-			await mkdir(path);
+			await mkdirSync(path);
 		}
 
 		let fullPath = resolve(path, filename);
@@ -61,7 +59,7 @@ export default async function (track: TrackObject): Promise<string | null> {
 				.jpeg()
 				.toBuffer();
 
-			await writeFile(fullPath, buffer, { flag: "w" });
+			await writeFileSync(fullPath, buffer, { flag: "w" });
 			return fullPath;
 		} catch (err) {
 			if (!err.isAxiosError)
