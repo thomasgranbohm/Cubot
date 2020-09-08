@@ -1,4 +1,4 @@
-import { Client, Collection, Message } from "discord.js";
+import { Client, Collection, Message, VoiceState } from "discord.js";
 import { Manager } from "@lavacord/discord.js";
 
 import { DISCORD_TOKEN, OWNER, PREFIX } from "./constants";
@@ -36,6 +36,7 @@ export class Bot extends Client {
 
 		this.on('ready', this.onReady)
 		this.on('message', this.onMessage)
+		this.on('voiceStateUpdate', this.onVoiceStateUpdate)
 
 		this.login(token).then(() => console.log(`Ready at ${new Date().toString().substr(16, 8)}`));
 	}
@@ -92,7 +93,6 @@ export class Bot extends Client {
 			sendError(this, err, message);
 		}
 
-
 		message
 			.delete({ timeout: 3000 })
 			.catch(err => {
@@ -101,6 +101,36 @@ export class Bot extends Client {
 					sendError(this, new MissingPermissionsError(), message)
 				}
 			});
+	}
+
+	async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
+		let guild = this.guilds.cache.get(oldState.guild.id);
+		if (!guild)
+			return;
+
+		let voiceChannelId;
+		if (oldState.channel) voiceChannelId = oldState.channel.id;
+		else if (newState.channel) voiceChannelId = newState.channel.id;
+		else return;
+
+		let channel = guild.channels.cache.get(voiceChannelId);
+		if (!channel)
+			return;
+
+		let userId = this.user?.id;
+		if (!userId)
+			return;
+		let isInVoiceChannel = !!channel.members.get(userId);
+		let onlyPersonInVC = (channel.members.size <= 1 && isInVoiceChannel);
+
+		let justLeftVC = !isInVoiceChannel && channel.members.size >= 1 && oldState.member?.user == this.user;
+		if (onlyPersonInVC || justLeftVC) {
+			this.manager.leave(oldState.guild.id);
+
+			if (this.servers.get(oldState.guild.id)) {
+				this.servers.delete(oldState.guild.id);
+			}
+		}
 	}
 }
 
