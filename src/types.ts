@@ -1,4 +1,5 @@
 import { ClientOptions, User, Message } from "discord.js";
+import { PlayerEqualizerBand } from "@lavacord/discord.js";
 
 export type BotOptions = ClientOptions & {
 	owner: string,
@@ -22,6 +23,7 @@ export type ServerObject = {
 		track: TrackObject,
 		message: Message
 	},
+	equalizer?: Equalizer
 }
 
 export type TrackObject = {
@@ -36,4 +38,10 @@ export type TrackObject = {
 	track: string,
 	requester: User,
 	thumbnail?: string | null
+}
+
+export type Equalizer = {
+	name: String,
+	description: String,
+	bands: PlayerEqualizerBand[];
 }

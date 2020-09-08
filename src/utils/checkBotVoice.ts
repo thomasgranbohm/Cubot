@@ -1,5 +1,5 @@
 import { Bot } from "src";
-import { BotNotInVoiceError, NoTrackPlayingError, NoGuildFoundError } from "../errors";
+import { BotNotInVoiceError, NotPlayingError, NoGuildFoundError } from "../errors";
 import getServerQueue from "./getServerQueue";
 import { Message } from "discord.js";
 
@@ -12,7 +12,7 @@ export default function (client: Bot, message: Message): string {
 
 	let queue = getServerQueue(client, guildId);
 	if (!queue || queue.length == 0)
-		throw new NoTrackPlayingError();
+		throw new NotPlayingError();
 
 	return guildId;
 }

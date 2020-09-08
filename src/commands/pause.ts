@@ -9,6 +9,7 @@ export class Pause extends Command {
 	constructor(client: Bot) {
 		super(client, {
 			description: "Pauses the playing track.",
+			aliases: ["resume"],
 			group: Categories.VOICE,
 			guildOnly: true
 		})

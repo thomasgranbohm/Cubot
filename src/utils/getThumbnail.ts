@@ -1,4 +1,3 @@
-import { Bot } from "src";
 import { TrackObject } from "../types";
 import { resolve } from "path";
 import axios from "axios";
@@ -18,17 +17,25 @@ let download = function (uri: string, path: string, filename: string): Promise<s
 		let fullPath = resolve(path, filename);
 		let filestream = await createWriteStream(fullPath)
 			.on('finish', () => {
-				filestream.close();
+				filestream.end();
 				res(fullPath)
 			})
-		let resp = await axios.get(uri, {
-			responseType: "stream"
-		});
-		resp.data.pipe(filestream);
+
+		try {
+			let resp = await axios.get(uri, {
+				responseType: "stream"
+			});
+			resp.data.pipe(filestream);
+		} catch (error) {
+			rej(error)
+		}
 	});
 };
 
-export default async function (client: Bot, track: TrackObject): Promise<string | null> {
+export default async function (track: TrackObject): Promise<string | null> {
+	// TODO is weird. Called all over the place with no real consistancy
+	if (!track.uri.includes("youtube") || typeof track.thumbnail === "string")
+		return null;
 	let resolutions = [
 		'maxres',
 		'sd',
@@ -39,14 +46,12 @@ export default async function (client: Bot, track: TrackObject): Promise<string 
 	for (let res of resolutions) {
 		let path = resolve(process.env.PWD || __dirname, `./thumbnails/`);
 		try {
-			// TODO byt till egen image downloader
 			let fullPath = await download(
 				`https://i.ytimg.com/vi/${track.identifier}/${res}default.jpg`,
 				path,
 				`${track.identifier}-${res}.jpg`
 			);
 
-			// let offset = (img.getHeight() - (img.getWidth() * 9 / 16)) / 2;
 			let buffer = await sharp(fullPath)
 				.resize({
 					width: 1600,
@@ -60,8 +65,7 @@ export default async function (client: Bot, track: TrackObject): Promise<string 
 			return fullPath;
 		} catch (err) {
 			if (!err.isAxiosError)
-				console.error("Other error", err)
-
+				console.error(err, "Not an axios error in thumbnails")
 			continue;
 		}
 	}

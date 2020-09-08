@@ -3,7 +3,7 @@ import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
 import { Categories } from "../config";
 import { checkUserVoice, checkBotVoice } from "../utils";
-import { NoTrackPlayingError, VolumeNotBetweenThresholdError } from "../errors";
+import { NotPlayingError, VolumeNotBetweenThresholdError } from "../errors";
 import { UPPER_VOLUME_LIMIT } from "../constants";
 
 export class Volume extends Command {
@@ -22,7 +22,7 @@ export class Volume extends Command {
 		let guildId = await checkBotVoice(this.client, message);
 
 		const player = this.client.manager.players.get(guildId)
-		if (!player) throw new NoTrackPlayingError();
+		if (!player) throw new NotPlayingError();
 
 		const currentVolume = player.state.volume;
 

@@ -3,7 +3,7 @@ import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
 import { Categories } from "../config";
 import { TrackEmbed } from "../classes";
-import { NoTrackPlayingError } from "../errors";
+import { NotPlayingError } from "../errors";
 import { checkBotVoice, checkUserVoice, getServerQueue, getUserAvatar } from "../utils";
 import { TrackObject } from "../types";
 
@@ -19,35 +19,34 @@ export class Queue extends Command {
 	}
 
 	async run(message: Message, args?: string[]): Promise<string | MessageEmbed | null> {
-
-
 		let guildId = await checkBotVoice(this.client, message);
 		await checkUserVoice(message);
 
 		let queue = getServerQueue(this.client, guildId);
 
-		if (queue.length === 0) throw new NoTrackPlayingError();
+		if (queue.length === 0) throw new NotPlayingError();
 
 		let currentlyPlaying = queue.shift();
 		let tracks = queue.map(({ title, uri, author }: TrackObject) => ({ title, uri, author }))
 
-		if (!currentlyPlaying) throw new NoTrackPlayingError();
+		if (!currentlyPlaying) throw new NotPlayingError();
 
 		let { author, requester, title, uri } = currentlyPlaying;
 
-		let embed = new TrackEmbed(currentlyPlaying)
+		let embed = await new TrackEmbed(currentlyPlaying)
 			.setTitle(`Queue for ${message.guild?.name}`)
 			.addField(
 				`Currently playing`,
-				`[**${title}**](${uri}) by ${author}`
+				`[**${title}**](${uri}) by **${author}**`
 			)
 			.setFooter(
 				`Track requested by ${requester.username}`,
 				getUserAvatar(requester),
-			);
+			)
+			.getThumbnail();
 
 		if (queue.length > 0) {
-			let strings = tracks.slice(0, 5).map(t => `**\`${tracks.indexOf(t) + 1}.\`** [${t.title}](${t.uri})`);
+			let strings = tracks.slice(0, 5).map(({ title, uri }, i) => `**\`${i + 1}.\`** [${title.length > 48 ? title.substr(0, 48) + "..." : title}](${uri})`);
 			if (queue.length > 5) {
 				strings.push(`\nPlus ${queue.length - 5} more...`);
 			}

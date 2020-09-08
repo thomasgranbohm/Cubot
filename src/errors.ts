@@ -36,7 +36,7 @@ export class NoNodeFoundError extends Error {
 	message: string = "No audio node found. Please contact the owner!";
 }
 
-export class NoTrackPlayingError extends Error {
+export class NotPlayingError extends Error {
 	name: string = "NoTrackPlaying";
 	message: string = "I'm not playing anything.";
 }

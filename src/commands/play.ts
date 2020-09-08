@@ -6,11 +6,14 @@ import { ResultError as NoResultsError, NoGuildFoundError } from "../errors";
 import { checkUserVoice, initiatePlayer, getServerQueue, getTracks, setServerQueue, getIdealHost, queueLoop, getThumbnail } from "../utils";
 import { TrackObject } from "../types";
 
-let setTrackInfo = (track: TrackObject, author: User): TrackObject => {
+let setTrackInfo = async (track: TrackObject, author: User): Promise<TrackObject> => {
 	track.title = track.title.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
 
 	track.requester = author;
-
+	if (!track.thumbnail) {
+		let path = await getThumbnail(track);
+		if (!!path) track.thumbnail = path;
+	}
 	return track;
 }
 
@@ -19,10 +22,11 @@ export class Play extends Command {
 	constructor(client: Bot) {
 		super(client, {
 			aliases: ["p", "add"],
-			description: "Plays the args given.",
+			description: "Plays the given query or link in your voice channel.",
 			group: Categories.VOICE,
+			guildOnly: true,
 			needsArgs: true,
-			examples: ["<args>"]
+			examples: ["<query>", "<link>"]
 		})
 	}
 
@@ -48,10 +52,14 @@ export class Play extends Command {
 			isFirst = true;
 
 		if (playlist) {
-			queue.push(...tracks.map(t => setTrackInfo(t, message.author)));
+			let toPush = await Promise.all(tracks.map(async t => await setTrackInfo(t, message.author)))
+			queue.push(...toPush);
 		} else {
 			let track = tracks.shift();
-			if (track) queue.push(setTrackInfo(track, message.author))
+			if (track) {
+				let trackObject = await setTrackInfo(track, message.author)
+				queue.push(trackObject)
+			}
 		}
 
 		setServerQueue(this.client, guildId, queue);
@@ -82,17 +90,18 @@ export class Play extends Command {
 				let addedTrack = queue.slice().pop();
 				if (!addedTrack) throw new NoResultsError();
 
-				if (addedTrack.uri.includes("youtube") && typeof addedTrack.thumbnail !== "string")
-					addedTrack.thumbnail = await getThumbnail(this.client, addedTrack);
+				addedTrack.thumbnail = await getThumbnail(addedTrack);
 
-				let { author, title } = addedTrack;
+				let { author, title, uri } = addedTrack;
 
-				let embed = new TrackEmbed(addedTrack)
-					.setTitle('Added to queue')
-					.setDescription(`**${title}** by ${author}\n\nThere ${(queue.length - 1) > 1 ? `are ${queue.length - 1} tracks` : `is ${queue.length - 1} track`} before it.`)
-
+				let embed = await new TrackEmbed(addedTrack)
+					.setTitle(`Added to the queue :notepad_spiral:`)
+					.setDescription(`**[${title}](${uri})** by **${author}**\nIt is **#${queue.length - 1}** in the queue`)
+					.getThumbnail()
 				return embed;
 			} else {
+				// TODO better message
+				// Embed with pages for playlist.
 				return "Added everything from the playlist to the queue."
 			}
 		}

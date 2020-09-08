@@ -69,16 +69,12 @@ export class Bot extends Client {
 		// }
 
 		const hasPrefix = content.startsWith(this.prefix);
-		if (!hasPrefix) return console.warn("Has no prefix");
+		if (!hasPrefix) return;
 
 		const [name, ...args] = content.substr(1).split(" ");
 
-		const command = this.commands.get(name);
+		const command = this.commands.find((c) => c.names.includes(name));
 		if (!command) return;
-
-		let returningMessage = undefined;
-
-		console.warn("Found command", command.names.slice().shift())
 
 		try {
 			if (command.needsArgs && args.length === 0)
@@ -88,12 +84,14 @@ export class Bot extends Client {
 			if (command.guildOnly && channel.type !== "text")
 				throw new PermissionError()
 
-			returningMessage = await command.run(message, args)
+			let returningMessage = await command.run(message, args)
+			if (!returningMessage || returningMessage === null) return;
+
+			sendMessage(channel, returningMessage, command.group, author)
 		} catch (err) {
-			returningMessage = err;
+			sendError(this, err, message);
 		}
 
-		if (!returningMessage) return;
 
 		message
 			.delete({ timeout: 3000 })
@@ -103,12 +101,6 @@ export class Bot extends Client {
 					sendError(this, new MissingPermissionsError(), message)
 				}
 			});
-
-		if (message instanceof Error) {
-			sendError(this, returningMessage, message);
-		} else {
-			sendMessage(channel, returningMessage, command.group, author);
-		}
 	}
 }
 
