@@ -1,29 +1,24 @@
-# CuBot - a Discord Bot!
+# CuBot  
+A Discord bot that's easy so set up and self host!
 
-## Dependencies
- - NodeJS <= v13.14
- - DiscordJS <= v12.2.0
- - [Lavalink](https://github.com/Frederikam/Lavalink) <= v3.3.1
+## 🏃 Quick Setup
+1. Install and start [Lavalink](https://github.com/Frederikam/Lavalink)
+2. Run `npm install` or `yarn install`
+3. Create your `.env` file
+4. Start the bot by running `npm start` or `yarn start`
 
-## Features
- - [x] YouTube, SoundCloud, audio file playback.
- - [x] Equalizers
- - [x] Weather information
- - [x] Custom logger
- - [ ] Playlist support 
- - [ ] Server customizable prefix
- - [x] Monitoring via web server
-
-## Example `.env` file
+### Example `.env` file
 ```.properties
 DISCORD_TOKEN=<your Discord bot token>
-OW_TOKEN=<your OpenWeather key>
-WEBSERVER_PORT=<port>
 ```
 
-## Usage
-1. Install the required dependencies.  
-2. Create your `.env` file
-3. Start the bot by either using `npm run prod` or `npm run dev`.  
+## ✨ Features
+ - [x] YouTube, SoundCloud, audio file playback.
+ - [x] Equalizers
+ - [x] Playlist support 
+ - [ ] Server customizable prefix
 
-To disable the custom logger, start the bot with `no-logger` as an argument.
+## 📌 Dependencies
+ - Node.js <= v13.14
+ - Discord.js <= v12.2.0
+ - [Lavalink](https://github.com/Frederikam/Lavalink) <= v3.3.1.1

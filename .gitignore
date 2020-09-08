@@ -60,7 +60,7 @@ typings/
 # next.js build output
 .next
 
-thumbnails/*
-!thumbnails/.gitkeep
-test/
+thumbnails
+dist
+test
 database.sqlite
