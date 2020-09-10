@@ -6,3 +6,4 @@ export { Volume } from "./volume";
 export { Pause } from "./pause"
 export { Now } from "./now"
 export { Equalizers } from "./equalizers"
+export { Loop } from "./loop"

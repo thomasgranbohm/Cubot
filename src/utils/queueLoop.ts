@@ -13,7 +13,10 @@ export default async function queueLoop(client: Bot, guildId: string, player: Pl
 
 	player.once('end', async (data) => {
 		if (data.reason === "REPLACED") console.warn("Track was replaced...");
-		queue = setServerQueue(client, guildId, getServerQueue(client, guildId).slice(1));
+		let server = client.servers.get(guildId);
+		queue = getServerQueue(client, guildId);
+		if (server && !server.loop)
+			queue = setServerQueue(client, guildId, queue.slice(1));
 		// TODO Loop
 		if (queue.length > 0) queueLoop(client, guildId, player);
 	});

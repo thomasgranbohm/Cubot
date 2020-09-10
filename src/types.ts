@@ -23,7 +23,8 @@ export type ServerObject = {
 		track: TrackObject,
 		message: Message
 	},
-	equalizer?: Equalizer
+	equalizer?: Equalizer,
+	loop?: boolean
 }
 
 export type TrackObject = {
