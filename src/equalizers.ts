@@ -6,8 +6,8 @@ export const flat = {
 	description: "Default equalizer",
 	bands: new Array<PlayerEqualizerBand>(15).fill({ gain: 0, band: 0 }).map((_, i) => ({ gain: 0, band: i }))
 } as Equalizer;
-export const boost = {
-	name: "boost",
+export const bass = {
+	name: "bass",
 	description: "Bass boost equalizer",
 	bands: [
 		{ band: 0, gain: 0.3 },

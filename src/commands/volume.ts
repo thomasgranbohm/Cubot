@@ -10,7 +10,7 @@ export class Volume extends Command {
 
 	constructor(client: Bot) {
 		super(client, {
-			aliases: ["vol"],
+			aliases: ["vol", "v"],
 			description: "Change the volume of the playing track.",
 			group: Categories.VOICE,
 			guildOnly: true
