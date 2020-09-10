@@ -1,28 +1,26 @@
 import { TrackObject } from "../types";
 import { resolve } from "path";
 import axios from "axios";
-import { opendirSync, mkdirSync, writeFileSync, createWriteStream } from 'fs';
+import { promises as fs, writeFileSync, createWriteStream } from 'fs';
 import sharp from "sharp";
 
 let download = function (uri: string, path: string, filename: string): Promise<string> {
 	return new Promise(async (res, rej) => {
 		try {
-			await opendirSync(path);
-		} catch (err) {
-			await mkdirSync(path);
-		}
+			await fs.mkdir(path);
+		} catch (err) { }
 
 		let fullPath = resolve(path, filename);
-		let filestream = await createWriteStream(fullPath)
-			.on('finish', () => {
-				filestream.end();
-				res(fullPath)
-			})
-
 		try {
 			let resp = await axios.get(uri, {
 				responseType: "stream"
 			});
+			let filestream = await createWriteStream(fullPath)
+				.on('finish', () => {
+					filestream.end();
+					res(fullPath)
+				})
+
 			resp.data.pipe(filestream);
 		} catch (error) {
 			rej(error)
