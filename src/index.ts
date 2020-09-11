@@ -1,4 +1,4 @@
-import { Client, Collection, Message, VoiceState } from "discord.js";
+import { Client, Collection, DMChannel, Message, VoiceState } from "discord.js";
 import { Manager } from "@lavacord/discord.js";
 
 import { DISCORD_TOKEN, OWNER, PREFIX } from "./constants";
@@ -93,14 +93,15 @@ export class Bot extends Client {
 			sendError(this, err, message);
 		}
 
-		message
-			.delete({ timeout: 3000 })
-			.catch(err => {
-				console.error(err)
-				if (guild) {
-					sendError(this, new MissingPermissionsError(), message)
-				}
-			});
+		if (channel instanceof DMChannel !== true) {
+			message
+				.delete({ timeout: 3000 })
+				.catch(err => {
+					if (guild) {
+						sendError(this, new MissingPermissionsError(), message)
+					}
+				});
+		}
 	}
 
 	async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {

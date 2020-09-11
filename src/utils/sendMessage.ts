@@ -16,7 +16,7 @@ export default async function (channel: TextChannel | DMChannel | NewsChannel, m
 
 	let sentMessage = await channel.send(message);
 
-	if (author && channel instanceof DMChannel !== true) {
+	if (author) {
 		sentMessage.delete({ timeout: 15000 });
 	}
 }
