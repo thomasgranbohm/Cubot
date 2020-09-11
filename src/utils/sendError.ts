@@ -8,7 +8,7 @@ export default async function (client: Bot, error: Error, message: Message) {
 	let embed = new MessageEmbed()
 		.setColor('RED');;
 	const isDefinedError = Object.values(errors).some((e) => (error instanceof e));
-	if (isDefinedError) {
+	if (isDefinedError && error instanceof errors.UnexpectedError !== true) {
 		embed
 			.setTitle(error.message);
 	} else {
@@ -23,8 +23,8 @@ export default async function (client: Bot, error: Error, message: Message) {
 					.setTimestamp()
 			);
 		}
-		embed.setTitle("Oops, an actual error...")
-			.setDescription("Sorry about that. Please try again!\nReoccurring issue? [Please report it!](https://github.com/thomasgranbohm/CuBot/issues)")
+		embed.setTitle(error.name)
+			.setDescription(error.message);
 	}
 	let sentMessage = await channel.send(embed);
 

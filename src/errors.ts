@@ -1,4 +1,5 @@
 import { Command } from "./classes";
+import { UPPER_VOLUME_LIMIT } from "./constants";
 
 export class ArgumentError extends Error {
 	name: string = "ArgumentError";
@@ -26,9 +27,9 @@ export class UserNotInChannelError extends Error {
 	message: string = "You are not in a voice channel.";
 }
 
-export class ResultError extends Error {
+export class NoResultsFoundError extends Error {
 	name: string = "Result";
-	message: string = "No result found. Please try again!";
+	message: string = "No results found. Please try again!";
 }
 
 export class NoNodeFoundError extends Error {
@@ -56,10 +57,15 @@ export class BotInAnotherVoiceError extends Error {
 
 export class VolumeNotBetweenThresholdError extends Error {
 	name: string = "VolumeNotBetweenThreshold";
-	message: string = "Volume needs to be between 0 and 200";
+	message: string = `Volume needs to be between 0 and ${UPPER_VOLUME_LIMIT}.`;
 }
 
 export class MissingPermissionsError extends Error {
-	name: string = "MissingPermissionsError";
+	name: string = "MissingPermissions";
 	message: string = `Please give me the the missing permissions.`;
+}
+
+export class UnexpectedError extends Error {
+	name: string = "Oops, an actual error...";
+	message: string = "Sorry about that. Please try again!\nReoccurring issue? [Please report it!](https://github.com/thomasgranbohm/CuBot/issues)";
 }

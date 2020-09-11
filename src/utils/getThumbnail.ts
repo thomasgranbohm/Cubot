@@ -29,7 +29,6 @@ let download = function (uri: string, path: string, filename: string): Promise<s
 };
 
 export default async function (track: TrackObject): Promise<string | null> {
-	// TODO is weird. Called all over the place with no real consistancy
 	if (!track.uri.includes("youtube") || typeof track.thumbnail === "string")
 		return null;
 	let resolutions = [

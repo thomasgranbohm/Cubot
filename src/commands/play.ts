@@ -2,9 +2,10 @@ import { Command, TrackEmbed } from "../classes";
 import { Bot } from "../index";
 import { Message, MessageEmbed, User } from "discord.js";
 import { Categories } from "../config";
-import { ResultError as NoResultsError, NoGuildFoundError } from "../errors";
-import { checkUserVoice, initiatePlayer, getServerQueue, getTracks, setServerQueue, getIdealHost, queueLoop, getThumbnail } from "../utils";
+import { NoResultsFoundError as NoResultsError, NoGuildFoundError, UnexpectedError } from "../errors";
+import { checkUserVoice, initiatePlayer, getServerQueue, getTracks, setServerQueue, getIdealHost, queueLoop, getThumbnail, nowPlayingEmbed } from "../utils";
 import { TrackObject } from "../types";
+import { PLAYLIST_AMOUNT } from "../constants";
 
 let setTrackInfo = async (track: TrackObject, author: User): Promise<TrackObject> => {
 	track.title = track.title.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
@@ -53,7 +54,7 @@ export class Play extends Command {
 
 		if (playlist) {
 			let toPush = await Promise.all(tracks.map(async t => await setTrackInfo(t, message.author)))
-			queue.push(...toPush);
+			queue.push(...toPush.slice(0, PLAYLIST_AMOUNT));
 		} else {
 			let track = tracks.shift();
 			if (track) {
@@ -80,32 +81,33 @@ export class Play extends Command {
 			// 		message: nowPlaying
 			// 	}
 			// }
-
-			// TODO Loop
-			// player.loop = true;
-
-			return await queueLoop(this.client, guildId, player);
-		} else {
-			if (!playlist) {
-				let addedTrack = queue.slice().pop();
-				if (!addedTrack) throw new NoResultsError();
-
-				addedTrack.thumbnail = await getThumbnail(addedTrack);
-
-				let { author, title, uri } = addedTrack;
-
-				let embed = await new TrackEmbed(addedTrack)
-					.setTitle(`Added to the queue :notepad_spiral:`)
-					.setDescription(`**[${title}](${uri})** by **${author}**\nIt is **#${queue.length - 1}** in the queue`)
-					.getThumbnail()
-				return embed;
-			} else {
-				// TODO better message
-				// Embed with pages for playlist.
-				return "Added everything from the playlist to the queue."
-			}
+			await queueLoop(this.client, guildId, player);
 		}
 
-	}
+		if (isFirst) {
+			let firstTrack = getServerQueue(this.client, guildId).shift();
+			if (!firstTrack) return null;
+			let nowEmbed = await nowPlayingEmbed(firstTrack);
+			if (!playlist) {
+				return nowEmbed;
+			} else {
+				return new MessageEmbed()
+					.setTitle(`Added the first ${PLAYLIST_AMOUNT} tracks from playlist.`);
+			}
+		} else if (!playlist) {
+			let addedTrack = queue.slice().pop();
+			if (!addedTrack) throw new NoResultsError();
 
+			addedTrack.thumbnail = await getThumbnail(addedTrack);
+
+			let { author, title, uri } = addedTrack;
+
+			let embed = await new TrackEmbed(addedTrack)
+				.setTitle(`Added to the queue :notepad_spiral:`)
+				.setDescription(`**[${title}](${uri})** by **${author}**\nIt is **#${queue.length - 1}** in the queue`)
+				.getThumbnail()
+			return embed;
+		}
+		throw new UnexpectedError();
+	}
 }

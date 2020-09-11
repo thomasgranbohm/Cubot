@@ -1,13 +1,12 @@
-import { MessageEmbed } from "discord.js";
 import { Player } from "@lavacord/discord.js";
 import { Bot } from "src"
-import { getServerQueue, setServerQueue, nowPlayingEmbed } from ".";
+import { getServerQueue, setServerQueue } from ".";
 
-export default async function queueLoop(client: Bot, guildId: string, player: Player): Promise<MessageEmbed | null> {
+export default async function queueLoop(client: Bot, guildId: string, player: Player) {
 	let queue = getServerQueue(client, guildId);
 
 	let track = queue.shift();
-	if (!track) return null;
+	if (!track) return;
 
 	player.play(track.track);
 
@@ -17,9 +16,6 @@ export default async function queueLoop(client: Bot, guildId: string, player: Pl
 		queue = getServerQueue(client, guildId);
 		if (server && !server.loop)
 			queue = setServerQueue(client, guildId, queue.slice(1));
-		// TODO Loop
 		if (queue.length > 0) queueLoop(client, guildId, player);
 	});
-
-	return nowPlayingEmbed(track)
 }
