@@ -4,8 +4,10 @@ A Discord bot that's easy so set up and self host!
 ## 🏃 Quick Setup
 1. Install and start [Lavalink](https://github.com/Frederikam/Lavalink)
 2. Run `npm install` or `yarn install`
-3. Create your `.env` file
+3. Rename `.env.default` to `.env` and add your Discord token 
 4. Start the bot by running `npm start` or `yarn start`
+
+Alternatively, get the docker image from the [Docker hub](https://hub.docker.com/r/thomasgranbohm/cubot).
 
 ### Example `.env` file
 ```.properties

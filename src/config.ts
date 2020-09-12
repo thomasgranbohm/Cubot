@@ -1,3 +1,9 @@
+import { 
+	LAVALINK_URI, 
+	LAVALINK_PORT,
+	LAVALINK_PASSWORD
+} from "./constants";
+
 export const Categories = {
 	VOICE: "85e89d",
 	UTILS: "f97583",
@@ -6,15 +12,15 @@ export const Categories = {
 };
 
 export const LavalinkConfig = {
-	host: "192.168.1.147",
-	port: 2333,
-	password: "youshallnotpass",
+	host: LAVALINK_URI,
+	port: LAVALINK_PORT,
+	password: LAVALINK_PASSWORD,
 	nodes: [
 		{
 			id: "1",
-			host: "192.168.1.147",
-			port: 2333,
-			password: "youshallnotpass"
+			host: LAVALINK_URI,
+			port: LAVALINK_PORT,
+			password: LAVALINK_PASSWORD
 		}
 	]
 }
