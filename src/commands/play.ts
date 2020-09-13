@@ -2,7 +2,7 @@ import { Command, TrackEmbed } from "../classes";
 import { Bot } from "../index";
 import { Message, MessageEmbed, User } from "discord.js";
 import { Categories } from "../config";
-import { NoResultsFoundError as NoResultsError, NoGuildFoundError, UnexpectedError } from "../errors";
+import { NoResultsFoundError as NoResultsError, NoGuildFoundError, UnexpectedError, NotPlayingError } from "../errors";
 import { checkUserVoice, initiatePlayer, getServerQueue, getTracks, setServerQueue, getIdealHost, queueLoop, getThumbnail, nowPlayingEmbed } from "../utils";
 import { TrackObject } from "../types";
 import { PLAYLIST_AMOUNT } from "../constants";
@@ -53,8 +53,8 @@ export class Play extends Command {
 			isFirst = true;
 
 		if (playlist) {
-			let toPush = await Promise.all(tracks.map(async t => await setTrackInfo(t, message.author)))
-			queue.push(...toPush.slice(0, PLAYLIST_AMOUNT));
+			let toPush = await Promise.all(tracks.map(t => setTrackInfo(t, message.author)).slice(0, PLAYLIST_AMOUNT))
+			queue.push(...toPush);
 		} else {
 			let track = tracks.shift();
 			if (track) {
@@ -73,27 +73,18 @@ export class Play extends Command {
 			});
 
 			// TODO implement now and removal when skipping
-			// const server = this.client.servers.get(guildId);
-			// let nowPlaying = nowPlayingEmbed(queue);
-			// if (server) {
-			// 	server.playing = {
-			// 		track: queue[0],
-			// 		message: nowPlaying
-			// 	}
-			// }
-			await queueLoop(this.client, guildId, player);
-		}
 
-		if (isFirst) {
+			await queueLoop(this.client, guildId, player);
+
 			let firstTrack = getServerQueue(this.client, guildId).shift();
-			if (!firstTrack) return null;
-			let nowEmbed = await nowPlayingEmbed(firstTrack);
-			if (!playlist) {
-				return nowEmbed;
-			} else {
-				return new MessageEmbed()
-					.setTitle(`Added the first ${PLAYLIST_AMOUNT} tracks from playlist.`);
+			if (!firstTrack) throw new NotPlayingError();
+
+			let embed = await nowPlayingEmbed(firstTrack);
+
+			if (playlist) {
+				embed.setDescription((embed.description || "").concat(`\nAdded the first ${PLAYLIST_AMOUNT} tracks from playlist.`))
 			}
+			return embed;
 		} else if (!playlist) {
 			let addedTrack = queue.slice().pop();
 			if (!addedTrack) throw new NoResultsError();
@@ -102,11 +93,12 @@ export class Play extends Command {
 
 			let { author, title, uri } = addedTrack;
 
-			let embed = await new TrackEmbed(addedTrack)
+			return await new TrackEmbed(addedTrack)
 				.setTitle(`Added to the queue :notepad_spiral:`)
 				.setDescription(`**[${title}](${uri})** by **${author}**\nIt is **#${queue.length - 1}** in the queue`)
-				.getThumbnail()
-			return embed;
+				.getThumbnail();
+		} else if (playlist) {
+			return new MessageEmbed().setTitle(`Added the first ${PLAYLIST_AMOUNT} tracks from playlist.`);
 		}
 		throw new UnexpectedError();
 	}
