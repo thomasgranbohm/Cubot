@@ -7,7 +7,8 @@ A Discord bot that's easy so set up and self host!
 3. Rename `.env.default` to `.env` and add your Discord token 
 4. Start the bot by running `npm start` or `yarn start`
 
-Alternatively, get the docker image from the [Docker hub](https://hub.docker.com/r/thomasgranbohm/cubot).
+Alternatively, get the docker image from the [Docker hub](https://hub.docker.com/r/thomasgranbohm/cubot).  
+Then run `yarn docker`.
 
 ### Example `.env` file
 ```.properties

@@ -10,7 +10,8 @@
 		"build": "tsc",
 		"watch": "tsc -w",
 		"dev": "nodemon dist/index.js",
-		"start": "node dist/index.js"
+		"start": "node dist/index.js",
+		"docker": "docker run -d --network host --name cubot --env-file .env cubot"
 	},
 	"devDependencies": {
 		"@types/node": "^14.6.3",
