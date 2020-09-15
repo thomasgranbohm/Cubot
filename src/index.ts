@@ -53,10 +53,10 @@ export class Bot extends Client {
 			await this.manager.connect();
 		} catch (err) {
 			if (retryIndex === 2) {
-				console.error(`Could not connect to Lavalink on ${LavalinkConfig.host}:${LavalinkConfig.port}...`)
+				console.error(`Could not connect to Lavalink on ${LavalinkConfig.host}:${LavalinkConfig.port}! Exiting...`)
 				process.exit(1);
 			}
-			console.log("Retrying connection...")
+			console.log("Retrying Lavalink connection...")
 			setTimeout(() => this.connectToLavalink(++retryIndex), 5000);
 		}
 	}
@@ -64,7 +64,7 @@ export class Bot extends Client {
 	async onReady() {
 		await this.connectToLavalink()
 
-		this.user?.setActivity({ name: `music! @ me` })
+		this.user?.setActivity({ name: `music! @ me`, type: "LISTENING", url: "https://github.com/thomasgranbohm/CuBot" })
 
 		this.loadCommands();
 
@@ -85,26 +85,27 @@ export class Bot extends Client {
 		// 	console.log(permissions)
 		// }
 
+		const hasPrefix = content.startsWith(this.prefix);
+		const mentionsBot = this.user ? mentions.has(this.user) : false;
+		if (!hasPrefix && !mentionsBot) return;
+
 		if (channel instanceof DMChannel !== true) {
 			message
 				.delete({ timeout: 3000 })
-				.catch(err => {
+				.catch(() => {
 					if (guild) {
 						sendError(this, new MissingPermissionsError(), message)
 					}
 				});
 		}
 
-		if (this.user && mentions.has(this.user)) {
+		if (mentionsBot) {
 			const Help = this.commands.get("help")
 			if (!Help) return;
 			const returningMessage = await Help.run(message);
 			if (!returningMessage) return;
 			return sendMessage(channel, returningMessage, Help.group, author);
 		}
-
-		const hasPrefix = content.startsWith(this.prefix);
-		if (!hasPrefix) return;
 
 		const [name, ...args] = content.substr(1).split(" ");
 

@@ -65,7 +65,17 @@ export class MissingPermissionsError extends Error {
 	message: string = `Please give me the the missing permissions.`;
 }
 
+export class NoEqualizerFoundError extends Error {
+	name: string = "NoEqualizerFound";
+	message: string = "That equalizer doesn't exist.";
+}
+
 export class UnexpectedError extends Error {
 	name: string = "Oops, an actual error...";
 	message: string = "Sorry about that. Please try again!\nReoccurring issue? [Please report it!](https://github.com/thomasgranbohm/CuBot/issues)";
+	developerMessage: string;
+	constructor(developerMessage: string) {
+		super();
+		this.developerMessage = developerMessage;
+	}
 }

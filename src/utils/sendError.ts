@@ -6,25 +6,26 @@ export default async function (client: Bot, error: Error, message: Message) {
 	let { author, content, guild, channel } = message;
 
 	let embed = new MessageEmbed()
-		.setColor('RED');;
-	const isDefinedError = Object.values(errors).some((e) => (error instanceof e));
-	if (isDefinedError && error instanceof errors.UnexpectedError !== true) {
-		embed
-			.setTitle(error.message);
-	} else {
+		.setColor('RED');
+	if (error instanceof errors.UnexpectedError) {
 		if (process.env.NODE_ENV === 'production') {
 			let developer = await client.users.fetch(client.owner);
 			const DMChannel = await developer.createDM();
 			DMChannel.send(
 				new MessageEmbed()
 					.setTitle('Ran into some problems chief')
-					.setDescription(`**${author.tag}** tried to run \`${content}\` in ${guild?.name}.\n\nHere is the stack trace:\n\`\`\`${error.stack}\`\`\``)
+					.setDescription(`**${author.tag}** tried to run \`${content}\` in ${guild?.name}.`)
+					.addField("Developer message:", error.developerMessage)
+					.addField("Stack trace:", `\`\`\`${error.stack}\`\`\``)
 					.setColor('RED')
 					.setTimestamp()
 			);
 		}
 		embed.setTitle(error.name)
 			.setDescription(error.message);
+	} else {
+		embed
+			.setTitle(error.message);
 	}
 	let sentMessage = await channel.send(embed);
 

@@ -100,6 +100,6 @@ export class Play extends Command {
 		} else if (playlist) {
 			return new MessageEmbed().setTitle(`Added the first ${PLAYLIST_AMOUNT} tracks from playlist.`);
 		}
-		throw new UnexpectedError();
+		throw new UnexpectedError("Track wasn't first, not a playlist, or a playlist.");
 	}
 }

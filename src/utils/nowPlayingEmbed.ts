@@ -23,5 +23,4 @@ export default async function (currentTrack: TrackObject, nextTrack?: TrackObjec
 	}
 
 	return embed
-
 }

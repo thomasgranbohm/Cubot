@@ -3,6 +3,7 @@ import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
 import { Categories } from "../config";
 import { checkUserVoice, checkBotVoice, getServerQueue, nowPlayingEmbed } from "../utils";
+import { UnexpectedError } from "../errors";
 
 export class Now extends Command {
 
@@ -23,7 +24,7 @@ export class Now extends Command {
 		if (currentTrack) {
 			return nowPlayingEmbed(currentTrack, nextTrack);
 		}
-		return null;
+		throw new UnexpectedError("No current track found even though command passed bot voice check.")
 	}
 
 }

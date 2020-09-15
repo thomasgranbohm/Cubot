@@ -5,6 +5,7 @@ import { Categories } from "../config";
 import * as eqs from "../equalizers";
 import { checkBotVoice, checkUserVoice } from "../utils";
 import changeEqualizer from "../utils/changeEqualizer";
+import { NoEqualizerFoundError } from "../errors";
 
 export class Equalizers extends Command {
 
@@ -37,7 +38,8 @@ export class Equalizers extends Command {
 			if (name === eqName) return e;
 			return undefined;
 		});
-		if (!foundEqualizer) return null;
+
+		if (!foundEqualizer) throw new NoEqualizerFoundError();
 
 		let embed = changeEqualizer(this.client, guildId, foundEqualizer[1]);
 		return embed;
