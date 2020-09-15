@@ -1,0 +1,18 @@
+version: '3.7'
+services: 
+    lavalink:
+        container_name: "lavalink"
+        image: fredboat/lavalink:dev
+        ports: 
+            - "2333:2333"
+        volumes: 
+            - ./application.yml:/opt/Lavalink/application.yml
+    cubot:
+        container_name: "cubot"
+        build: .
+        # image: thomasgranbohm/cubot 
+        depends_on: 
+            - lavalink
+        network_mode: host
+        env_file: 
+            - .env

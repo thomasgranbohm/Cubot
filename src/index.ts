@@ -38,7 +38,7 @@ export class Bot extends Client {
 		this.on('message', this.onMessage)
 		this.on('voiceStateUpdate', this.onVoiceStateUpdate)
 
-		this.login(token).then(() => console.log(`Ready at ${new Date().toString().substr(16, 8)}`));
+		this.login(token);
 	}
 
 	loadCommands(): void {
@@ -48,11 +48,27 @@ export class Bot extends Client {
 		}
 	}
 
+	async connectToLavalink(retryIndex = 0) {
+		try {
+			await this.manager.connect();
+		} catch (err) {
+			if (retryIndex === 2) {
+				console.error(`Could not connect to Lavalink on ${LavalinkConfig.host}:${LavalinkConfig.port}...`)
+				process.exit(1);
+			}
+			console.log("Retrying connection...")
+			setTimeout(() => this.connectToLavalink(++retryIndex), 5000);
+		}
+	}
+
 	async onReady() {
-		await this.manager.connect();
+		await this.connectToLavalink()
+
 		this.user?.setActivity({ name: `at ${new Date().toString().substr(16, 8)}` })
 
 		this.loadCommands();
+
+		console.log(`Ready at ${new Date().toString().substr(16, 8)}`)
 	}
 
 	async onMessage(message: Message): Promise<void> {
