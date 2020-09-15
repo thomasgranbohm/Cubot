@@ -32,6 +32,10 @@ export abstract class Command {
 
 	help(extended: boolean = false): string | MessageEmbed {
 		if (extended) {
+			let embed = new MessageEmbed()
+				.setTitle(`Detailed information about ${this.names.slice().shift()}`)
+				.addField("Description", this.description)
+
 			let caveats = [];
 			if (this.needsArgs)
 				caveats.push("need arguments");
@@ -41,21 +45,20 @@ export abstract class Command {
 				caveats.push("is owner only");
 			caveats = caveats.map(c => (`**${c}**`));
 
-			let embed = new MessageEmbed()
-				.setTitle(`Detailed information about ${this.names.slice().shift()}`)
-				.addField("Description", this.description)
-				.addField("Caveats", "This command " + (caveats.length > 1 ? caveats.slice(0, caveats.length - 1).join(", ") + " and " : "") + caveats[caveats.length - 1] + ".");
-
-			if (this.examples.length > 0)
+			if (caveats.length > 0) {
+				embed
+					.addField("Caveats", "This command " + (caveats.length > 1 ? caveats.slice(0, caveats.length - 1).join(", ") + " and " : "") + caveats[caveats.length - 1] + ".");
+			}
+			if (this.examples.length > 0) {
 				embed.addField(
 					"Usage",
 					this.getExamples().join("\n"),
 					true
 				)
-
-			if (this.names.length > 1)
+			}
+			if (this.names.length > 1) {
 				embed.addField("Aliases", `\`${this.names.slice(1).join(", ")}\``, true)
-
+			}
 			return embed;
 		}
 

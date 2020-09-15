@@ -27,7 +27,7 @@ export class Help extends Command {
 		let helpCommand = this.client.commands.get("help");
 		if (!helpCommand) return null;
 
-		let helpEmbed: MessageEmbed | string = helpCommand.help(true);
+		let helpEmbed = helpCommand.help(true);
 		if (typeof helpEmbed !== "string")
 			return helpEmbed
 				.setTitle('List of all commands:')

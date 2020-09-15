@@ -64,7 +64,7 @@ export class Bot extends Client {
 	async onReady() {
 		await this.connectToLavalink()
 
-		this.user?.setActivity({ name: `at ${new Date().toString().substr(16, 8)}` })
+		this.user?.setActivity({ name: `music! @ me` })
 
 		this.loadCommands();
 
@@ -72,7 +72,7 @@ export class Bot extends Client {
 	}
 
 	async onMessage(message: Message): Promise<void> {
-		const { content, channel, author, guild } = message;
+		const { content, channel, author, guild, mentions } = message;
 
 		const isBot = author.bot;
 		if (isBot) return;
@@ -84,6 +84,24 @@ export class Bot extends Client {
 		// 	let permissions = (channel as GuildChannel).permissionsFor(guildMember)
 		// 	console.log(permissions)
 		// }
+
+		if (channel instanceof DMChannel !== true) {
+			message
+				.delete({ timeout: 3000 })
+				.catch(err => {
+					if (guild) {
+						sendError(this, new MissingPermissionsError(), message)
+					}
+				});
+		}
+
+		if (this.user && mentions.has(this.user)) {
+			const Help = this.commands.get("help")
+			if (!Help) return;
+			const returningMessage = await Help.run(message);
+			if (!returningMessage) return;
+			return sendMessage(channel, returningMessage, Help.group, author);
+		}
 
 		const hasPrefix = content.startsWith(this.prefix);
 		if (!hasPrefix) return;
@@ -107,16 +125,6 @@ export class Bot extends Client {
 			sendMessage(channel, returningMessage, command.group, author)
 		} catch (err) {
 			sendError(this, err, message);
-		}
-
-		if (channel instanceof DMChannel !== true) {
-			message
-				.delete({ timeout: 3000 })
-				.catch(err => {
-					if (guild) {
-						sendError(this, new MissingPermissionsError(), message)
-					}
-				});
 		}
 	}
 
