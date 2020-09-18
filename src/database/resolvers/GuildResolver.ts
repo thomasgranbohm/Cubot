@@ -28,6 +28,12 @@ export class GuildResolver {
 		return guild;
 	}
 
+	async guild(
+		guildId: Snowflake
+	): Promise<Guild> {
+		return this.findOneOrCreate(guildId);
+	}
+
 	async prefix(
 		guildId: Snowflake
 	): Promise<string> {
@@ -39,24 +45,12 @@ export class GuildResolver {
 		guildId: Snowflake,
 		newPrefix: string
 	): Promise<Guild> {
+		// TODO needs to remove cache after updating...
 		return Guild
 			.getRepository()
 			.save({
 				guildId,
 				prefix: newPrefix
 			});
-	}
-
-	async guild(
-		guildId: Snowflake
-	): Promise<Guild> {
-		return this.findOneOrCreate(guildId);
-	}
-
-	async createGuild(
-		guildId: Snowflake,
-		prefix?: string
-	): Promise<Guild> {
-		return Guild.create({ guildId, prefix }).save();
 	}
 }
