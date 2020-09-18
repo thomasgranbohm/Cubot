@@ -1,6 +1,6 @@
 import { validate } from "class-validator";
 import { Snowflake } from "discord.js";
-import { FindOneOptions, getManager } from "typeorm";
+import { FindOneOptions, getConnection, getManager } from "typeorm";
 import { Guild } from "../entities/Guild";
 
 export class GuildResolver {
@@ -11,6 +11,10 @@ export class GuildResolver {
 			.getRepository()
 			.findOne({
 				where: { guildId },
+				cache: {
+					id: "guildIds",
+					milliseconds: 5000
+				},
 				...options
 			});
 		if (!guild) {
@@ -46,6 +50,10 @@ export class GuildResolver {
 		newPrefix: string
 	): Promise<Guild> {
 		// TODO needs to remove cache after updating...
+		// I think this removes all the cached data.
+		await getConnection().queryResultCache?.remove(["guildIds"]);
+		if (newPrefix.length < 1 || newPrefix.length > 3)
+			throw new Error("New prefix out of range (1 – 3 characters)")
 		return Guild
 			.getRepository()
 			.save({
