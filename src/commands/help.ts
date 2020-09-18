@@ -1,8 +1,9 @@
-import { Command } from "../classes";
-import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
+import { Command } from "../classes";
 import { Categories } from "../config";
 import { UnexpectedError } from "../errors";
+import { Bot } from "../index";
+import { getGuildFromMessage } from "../utils/";
 
 export class Help extends Command {
 
@@ -29,22 +30,27 @@ export class Help extends Command {
 		if (typeof helpEmbed === "string")
 			throw new UnexpectedError("Commands help command with extended flag returned a string.")
 
-		return helpEmbed
+		let guild = getGuildFromMessage(message)
+		const prefix = await this.client.guildResolver.prefix(guild.id);
+
+		return new MessageEmbed()
 			.setTitle('List of all commands:')
 			.setDescription(
-				this.client.commands
-					.sort((a, b) => {
-						let aName = a.names.slice().shift(),
-							bName = b.names.slice().shift();
-						if ((!aName || !bName)) return 0;
+				[
+					this.client.commands
+						.sort((a, b) => {
+							let aName = a.names.slice().shift(),
+								bName = b.names.slice().shift();
+							if ((!aName || !bName)) return 0;
 
-						if (aName > bName) return 1;
-						else if (aName < bName) return -1;
-						return 0;
-					})
-					.map((command) => command.help())
-					.join("\n")
-					.concat("\n\n", helpEmbed.description || "")
+							if (aName > bName) return 1;
+							else if (aName < bName) return -1;
+							return 0;
+						})
+						.map((command) => command.help())
+						.join("\n"),
+					`**Prefix in this guild:** \`${prefix}\``
+				].join("\n\n")
 			);
 	}
 }

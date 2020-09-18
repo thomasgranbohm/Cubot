@@ -1,4 +1,4 @@
-import { ClientOptions, User, Message } from "discord.js";
+import { ClientOptions, Message, User } from "discord.js";
 import { PlayerEqualizerBand } from "@lavacord/discord.js";
 
 export type BotOptions = ClientOptions & {

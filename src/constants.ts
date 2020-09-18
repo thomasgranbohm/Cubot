@@ -13,6 +13,11 @@ export const PREFIX = "!";
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN || "INSERT YOUR TOKEN IN THE .env FILE";
 export const OWNER = "284754083049504770";
 
+export const POSTGRES = {
+	USERNAME: process.env.POSTGRES_USERNAME || "postgres",
+	PASSWORD: process.env.POSTGRES_PASSWORD || "postgres",
+	DB: process.env.POSTGRES_DB || "cubot",
+}
 export const LAVALINK_URI = address as string;
 export const LAVALINK_PORT = port as number;
 export const LAVALINK_PASSWORD = password as string;
