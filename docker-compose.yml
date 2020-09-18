@@ -1,7 +1,7 @@
 version: '3.7'
 services: 
     database:
-        container_name: "postgres"
+        container_name: "database"
         image: postgres
         env_file: 
             - .env
@@ -9,6 +9,15 @@ services:
             - "5432:5432"
         volumes: 
             - database-data:/var/lib/postgresql/data/
+    cache:
+        container_name: "cache"
+        image: bitnami/redis
+        environment: 
+            - ALLOW_EMPTY_PASSWORD=yes
+        ports: 
+            - "6379:6379"
+        volumes: 
+            - cache-data:/bitnami/redis/data
     lavalink:
         container_name: "lavalink"
         image: fredboat/lavalink:dev
@@ -21,9 +30,11 @@ services:
         build: .
         depends_on: 
             - database
+            - cache
             - lavalink
         network_mode: host
         env_file: 
             - .env
 volumes:
     database-data:
+    cache-data:

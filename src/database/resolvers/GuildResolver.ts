@@ -7,10 +7,16 @@ export class GuildResolver {
 
 	async findOneOrCreate(guildId: Snowflake, options?: FindOneOptions<Guild>): Promise<Guild> {
 		// TODO doesnt use options on create.
-		let guild = await Guild.findOne(guildId, options);
+		let guild = await Guild
+			.getRepository()
+			.findOne({
+				where: { guildId },
+				...options
+			});
 		if (!guild) {
 			console.warn("Creating new guild.")
-			guild = await Guild.create({ guildId });
+			guild = await Guild
+				.create({ guildId });
 
 			const validationErrors = await validate(guild);
 			if (validationErrors.length > 0) {
@@ -33,10 +39,12 @@ export class GuildResolver {
 		guildId: Snowflake,
 		newPrefix: string
 	): Promise<Guild> {
-		return Guild.getRepository().save({
-			guildId,
-			prefix: newPrefix
-		});
+		return Guild
+			.getRepository()
+			.save({
+				guildId,
+				prefix: newPrefix
+			});
 	}
 
 	async guild(

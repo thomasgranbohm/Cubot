@@ -11,7 +11,7 @@ export class Prefix extends Command {
 			aliases: ["pr"],
 			description: "Get or set the prefix in the guild.",
 			group: Categories.MISC,
-			examples: [`set <new prefix>`]
+			examples: [`<new prefix>`]
 		})
 	}
 

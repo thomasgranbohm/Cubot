@@ -8,7 +8,7 @@ import { setupDatabase } from "./database/index";
 import { GuildResolver } from "./database/resolvers/GuildResolver";
 import { ArgumentError, MissingPermissionsError, OwnerError, PermissionError } from "./errors";
 import { BotOptions, ServerObject } from "./types";
-import { sendMessage } from "./utils";
+import { getGuildFromMessage, sendMessage } from "./utils";
 import sendError from "./utils/sendError";
 
 
@@ -79,13 +79,12 @@ export class Bot extends Client {
 	}
 
 	async onMessage(message: Message): Promise<void> {
-		const { content, channel, author, guild, mentions } = message;
+		const { content, channel, author, mentions } = message;
 
 		const isBot = author.bot;
 		if (isBot) return;
 
-		if (!guild) return;
-
+		let guild = await getGuildFromMessage(message);
 		let { id: guildId } = guild;
 		let prefix = await this.guildResolver.prefix(guildId);
 
@@ -113,7 +112,7 @@ export class Bot extends Client {
 		}
 
 		if (mentionsBot) {
-			const help = this.commands.get("help")
+			const help = this.commands.get("help");
 			if (!help) return;
 			const returningMessage = await help.run(message);
 			if (!returningMessage) return;
@@ -136,9 +135,9 @@ export class Bot extends Client {
 			let returningMessage = await command.run(message, args)
 			if (!returningMessage || returningMessage === null) return;
 
-			sendMessage(channel, returningMessage, command.group, author)
+			await sendMessage(channel, returningMessage, command.group, author)
 		} catch (err) {
-			sendError(this, err, message);
+			await sendError(this, err, message);
 		}
 	}
 

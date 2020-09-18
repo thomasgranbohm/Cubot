@@ -1,6 +1,6 @@
 import { config } from "dotenv";
-import { resolve } from "path";
 import * as fs from "fs";
+import { resolve } from "path";
 import YAML from "yaml";
 config({ path: resolve(process.cwd(), '.env') })
 
@@ -12,11 +12,12 @@ const { password } = parsed.lavalink.server
 export const PREFIX = "!";
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN || "INSERT YOUR TOKEN IN THE .env FILE";
 export const OWNER = "284754083049504770";
+export const PRODUCTION = (process.env.NODE_ENV || "development") === "production";
 
 export const POSTGRES = {
 	USERNAME: process.env.POSTGRES_USERNAME || "postgres",
 	PASSWORD: process.env.POSTGRES_PASSWORD || "postgres",
-	DB: process.env.POSTGRES_DB || "cubot",
+	NAME: process.env.POSTGRES_DB || "cubot",
 }
 export const LAVALINK_URI = address as string;
 export const LAVALINK_PORT = port as number;

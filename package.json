@@ -10,7 +10,7 @@
 		"build": "tsc",
 		"watch": "tsc -w",
 		"dev": "nodemon dist/index.js",
-		"start": "node dist/index.js"
+		"start": "NODE_ENV=production node dist/index.js"
 	},
 	"devDependencies": {
 		"@types/node": "^14.6.3",
@@ -26,6 +26,7 @@
 		"discord.js": "^12.3.1",
 		"dotenv": "^8.2.0",
 		"pg": "^8.3.3",
+		"redis": "^3.0.2",
 		"sharp": "^0.26.0",
 		"typeorm": "^0.2.26",
 		"yaml": "^1.10.0"
