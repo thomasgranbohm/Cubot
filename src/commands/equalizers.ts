@@ -1,11 +1,11 @@
-import { Command } from "../classes";
-import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
+import { Command } from "../classes";
 import { Categories } from "../config";
 import * as eqs from "../equalizers";
+import { NoEqualizerFoundError } from "../errors";
+import { Bot } from "../index";
 import { checkBotVoice, checkUserVoice } from "../utils";
 import changeEqualizer from "../utils/changeEqualizer";
-import { NoEqualizerFoundError } from "../errors";
 
 export class Equalizers extends Command {
 
@@ -27,6 +27,18 @@ export class Equalizers extends Command {
 					Object.entries(eqs)
 						.map(([name, e]) => `**${name}** – ${e.description}`)
 				)
+
+			let { guild } = message;
+			if (guild) {
+				let server = this.client.servers.get(guild.id);
+				if (server) {
+					embed.setDescription([
+						embed.description,
+						`**Current:** ${server?.equalizer?.name || eqs.flat.name}`
+					].join("\n\n"))
+				}
+			}
+
 			return embed;
 		}
 
