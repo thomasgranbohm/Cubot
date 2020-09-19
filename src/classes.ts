@@ -30,7 +30,7 @@ export abstract class Command {
 
 	abstract async run(message: Message, args?: string[]): Promise<string | MessageEmbed | null>
 
-	help(extended: boolean = false): string | MessageEmbed {
+	help(prefix: string, extended: boolean = false): string | MessageEmbed {
 		if (extended) {
 			let embed = new MessageEmbed()
 				.setTitle(`Detailed information about ${this.names.slice().shift()}`)
@@ -52,7 +52,7 @@ export abstract class Command {
 			if (this.examples.length > 0) {
 				embed.addField(
 					"Usage",
-					this.getExamples().join("\n"),
+					this.getExamples(prefix).join("\n"),
 					true
 				)
 			}
@@ -65,18 +65,18 @@ export abstract class Command {
 		return `**${this.names.slice().shift()}** – ${this.description}`;
 	}
 
-	private getExamples(): Array<string> {
+	private getExamples(prefix: string): Array<string> {
 		let examples = this.examples
 			.slice(0, 3)
-			.map(example => `\`${this.client.prefix}${this.names.slice().shift()} ${example}\``);
+			.map(example => `\`${prefix}${this.names.slice().shift()} ${example}\``);
 		if (!this.needsArgs) {
-			examples.unshift("`" + this.client.prefix + this.names.slice().shift() + "`")
+			examples.unshift("`" + prefix + this.names.slice().shift() + "`")
 		}
 		return examples;
 	}
 
-	usage(): string {
-		let string = this.client.prefix + this.names.slice().shift();
+	usage(prefix: string): string {
+		let string = prefix + this.names.slice().shift();
 		if (this.needsArgs && this.examples.length > 0)
 			string += ` ${this.examples.pop()}`;
 		return string;

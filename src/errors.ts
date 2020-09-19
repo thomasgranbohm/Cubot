@@ -5,10 +5,10 @@ export class ArgumentError extends Error {
 	name: string = "ArgumentError";
 	message: string;
 
-	constructor(command: Command) {
+	constructor(command: Command, prefix: string) {
 		super()
 		this.message = "You didn't provide the needed arguments.\n" +
-			`Here is how you use it: \`${command.usage()}\``
+			`Here is how you use it: \`${command.usage(prefix)}\``
 	}
 }
 
@@ -72,7 +72,8 @@ export class NoEqualizerFoundError extends Error {
 
 export class UnexpectedError extends Error {
 	name: string = "Oops, an actual error...";
-	message: string = "Sorry about that. Please try again!\nReoccurring issue? [Please report it!](https://github.com/thomasgranbohm/CuBot/issues)";
+	message: string = "Sorry about that. Please try again!\n" +
+		"Reoccurring issue? [Please report it!](https://github.com/thomasgranbohm/CuBot/issues)";
 	developerMessage: string;
 	constructor(developerMessage: string) {
 		super();

@@ -1,15 +1,17 @@
-import { Client, Collection, DMChannel, Message, VoiceState } from "discord.js";
 import { Manager } from "@lavacord/discord.js";
-
-import { DISCORD_TOKEN, OWNER, PREFIX } from "./constants";
-import { BotOptions, ServerObject } from "./types";
-import { ArgumentError, OwnerError, PermissionError, MissingPermissionsError } from "./errors";
-
+import { Client, Collection, DMChannel, Message, VoiceState } from "discord.js";
 import { Command } from "./classes";
 import * as commands from "./commands";
-import { sendMessage } from "./utils";
 import { LavalinkConfig } from "./config";
+import { DISCORD_TOKEN, GLOBAL_PREFIX, OWNER } from "./constants";
+import { setupDatabase } from "./database/index";
+import { GuildResolver } from "./database/resolvers/GuildResolver";
+import { ArgumentError, MissingPermissionsError, OwnerError, PermissionError } from "./errors";
+import { BotOptions, ServerObject } from "./types";
+import { getGuildFromMessage, sendMessage } from "./utils";
 import sendError from "./utils/sendError";
+
+
 
 export class Bot extends Client {
 	public owner: string;
@@ -20,6 +22,8 @@ export class Bot extends Client {
 	public servers: Collection<String, ServerObject>;
 	public commands: Collection<String, Command>;
 
+	public guildResolver: GuildResolver;
+
 	constructor(token: string, { owner, prefix, ...clientOptions }: BotOptions) {
 		super({ ...clientOptions });
 
@@ -28,6 +32,8 @@ export class Bot extends Client {
 
 		this.commands = new Collection<String, Command>();
 		this.servers = new Collection<String, ServerObject>();
+
+		this.guildResolver = new GuildResolver();
 
 		this.manager = new Manager(this, LavalinkConfig.nodes, {
 			user: this.user?.id,
@@ -62,6 +68,7 @@ export class Bot extends Client {
 	}
 
 	async onReady() {
+		await setupDatabase();
 		await this.connectToLavalink()
 
 		this.user?.setActivity({ name: `music! @ me`, type: "LISTENING", url: "https://github.com/thomasgranbohm/CuBot" })
@@ -72,10 +79,14 @@ export class Bot extends Client {
 	}
 
 	async onMessage(message: Message): Promise<void> {
-		const { content, channel, author, guild, mentions } = message;
+		const { content, channel, author, mentions } = message;
 
 		const isBot = author.bot;
 		if (isBot) return;
+
+		let guild = await getGuildFromMessage(message);
+		let { id: guildId } = guild;
+		let prefix = await this.guildResolver.prefix(guildId);
 
 		// TODO permission check
 		// let guildMember = await message.guild?.members.fetch(this.user as User);
@@ -85,14 +96,15 @@ export class Bot extends Client {
 		// 	console.log(permissions)
 		// }
 
-		const hasPrefix = content.startsWith(this.prefix);
+		const hasPrefix = content.startsWith(prefix);
 		const mentionsBot = this.user ? mentions.has(this.user) : false;
 		if (!hasPrefix && !mentionsBot) return;
 
 		if (channel instanceof DMChannel !== true) {
 			message
 				.delete({ timeout: 3000 })
-				.catch(() => {
+				.catch((err) => {
+					console.error(err)
 					if (guild) {
 						sendError(this, new MissingPermissionsError(), message)
 					}
@@ -100,21 +112,21 @@ export class Bot extends Client {
 		}
 
 		if (mentionsBot) {
-			const Help = this.commands.get("help")
-			if (!Help) return;
-			const returningMessage = await Help.run(message);
+			const help = this.commands.get("help");
+			if (!help) return;
+			const returningMessage = await help.run(message);
 			if (!returningMessage) return;
-			return sendMessage(channel, returningMessage, Help.group, author);
+			return sendMessage(channel, returningMessage, help.group, author);
 		}
 
-		const [name, ...args] = content.substr(1).split(" ");
+		const [name, ...args] = content.substr(prefix.length).split(" ");
 
 		const command = this.commands.find((c) => c.names.includes(name));
 		if (!command) return;
 
 		try {
 			if (command.needsArgs && args.length === 0)
-				throw new ArgumentError(command);
+				throw new ArgumentError(command, prefix);
 			if (command.ownerOnly && author.id !== this.owner)
 				throw new OwnerError();
 			if (command.guildOnly && channel.type !== "text")
@@ -123,9 +135,9 @@ export class Bot extends Client {
 			let returningMessage = await command.run(message, args)
 			if (!returningMessage || returningMessage === null) return;
 
-			sendMessage(channel, returningMessage, command.group, author)
+			await sendMessage(channel, returningMessage, command.group, author)
 		} catch (err) {
-			sendError(this, err, message);
+			await sendError(this, err, message);
 		}
 	}
 
@@ -160,4 +172,4 @@ export class Bot extends Client {
 	}
 }
 
-new Bot(DISCORD_TOKEN, { owner: OWNER, prefix: PREFIX });
+new Bot(DISCORD_TOKEN, { owner: OWNER, prefix: GLOBAL_PREFIX });

@@ -27,7 +27,7 @@
  - [x] YouTube, SoundCloud, audio file playback.
  - [x] Equalizers
  - [x] Playlist support 
- - [ ] Server customizable prefix
+ - [x] Server customizable prefix
 
 ## 🏃 Quick Setup
 1. Get the Docker image from the [Docker hub](https://hub.docker.com/r/thomasgranbohm/cubot).

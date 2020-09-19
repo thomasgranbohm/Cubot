@@ -1,5 +1,6 @@
 export { default as checkBotVoice } from "./checkBotVoice"
 export { default as checkUserVoice } from "./checkUserVoice"
+export { default as getGuildFromMessage } from "./getGuildFromMessage"
 export { default as getIdealHost } from "./getIdealHost"
 export { default as getServerQueue } from "./getServerQueue"
 export { default as getThumbnail } from "./getThumbnail"
