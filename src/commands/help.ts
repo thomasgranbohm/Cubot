@@ -17,21 +17,21 @@ export class Help extends Command {
 	}
 
 	async run(message: Message, args?: string[] | undefined): Promise<string | MessageEmbed | null> {
+		let guild = getGuildFromMessage(message)
+		const prefix = await this.client.guildResolver.prefix(guild.id);
+
 		const wanted = args?.shift();
 		if (wanted) {
 			const command = this.client.commands.find((c) => c.names.includes(wanted));
-			if (command) return command.help(true);
+			if (command) return command.help(prefix, true);
 		}
 
 		let helpCommand = this.client.commands.get("help");
 		if (!helpCommand) throw new UnexpectedError("Help not found in commands collection.");
 
-		let helpEmbed = helpCommand.help(true);
+		let helpEmbed = helpCommand.help(prefix, true);
 		if (typeof helpEmbed === "string")
 			throw new UnexpectedError("Commands help command with extended flag returned a string.")
-
-		let guild = getGuildFromMessage(message)
-		const prefix = await this.client.guildResolver.prefix(guild.id);
 
 		return new MessageEmbed()
 			.setTitle('List of all commands:')
@@ -47,7 +47,7 @@ export class Help extends Command {
 							else if (aName < bName) return -1;
 							return 0;
 						})
-						.map((command) => command.help())
+						.map((command) => command.help(prefix))
 						.join("\n"),
 					`**Prefix in this guild:** \`${prefix}\``
 				].join("\n\n")

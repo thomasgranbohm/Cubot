@@ -3,7 +3,7 @@ import { Client, Collection, DMChannel, Message, VoiceState } from "discord.js";
 import { Command } from "./classes";
 import * as commands from "./commands";
 import { LavalinkConfig } from "./config";
-import { DISCORD_TOKEN, OWNER, PREFIX } from "./constants";
+import { DISCORD_TOKEN, GLOBAL_PREFIX, OWNER } from "./constants";
 import { setupDatabase } from "./database/index";
 import { GuildResolver } from "./database/resolvers/GuildResolver";
 import { ArgumentError, MissingPermissionsError, OwnerError, PermissionError } from "./errors";
@@ -126,7 +126,7 @@ export class Bot extends Client {
 
 		try {
 			if (command.needsArgs && args.length === 0)
-				throw new ArgumentError(command);
+				throw new ArgumentError(command, prefix);
 			if (command.ownerOnly && author.id !== this.owner)
 				throw new OwnerError();
 			if (command.guildOnly && channel.type !== "text")
@@ -172,4 +172,4 @@ export class Bot extends Client {
 	}
 }
 
-new Bot(DISCORD_TOKEN, { owner: OWNER, prefix: PREFIX });
+new Bot(DISCORD_TOKEN, { owner: OWNER, prefix: GLOBAL_PREFIX });

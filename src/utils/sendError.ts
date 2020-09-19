@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Bot } from "src";
-import * as errors from "../errors"
+import * as errors from "../errors";
 
 export default async function (client: Bot, error: Error, message: Message) {
 	let { author, content, guild, channel } = message;
@@ -24,8 +24,10 @@ export default async function (client: Bot, error: Error, message: Message) {
 		embed.setTitle(error.name)
 			.setDescription(error.message);
 	} else {
+		let [title, ...rest] = error.message.split("\n");
 		embed
-			.setTitle(error.message);
+			.setTitle(title);
+		if (rest) embed.setDescription(rest);
 	}
 	let sentMessage = await channel.send(embed);
 

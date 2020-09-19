@@ -20,12 +20,12 @@ export class Prefix extends Command {
 		let { guild } = message;
 		if (!guild) return null;
 
-		const resolver = this.client.guildResolver;
-
+		const { guildResolver } = this.client;
+		let currentPrefix = await guildResolver.prefix(guild.id);
 		let newPrefix = args.shift();
 
-		if (!newPrefix) throw new ArgumentError(this);
-		await resolver.setPrefix(guild.id, newPrefix);
+		if (!newPrefix) throw new ArgumentError(this, currentPrefix);
+		await guildResolver.setPrefix(guild.id, newPrefix);
 		return new MessageEmbed()
 			.setTitle(`New prefix is now: \`${newPrefix}\``);
 	}
