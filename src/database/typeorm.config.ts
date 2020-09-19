@@ -1,10 +1,9 @@
-import { ConnectionOptions } from "typeorm";
 import { POSTGRES, PRODUCTION } from "../constants";
 import { Guild } from "./entities/Guild";
 
 export const TOConfig = {
 	type: "postgres",
-	database: POSTGRES.NAME,
+	database: "cubot",
 	username: POSTGRES.USERNAME,
 	password: POSTGRES.PASSWORD,
 	logging: !PRODUCTION,
@@ -15,4 +14,4 @@ export const TOConfig = {
 		duration: 30000,
 		alwaysEnabled: true
 	}
-} as ConnectionOptions;
+};

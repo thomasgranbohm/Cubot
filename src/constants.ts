@@ -16,8 +16,7 @@ export const PRODUCTION = (process.env.NODE_ENV || "development") === "productio
 
 export const POSTGRES = {
 	USERNAME: process.env.POSTGRES_USERNAME || "postgres",
-	PASSWORD: process.env.POSTGRES_PASSWORD || "postgres",
-	NAME: process.env.POSTGRES_DB || "cubot",
+	PASSWORD: process.env.POSTGRES_PASSWORD || "postgres"
 }
 export const LAVALINK_URI = address as string;
 export const LAVALINK_PORT = port as number;
