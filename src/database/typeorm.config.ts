@@ -7,7 +7,7 @@ export const TOConfig = {
 	username: POSTGRES.USERNAME,
 	password: POSTGRES.PASSWORD,
 	logging: !PRODUCTION,
-	synchronize: !PRODUCTION,
+	synchronize: true,
 	entities: [Guild],
 	cache: {
 		type: "redis",
@@ -21,5 +21,5 @@ export const TOConfigNoDB = {
 	username: POSTGRES.USERNAME,
 	password: POSTGRES.PASSWORD,
 	logging: !PRODUCTION,
-	synchronize: !PRODUCTION,
+	synchronize: true,
 };
