@@ -15,3 +15,11 @@ export const TOConfig = {
 		alwaysEnabled: true
 	}
 };
+
+export const TOConfigNoDB = {
+	type: "postgres",
+	username: POSTGRES.USERNAME,
+	password: POSTGRES.PASSWORD,
+	logging: !PRODUCTION,
+	synchronize: !PRODUCTION,
+};
