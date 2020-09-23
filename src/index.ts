@@ -96,8 +96,9 @@ export class Bot extends Client {
 		// 	console.log(permissions)
 		// }
 
-		const hasPrefix = content.startsWith(prefix);
+		const hasPrefix = content.startsWith(prefix) || content.startsWith(prefix.concat(" "));
 		const mentionsBot = this.user ? mentions.has(this.user) : false;
+
 		if (!hasPrefix && !mentionsBot) return;
 
 		if (channel instanceof DMChannel !== true) {
@@ -119,7 +120,9 @@ export class Bot extends Client {
 			return sendMessage(channel, returningMessage, help.group, author);
 		}
 
-		const [name, ...args] = content.substr(prefix.length).split(" ");
+		// TODO better solution please. lazy fix
+		const prefixLength = prefix.length + (+ content.startsWith(prefix.concat(" ")));
+		const [name, ...args] = content.substr(prefixLength).split(" ");
 
 		const command = this.commands.find((c) => c.names.includes(name));
 		if (!command) return;
