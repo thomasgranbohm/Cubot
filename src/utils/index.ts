@@ -9,5 +9,7 @@ export { default as getUserAvatar } from "./getUserAvatar"
 export { default as initiatePlayer } from "./initiatePlayer"
 export { default as nowPlayingEmbed } from "./nowPlayingEmbed"
 export { default as queueLoop } from "./queueLoop"
+export { default as sendError } from "./sendError"
 export { default as sendMessage } from "./sendMessage"
 export { default as setServerQueue } from "./setServerQueue"
+

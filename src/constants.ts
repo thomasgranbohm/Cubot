@@ -12,7 +12,7 @@ const { password } = parsed.lavalink.server
 export const GLOBAL_PREFIX = "!";
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN || "INSERT YOUR TOKEN IN THE .env FILE";
 export const OWNER = "284754083049504770";
-export const PRODUCTION = (process.env.NODE_ENV || "development") === "production";
+export const PRODUCTION = process.env.NODE_ENV === "production";
 
 export const POSTGRES = {
 	USERNAME: process.env.POSTGRES_USERNAME || "postgres",

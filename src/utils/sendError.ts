@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Bot } from "src";
+import { PRODUCTION } from "../constants";
 import * as errors from "../errors";
 
 export default async function (client: Bot, error: Error, message: Message) {
@@ -8,7 +9,7 @@ export default async function (client: Bot, error: Error, message: Message) {
 	let embed = new MessageEmbed()
 		.setColor('RED');
 	if (error instanceof errors.UnexpectedError) {
-		if (process.env.NODE_ENV === 'production') {
+		if (PRODUCTION) {
 			let developer = await client.users.fetch(client.owner);
 			const DMChannel = await developer.createDM();
 			DMChannel.send(
