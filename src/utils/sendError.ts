@@ -1,17 +1,18 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Bot } from "src";
 import { PRODUCTION } from "../constants";
-import * as errors from "../errors";
+import { CustomError, UnexpectedError } from "../errors";
 
-export default async function (client: Bot, error: Error, message: Message) {
+export default async function (client: Bot, error: CustomError, message: Message) {
 	let { author, content, guild, channel } = message;
+	let embed = error.embed || new MessageEmbed();
 
-	let embed = new MessageEmbed()
-		.setColor('RED');
-	if (error instanceof errors.UnexpectedError) {
+	if (error instanceof UnexpectedError) {
 		if (PRODUCTION) {
 			let developer = await client.users.fetch(client.owner);
+
 			const DMChannel = await developer.createDM();
+
 			DMChannel.send(
 				new MessageEmbed()
 					.setTitle('Ran into some problems chief')
@@ -26,13 +27,20 @@ export default async function (client: Bot, error: Error, message: Message) {
 			.setDescription(error.message);
 	} else {
 		let [title, ...rest] = error.message.split("\n");
-		embed
-			.setTitle(title);
-		if (rest) embed.setDescription(rest);
-	}
-	let sentMessage = await channel.send(embed);
 
-	sentMessage.delete({
-		timeout: 10000
-	})
+		embed.setTitle(title);
+
+		if (rest && !embed.description) embed.setDescription(rest);
+	}
+
+	let sentMessage = await channel.send(
+		embed
+			.setColor('RED')
+	);
+
+	if (error.shouldBeDeleted) {
+		sentMessage.delete({
+			timeout: 20000
+		})
+	}
 }

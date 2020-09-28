@@ -28,6 +28,7 @@ services:
     cubot:
         container_name: "cubot"
         build: .
+        image: thomasgranbohm/cubot
         depends_on: 
             - database
             - cache

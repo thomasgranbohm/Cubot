@@ -6,9 +6,9 @@ import { LavalinkConfig } from "./config";
 import { DISCORD_TOKEN, GLOBAL_PREFIX, OWNER } from "./constants";
 import { setupDatabase } from "./database/index";
 import { GuildResolver } from "./database/resolvers/GuildResolver";
-import { ArgumentError, MissingPermissionsError, OwnerError, PermissionError } from "./errors";
+import { ArgumentError, CustomError, OwnerError, PermissionError } from "./errors";
 import { BotOptions, ServerObject } from "./types";
-import { getGuildFromMessage, sendError, sendMessage } from "./utils";
+import { checkPermissions, getGuildFromMessage, sendError, sendMessage } from "./utils";
 
 export class Bot extends Client {
 	public owner: string;
@@ -52,12 +52,9 @@ export class Bot extends Client {
 					if (err.message === "Unknown Message" && err.code === 10008) {
 						return;
 					}
-					if (message.guild && err.message === "Missing Permissions" && err.code === 50013) {
-						err = new MissingPermissionsError();
-					}
 				}
 
-				if (err instanceof Error || err instanceof DiscordAPIError) {
+				if (err instanceof CustomError || err instanceof DiscordAPIError) {
 					sendError(this, err, message);
 				}
 			}
@@ -76,13 +73,14 @@ export class Bot extends Client {
 	async connectToLavalink(retryIndex = 0) {
 		try {
 			await this.manager.connect();
+			console.log("Successfully connected to Lavalink.")
 		} catch (err) {
 			if (retryIndex === 2) {
 				console.error(`Could not connect to Lavalink on ${LavalinkConfig.host}:${LavalinkConfig.port}! Exiting...`);
 				process.exit(1);
 			}
-			console.log("Retrying Lavalink connection...");
-			setTimeout(() => this.connectToLavalink(++retryIndex), 5000);
+			console.log(`#${++retryIndex}. Retrying Lavalink connection...`);
+			setTimeout(() => this.connectToLavalink(retryIndex), 5000);
 		}
 	}
 
@@ -94,7 +92,7 @@ export class Bot extends Client {
 
 		this.loadCommands();
 
-		console.log(`Started at ${new Date().toString().substr(0, 24)}`)
+		console.log(`Started at ${new Date().toString().substr(0, 24)}!`)
 	}
 
 	async onMessage(message: Message) {
@@ -106,19 +104,14 @@ export class Bot extends Client {
 		let guild = await getGuildFromMessage(message);
 		let prefix = await this.guildResolver.prefix(guild.id);
 
-		// TODO permission check
-
 		const hasPrefix = content.startsWith(prefix) || content.startsWith(prefix.concat(" "));
 		const mentionsBot = this.user ? mentions.has(this.user) : false;
 
 		if (!hasPrefix && !mentionsBot) return;
 
-		if (channel instanceof DMChannel !== true) {
-			message.delete({
-				timeout: 3000
-			});
-		}
+		checkPermissions(message);
 
+		// TODO this do be kinda ugly doe
 		if (mentionsBot) {
 			const help = this.commands.get("help");
 			if (!help) return;
@@ -146,6 +139,11 @@ export class Bot extends Client {
 		if (!returningMessage || returningMessage === null) return;
 
 		await sendMessage(channel, returningMessage, command.group, author);
+
+		if (channel instanceof DMChannel !== true) {
+			await message
+				.delete({ timeout: 3000 })
+		}
 	}
 
 	async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {

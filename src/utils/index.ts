@@ -1,4 +1,5 @@
 export { default as checkBotVoice } from "./checkBotVoice"
+export { default as checkPermissions } from "./checkPermissions"
 export { default as checkUserVoice } from "./checkUserVoice"
 export { default as getGuildFromMessage } from "./getGuildFromMessage"
 export { default as getIdealHost } from "./getIdealHost"
