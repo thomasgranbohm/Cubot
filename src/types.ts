@@ -1,5 +1,6 @@
-import { ClientOptions, Message, User } from "discord.js";
 import { PlayerEqualizerBand } from "@lavacord/discord.js";
+import { ClientOptions, Message, User } from "discord.js";
+import { Categories } from "./config";
 
 export type BotOptions = ClientOptions & {
 	owner: string,
@@ -8,7 +9,7 @@ export type BotOptions = ClientOptions & {
 
 export type CommandOptions = {
 	description: string,
-	group: string,
+	group: Categories,
 	aliases?: string[],
 	examples?: Array<string>,
 	ownerOnly?: boolean,

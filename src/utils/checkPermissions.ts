@@ -10,8 +10,8 @@ export default function (message: Message) {
 			let missingPermissions = new Permissions(PERMISSIONS_INTEGER)
 				.toArray()
 				.filter((perm: PermissionString) => !permissions.toArray().includes(perm) ? perm : undefined);
-
-			throw new MissingPermissionsError(missingPermissions)
+			if (missingPermissions.length > 0)
+				throw new MissingPermissionsError(missingPermissions)
 		}
 	}
 	return true;

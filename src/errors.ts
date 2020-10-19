@@ -24,7 +24,7 @@ export class OwnerError extends CustomError {
 	message: string = "Only the owner of this bot can use this command.";
 }
 
-export class PermissionError extends CustomError {
+export class GuildOnlyError extends CustomError {
 	message: string = "This command can only be used in a guild.";
 }
 

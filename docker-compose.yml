@@ -1,40 +1,40 @@
-version: '3.7'
-services: 
+version: "3.7"
+services:
     database:
         container_name: "database"
         image: postgres
-        env_file: 
+        env_file:
             - .env
-        ports: 
+        ports:
             - "5432:5432"
-        volumes: 
+        volumes:
             - database-data:/var/lib/postgresql/data/
     cache:
         container_name: "cache"
         image: bitnami/redis
-        environment: 
+        environment:
             - ALLOW_EMPTY_PASSWORD=yes
-        ports: 
+        ports:
             - "6379:6379"
-        volumes: 
+        volumes:
             - cache-data:/bitnami/redis/data
     lavalink:
         container_name: "lavalink"
         image: fredboat/lavalink:dev
-        ports: 
+        ports:
             - "2333:2333"
-        volumes: 
+        volumes:
             - ./application.yml:/opt/Lavalink/application.yml
     cubot:
         container_name: "cubot"
         build: .
         image: thomasgranbohm/cubot
-        depends_on: 
+        depends_on:
             - database
             - cache
             - lavalink
         network_mode: host
-        env_file: 
+        env_file:
             - .env
 volumes:
     database-data:

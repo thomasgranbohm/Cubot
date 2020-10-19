@@ -1,14 +1,14 @@
 import { Manager } from "@lavacord/discord.js";
-import { Client, Collection, DiscordAPIError, DMChannel, Message, VoiceState } from "discord.js";
+import { Client, Collection, DiscordAPIError, Message, TextChannel, VoiceState } from "discord.js";
 import { Command } from "./classes";
 import * as commands from "./commands";
 import { LavalinkConfig } from "./config";
-import { DISCORD_TOKEN, GLOBAL_PREFIX, OWNER } from "./constants";
+import { BOT_MESSAGE_DELETE_TIMEOUT, DISCORD_TOKEN, GLOBAL_PREFIX, OWNER, USER_MESSAGE_DELETE_TIMEOUT } from "./constants";
 import { setupDatabase } from "./database/index";
 import { GuildResolver } from "./database/resolvers/GuildResolver";
-import { ArgumentError, CustomError, OwnerError, PermissionError } from "./errors";
+import { ArgumentError, CustomError, GuildOnlyError, OwnerError } from "./errors";
 import { BotOptions, ServerObject } from "./types";
-import { checkPermissions, getGuildFromMessage, sendError, sendMessage } from "./utils";
+import { checkPermissions, deleteMessage, getGuildFromMessage, sendError, sendMessage } from "./utils";
 
 export class Bot extends Client {
 	public owner: string;
@@ -55,6 +55,7 @@ export class Bot extends Client {
 				}
 
 				if (err instanceof CustomError || err instanceof DiscordAPIError) {
+					if (err instanceof DiscordAPIError) console.error(err);
 					sendError(this, err, message);
 				}
 			}
@@ -111,39 +112,35 @@ export class Bot extends Client {
 
 		checkPermissions(message);
 
-		// TODO this do be kinda ugly doe
-		if (mentionsBot) {
-			const help = this.commands.get("help");
-			if (!help) return;
-
-			const returningMessage = await help.run(message);
-			if (!returningMessage) return;
-
-			return sendMessage(channel, returningMessage, help.group, author);
-		}
-
 		const prefixLength = prefix.length + (+ content.startsWith(prefix.concat(" ")));
 		const [name, ...args] = content.substr(prefixLength).split(" ");
 
-		const command = this.commands.find((c) => c.names.includes(name));
+		const command = this.commands.find((c) => c.names.includes(mentionsBot ? "help" : name));
 		if (!command) return;
 
 		if (command.needsArgs && args.length === 0)
 			throw new ArgumentError(command, prefix);
+
 		if (command.ownerOnly && author.id !== this.owner)
 			throw new OwnerError();
-		if (command.guildOnly && channel.type !== "text")
-			throw new PermissionError();
+
+		if (command.guildOnly && channel instanceof TextChannel !== false)
+			throw new GuildOnlyError();
 
 		let returningMessage = await command.run(message, args);
 		if (!returningMessage || returningMessage === null) return;
 
-		await sendMessage(channel, returningMessage, command.group, author);
-
-		if (channel instanceof DMChannel !== true) {
-			await message
-				.delete({ timeout: 3000 })
+		if (channel instanceof TextChannel !== false) {
+			deleteMessage(
+				message,
+				USER_MESSAGE_DELETE_TIMEOUT
+			);
 		}
+
+		deleteMessage(
+			await sendMessage(channel, returningMessage, command.group),
+			BOT_MESSAGE_DELETE_TIMEOUT
+		);
 	}
 
 	async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {

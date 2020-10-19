@@ -1,6 +1,7 @@
 export { default as checkBotVoice } from "./checkBotVoice"
 export { default as checkPermissions } from "./checkPermissions"
 export { default as checkUserVoice } from "./checkUserVoice"
+export { default as deleteMessage } from "./deleteMessage"
 export { default as getGuildFromMessage } from "./getGuildFromMessage"
 export { default as getIdealHost } from "./getIdealHost"
 export { default as getServerQueue } from "./getServerQueue"

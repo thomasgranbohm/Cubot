@@ -1,12 +1,13 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Bot } from "src";
+import { Categories } from "./config";
 import { CommandOptions, TrackObject } from "./types";
 import { getThumbnail } from "./utils";
 
 export abstract class Command {
 	names: string[];
 	description: string;
-	group: string;
+	group: Categories;
 	examples: string[];
 	ownerOnly: boolean;
 	guildOnly: boolean;
@@ -24,8 +25,6 @@ export abstract class Command {
 		this.guildOnly = options.guildOnly || false;
 		this.ownerOnly = options.ownerOnly || false;
 		this.needsArgs = options.needsArgs || false;
-		if (!this.needsArgs) {
-		}
 	}
 
 	abstract async run(message: Message, args?: string[]): Promise<string | MessageEmbed | null>

@@ -1,14 +1,21 @@
-import { 
-	LAVALINK_URI, 
-	LAVALINK_PORT,
-	LAVALINK_PASSWORD
+import {
+	LAVALINK_PASSWORD, LAVALINK_PORT, LAVALINK_URI
 } from "./constants";
 
-export const Categories = {
-	VOICE: "85e89d",
-	UTILS: "f97583",
-	MISC: "f692ce",
-	ADMIN: "ffea7f",
+export enum Categories {
+	VOICE,
+	UTILS,
+	MISC,
+	ADMIN,
+	ERROR
+}
+
+export const Colors = {
+	[Categories.VOICE]: "85e89d",
+	[Categories.UTILS]: "f97583",
+	[Categories.MISC]: "f692ce",
+	[Categories.ADMIN]: "ffea7f",
+	[Categories.ERROR]: "e74c3c"
 };
 
 export const LavalinkConfig = {

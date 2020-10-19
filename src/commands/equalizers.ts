@@ -46,10 +46,11 @@ export class Equalizers extends Command {
 		let guildId = checkBotVoice(this.client, message);
 
 		const eqName = args.shift()?.toLowerCase();
-		const foundEqualizer = Object.entries(eqs).find(([name, e]) => {
-			if (name === eqName) return e;
-			return undefined;
-		});
+		const foundEqualizer = Object.entries(eqs)
+			.find(([name, e]) => {
+				if (name === eqName) return e;
+				return undefined;
+			});
 
 		if (!foundEqualizer) throw new NoEqualizerFoundError();
 

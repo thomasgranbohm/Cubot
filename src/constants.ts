@@ -27,3 +27,6 @@ export const LAVALINK_PASSWORD = password as string;
 export const PERMISSIONS_INTEGER = 305659632;
 export const UPPER_VOLUME_LIMIT = 300;
 export const PLAYLIST_AMOUNT = 15;
+
+export const BOT_MESSAGE_DELETE_TIMEOUT = 20;
+export const USER_MESSAGE_DELETE_TIMEOUT = 3;

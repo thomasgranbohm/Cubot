@@ -1,22 +1,13 @@
-import { MessageEmbed, User, TextChannel, DMChannel, NewsChannel } from "discord.js";
-// import getUserAvatar from "./getUserAvatar";
-// import { Categories } from "../config";
+import { DMChannel, MessageEmbed, NewsChannel, TextChannel, User } from "discord.js";
+import { Categories, Colors } from "../config";
 
-export default async function (channel: TextChannel | DMChannel | NewsChannel, message: MessageEmbed | string | Error, category?: string, author?: User) {
-	if (message instanceof MessageEmbed) {
+export default async function (channel: TextChannel | DMChannel | NewsChannel, pendingMessage: MessageEmbed | string | Error, category?: Categories, author?: User) {
+	if (pendingMessage instanceof MessageEmbed) {
 		if (category)
-			message.setColor(category)
-		// if (!message.footer && !message.timestamp && category !== Categories.ADMIN && author) {
-		// 	message.setFooter(
-		// 		`Requested by ${author.username}`,
-		// 		getUserAvatar(author)
-		// 	);
-		// }
+			pendingMessage.setColor(Colors[category])
 	}
 
-	let sentMessage = await channel.send(message);
+	let sentMessage = await channel.send(pendingMessage);
 
-	if (author) {
-		sentMessage.delete({ timeout: 15000 });
-	}
+	return sentMessage;
 }

@@ -1,7 +1,10 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Bot } from "src";
-import { PRODUCTION } from "../constants";
+import { Categories, Colors } from "../config";
+import { BOT_MESSAGE_DELETE_TIMEOUT, PRODUCTION } from "../constants";
 import { CustomError, UnexpectedError } from "../errors";
+import deleteMessage from "./deleteMessage";
+import sendMessage from "./sendMessage";
 
 export default async function (client: Bot, error: CustomError, message: Message) {
 	let { author, content, guild, channel } = message;
@@ -19,7 +22,7 @@ export default async function (client: Bot, error: CustomError, message: Message
 					.setDescription(`**${author.tag}** tried to run \`${content}\` in ${guild?.name}.`)
 					.addField("Developer message:", error.developerMessage)
 					.addField("Stack trace:", `\`\`\`${error.stack}\`\`\``)
-					.setColor('RED')
+					.setColor(Colors[Categories.ERROR])
 					.setTimestamp()
 			);
 		}
@@ -30,17 +33,16 @@ export default async function (client: Bot, error: CustomError, message: Message
 
 		embed.setTitle(title);
 
-		if (rest && !embed.description) embed.setDescription(rest);
+		if (rest && !embed.description)
+			embed.setDescription(rest);
 	}
 
-	let sentMessage = await channel.send(
-		embed
-			.setColor('RED')
+	let sentMessage = await sendMessage(channel, embed, Categories.ERROR)
+
+	if (!error.shouldBeDeleted) return;
+
+	deleteMessage(
+		sentMessage,
+		BOT_MESSAGE_DELETE_TIMEOUT
 	);
-
-	if (error.shouldBeDeleted) {
-		sentMessage.delete({
-			timeout: 20000
-		})
-	}
 }
