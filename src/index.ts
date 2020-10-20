@@ -39,36 +39,9 @@ export class Bot extends Client {
 
 		this.on('ready', this.onReady);
 		this.on('voiceStateUpdate', this.onVoiceStateUpdate);
-		this.on('message', async (message) => {
-			try {
-				await this.onMessage(message);
-			} catch (err) {
-				/*
-				Message Error Handling
-				or
-				MEH for-short
-				*/
-				if (err instanceof DiscordAPIError) {
-					if (err.message === "Unknown Message" && err.code === 10008) {
-						return;
-					}
-				}
-
-				if (err instanceof CustomError || err instanceof DiscordAPIError) {
-					if (err instanceof DiscordAPIError) console.error(err);
-					sendError(this, err, message);
-				}
-			}
-		});
+		this.on('message', this.onMessage);
 
 		this.login(token);
-	}
-
-	loadCommands() {
-		const entries = Object.entries(commands);
-		for (let [name, TempCommand] of entries) {
-			this.commands.set(name.toLowerCase(), new TempCommand(this));
-		}
 	}
 
 	async connectToLavalink(retryIndex = 0) {
@@ -85,32 +58,33 @@ export class Bot extends Client {
 		}
 	}
 
-	async onReady() {
-		await setupDatabase();
-		await this.connectToLavalink();
-
-		this.user?.setActivity({ name: `music! @ me`, type: "LISTENING" });
-
-		this.loadCommands();
-
-		console.log(`Started at ${new Date().toString().substr(0, 24)}!`)
+	loadCommands() {
+		const entries = Object.entries(commands);
+		for (let [name, TempCommand] of entries) {
+			this.commands.set(name.toLowerCase(), new TempCommand(this));
+		}
 	}
 
-	async onMessage(message: Message) {
-		const { content, channel, author, mentions } = message;
+	async handleCommand(message: Message) {
+		const { content, author, mentions, channel } = message;
 
 		const isBot = author.bot;
 		if (isBot) return;
 
-		let guild = await getGuildFromMessage(message);
-		let prefix = await this.guildResolver.prefix(guild.id);
+		const guild = await getGuildFromMessage(message);
+		const prefix = await this.guildResolver.prefix(guild.id);
 
 		const hasPrefix = content.startsWith(prefix) || content.startsWith(prefix.concat(" "));
-		const mentionsBot = this.user ? mentions.has(this.user) : false;
+		const mentionsBot = this.user
+			? mentions.has(this.user, {
+				ignoreEveryone: true,
+				ignoreRoles: true
+			})
+			: false;
 
 		if (!hasPrefix && !mentionsBot) return;
 
-		checkPermissions(message);
+		checkPermissions(guild);
 
 		const prefixLength = prefix.length + (+ content.startsWith(prefix.concat(" ")));
 		const [name, ...args] = content.substr(prefixLength).split(" ");
@@ -124,27 +98,60 @@ export class Bot extends Client {
 		if (command.ownerOnly && author.id !== this.owner)
 			throw new OwnerError();
 
-		if (command.guildOnly && channel instanceof TextChannel !== false)
+		if (command.guildOnly && channel instanceof TextChannel === false)
 			throw new GuildOnlyError();
 
-		let returningMessage = await command.run(message, args);
-		if (!returningMessage || returningMessage === null) return;
-
-		if (channel instanceof TextChannel !== false) {
-			deleteMessage(
-				message,
-				USER_MESSAGE_DELETE_TIMEOUT
-			);
-		}
-
-		deleteMessage(
-			await sendMessage(channel, returningMessage, command.group),
-			BOT_MESSAGE_DELETE_TIMEOUT
+		// TODO this do be kinda ugly tho
+		const sentMessage = await sendMessage(
+			channel,
+			await command.run(message, args),
+			command.group
 		);
+
+		deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
+		if (channel instanceof TextChannel !== false) {
+			deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
+		}
+	}
+
+	// MEH: Message Error Handling
+	handleError(message: Message, error: Error) {
+		if (error instanceof CustomError === false &&
+			error instanceof DiscordAPIError === false) return;
+
+		if (error instanceof DiscordAPIError &&
+			error.message === "Unknown Message" &&
+			error.code === 10008)
+			return;
+
+		if (error instanceof DiscordAPIError)
+			console.error(error);
+
+		sendError(this, error, message);
+	}
+
+	async onReady() {
+		await setupDatabase();
+		await this.connectToLavalink();
+
+		this.user?.setActivity({ name: `music! @ me`, type: "LISTENING" });
+
+		this.loadCommands();
+
+		console.log(`Started at ${new Date().toString().substr(0, 24)}!`)
+	}
+
+	async onMessage(message: Message) {
+		try {
+			await this.handleCommand(message);
+		} catch (error) {
+			this.handleError(message, error);
+		}
 	}
 
 	async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
-		let guild = this.guilds.cache.get(oldState.guild.id);
+		// TODO also do be kinda ugly
+		const guild = this.guilds.cache.get(oldState.guild.id);
 		if (!guild)
 			return;
 
@@ -153,17 +160,17 @@ export class Bot extends Client {
 		else if (newState.channel) voiceChannelId = newState.channel.id;
 		else return;
 
-		let channel = guild.channels.cache.get(voiceChannelId);
+		const channel = guild.channels.cache.get(voiceChannelId);
 		if (!channel)
 			return;
 
-		let userId = this.user?.id;
+		const userId = this.user?.id;
 		if (!userId)
 			return;
-		let isInVoiceChannel = !!channel.members.get(userId);
-		let onlyPersonInVC = (channel.members.size <= 1 && isInVoiceChannel);
+		const isInVoiceChannel = !!channel.members.get(userId);
+		const onlyPersonInVC = (channel.members.size <= 1 && isInVoiceChannel);
 
-		let justLeftVC = !isInVoiceChannel && channel.members.size >= 1 && oldState.member?.user == this.user;
+		const justLeftVC = !isInVoiceChannel && channel.members.size >= 1 && oldState.member?.user == this.user;
 		if (onlyPersonInVC || justLeftVC) {
 			this.manager.leave(oldState.guild.id);
 

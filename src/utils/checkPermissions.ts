@@ -1,9 +1,13 @@
-import { Message, Permissions, PermissionString } from "discord.js";
+import { Guild, Permissions, PermissionString } from "discord.js";
 import { PERMISSIONS_INTEGER } from "../constants";
 import { MissingPermissionsError } from "../errors";
 
-export default function (message: Message) {
-	let { guild } = message;
+/**
+ * @param guild Guild in which the message was sent
+ * @throws MissingPermissionsError if permissions are missing
+ */
+
+export default function (guild: Guild) {
 	if (guild && guild.me) {
 		if (!guild.me.hasPermission(PERMISSIONS_INTEGER)) {
 			let { permissions } = guild.me;

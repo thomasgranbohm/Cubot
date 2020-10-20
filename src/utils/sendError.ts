@@ -7,12 +7,12 @@ import deleteMessage from "./deleteMessage";
 import sendMessage from "./sendMessage";
 
 export default async function (client: Bot, error: CustomError, message: Message) {
-	let { author, content, guild, channel } = message;
-	let embed = error.embed || new MessageEmbed();
+	const { author, content, guild, channel } = message;
+	const embed = error.embed || new MessageEmbed();
 
 	if (error instanceof UnexpectedError) {
 		if (PRODUCTION) {
-			let developer = await client.users.fetch(client.owner);
+			const developer = await client.users.fetch(client.owner);
 
 			const DMChannel = await developer.createDM();
 
@@ -29,7 +29,7 @@ export default async function (client: Bot, error: CustomError, message: Message
 		embed.setTitle(error.name)
 			.setDescription(error.message);
 	} else {
-		let [title, ...rest] = error.message.split("\n");
+		const [title, ...rest] = error.message.split("\n");
 
 		embed.setTitle(title);
 
@@ -37,7 +37,7 @@ export default async function (client: Bot, error: CustomError, message: Message
 			embed.setDescription(rest);
 	}
 
-	let sentMessage = await sendMessage(channel, embed, Categories.ERROR)
+	const sentMessage = await sendMessage(channel, embed, Categories.ERROR)
 
 	if (!error.shouldBeDeleted) return;
 

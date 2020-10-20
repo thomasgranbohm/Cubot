@@ -3,8 +3,9 @@ import { Categories, Colors } from "../config";
 
 export default async function (channel: TextChannel | DMChannel | NewsChannel, pendingMessage: MessageEmbed | string | Error, category?: Categories, author?: User) {
 	if (pendingMessage instanceof MessageEmbed) {
-		if (category)
+		if (category !== undefined && category !== null) {
 			pendingMessage.setColor(Colors[category])
+		}
 	}
 
 	let sentMessage = await channel.send(pendingMessage);
