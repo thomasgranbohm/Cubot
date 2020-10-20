@@ -19,7 +19,7 @@ export class Equalizers extends Command {
 		})
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed | null> {
+	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
 		if (!args || args?.length === 0) {
 			let embed = new MessageEmbed()
 				.setTitle('List of all equalizers')

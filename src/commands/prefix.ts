@@ -3,6 +3,7 @@ import { Command } from "../classes";
 import { Categories } from "../config";
 import { ArgumentError } from "../errors";
 import { Bot } from "../index";
+import { getGuildFromMessage } from "../utils";
 
 export class Prefix extends Command {
 
@@ -16,9 +17,8 @@ export class Prefix extends Command {
 		})
 	}
 
-	async run(message: Message, args: string[]): Promise<string | MessageEmbed | null> {
-		let { guild } = message;
-		if (!guild) return null;
+	async run(message: Message, args: string[]): Promise<string | MessageEmbed> {
+		const guild = getGuildFromMessage(message);
 
 		const { guildResolver } = this.client;
 		let currentPrefix = await guildResolver.prefix(guild.id);

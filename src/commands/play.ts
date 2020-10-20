@@ -1,11 +1,11 @@
-import { Command, TrackEmbed } from "../classes";
-import { Bot } from "../index";
 import { Message, MessageEmbed, User } from "discord.js";
+import { Command, TrackEmbed } from "../classes";
 import { Categories } from "../config";
-import { NoResultsFoundError as NoResultsError, NoGuildFoundError, UnexpectedError, NotPlayingError } from "../errors";
-import { checkUserVoice, initiatePlayer, getServerQueue, getTracks, setServerQueue, getIdealHost, queueLoop, getThumbnail, nowPlayingEmbed } from "../utils";
-import { TrackObject } from "../types";
 import { PLAYLIST_AMOUNT } from "../constants";
+import { NoGuildFoundError, NoResultsFoundError as NoResultsError, NotPlayingError, UnexpectedError } from "../errors";
+import { Bot } from "../index";
+import { TrackObject } from "../types";
+import { checkUserVoice, getIdealHost, getServerQueue, getThumbnail, getTracks, initiatePlayer, nowPlayingEmbed, queueLoop, setServerQueue } from "../utils";
 
 let setTrackInfo = async (track: TrackObject, author: User): Promise<TrackObject> => {
 	track.title = track.title.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
@@ -31,7 +31,7 @@ export class Play extends Command {
 		})
 	}
 
-	async run(message: Message, args: string[]): Promise<string | MessageEmbed | null> {
+	async run(message: Message, args: string[]): Promise<string | MessageEmbed> {
 		let voiceId = checkUserVoice(message);
 
 		const guildId = message.guild?.id;

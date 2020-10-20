@@ -1,11 +1,10 @@
-import { Command } from "../classes";
-import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
+import { Command, TrackEmbed } from "../classes";
 import { Categories } from "../config";
-import { TrackEmbed } from "../classes";
 import { NotPlayingError } from "../errors";
-import { checkBotVoice, checkUserVoice, getServerQueue, getUserAvatar } from "../utils";
+import { Bot } from "../index";
 import { TrackObject } from "../types";
+import { checkBotVoice, checkUserVoice, getServerQueue, getUserAvatar } from "../utils";
 
 export class Queue extends Command {
 
@@ -18,7 +17,7 @@ export class Queue extends Command {
 		})
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed | null> {
+	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
 		let guildId = await checkBotVoice(this.client, message);
 		await checkUserVoice(message);
 

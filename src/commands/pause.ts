@@ -1,8 +1,8 @@
-import { Command } from "../classes";
-import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
+import { Command } from "../classes";
 import { Categories } from "../config";
-import { checkUserVoice, checkBotVoice, getServerQueue } from "../utils";
+import { Bot } from "../index";
+import { checkBotVoice, checkUserVoice, getServerQueue } from "../utils";
 
 export class Pause extends Command {
 
@@ -15,7 +15,7 @@ export class Pause extends Command {
 		})
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed | null> {
+	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
 		await checkUserVoice(message);
 		let guildId = checkBotVoice(this.client, message);
 

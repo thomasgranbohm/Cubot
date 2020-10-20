@@ -1,10 +1,10 @@
-import { Command } from "../classes";
-import { Bot } from "../index";
 import { Message, MessageEmbed } from "discord.js";
+import { Command } from "../classes";
 import { Categories } from "../config";
-import { checkUserVoice, checkBotVoice } from "../utils";
-import { NotPlayingError, VolumeNotBetweenThresholdError } from "../errors";
 import { UPPER_VOLUME_LIMIT } from "../constants";
+import { NotPlayingError, VolumeNotBetweenThresholdError } from "../errors";
+import { Bot } from "../index";
+import { checkBotVoice, checkUserVoice } from "../utils";
 
 export class Volume extends Command {
 
@@ -17,7 +17,7 @@ export class Volume extends Command {
 		})
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed | null> {
+	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
 		await checkUserVoice(message);
 		let guildId = await checkBotVoice(this.client, message);
 

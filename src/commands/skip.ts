@@ -1,9 +1,9 @@
 import { Message, MessageEmbed } from "discord.js";
-import { Bot } from "../index";
 import { Command } from "../classes";
 import { Categories } from "../config";
 import { NotPlayingError } from "../errors";
-import { checkUserVoice, checkBotVoice, getServerQueue, nowPlayingEmbed } from "../utils";
+import { Bot } from "../index";
+import { checkBotVoice, checkUserVoice, getServerQueue, nowPlayingEmbed } from "../utils";
 
 export class Skip extends Command {
 
@@ -16,7 +16,7 @@ export class Skip extends Command {
 		})
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed | null> {
+	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
 		await checkUserVoice(message);
 		let guildId = await checkBotVoice(this.client, message);
 
@@ -28,7 +28,8 @@ export class Skip extends Command {
 		await player.stop();
 
 		if (nextTrack) return nowPlayingEmbed(nextTrack)
-		return null;
+		return new MessageEmbed()
+			.setTitle("And now, silence.");
 	}
 
 }

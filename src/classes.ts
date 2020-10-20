@@ -27,7 +27,7 @@ export abstract class Command {
 		this.needsArgs = options.needsArgs || false;
 	}
 
-	abstract async run(message: Message, args?: string[]): Promise<string | MessageEmbed | null>
+	abstract async run(message: Message, args?: string[]): Promise<string | MessageEmbed>
 
 	help(prefix: string, extended: boolean = false): string | MessageEmbed {
 		if (extended) {

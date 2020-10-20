@@ -16,7 +16,7 @@ export class Help extends Command {
 		})
 	}
 
-	async run(message: Message, args?: string[] | undefined): Promise<string | MessageEmbed | null> {
+	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
 		let guild = getGuildFromMessage(message)
 		const prefix = await this.client.guildResolver.prefix(guild.id);
 
