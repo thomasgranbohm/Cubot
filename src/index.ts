@@ -1,5 +1,5 @@
 import { Manager } from "@lavacord/discord.js";
-import { Client, Collection, DiscordAPIError, Message, TextChannel, VoiceState } from "discord.js";
+import { Client, Collection, DiscordAPIError, DMChannel, Message, TextChannel, VoiceState } from "discord.js";
 import { Command } from "./classes";
 import * as commands from "./commands";
 import { LavalinkConfig } from "./config";
@@ -70,6 +70,8 @@ export class Bot extends Client {
 
 		const isBot = author.bot;
 		if (isBot) return;
+
+		if (channel instanceof DMChannel) return;
 
 		const guild = await getGuildFromMessage(message);
 		const prefix = await this.guildResolver.prefix(guild.id);

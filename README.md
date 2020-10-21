@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="https://raw.githubusercontent.com/thomasgranbohm/Cubot/master/logo.png" height="196"/>
+	<img src="https://raw.githubusercontent.com/thomasgranbohm/Cubot/master/logo.png" width="400"/>
 </div>
 <div align="center">
 	<a href="https://discord.com/oauth2/authorize?client_id=536286702365310999&scope=bot&permissions=439877616">
@@ -9,7 +9,7 @@
 	<a href="https://discord.gg/Cak7Srv">
 		<img alt="Support Server"
 			src="https://img.shields.io/discord/755725963039604807?color=%237289DA&label=server&logoColor=white&style=for-the-badge">
-	</a>
+	</a><br/>
 	<a href="https://nodejs.org/en/download/">
 		<img alt="Node.js"
 			src="https://img.shields.io/badge/NODE.JS-v13.14-darkgreen?style=for-the-badge">
