@@ -1,6 +1,6 @@
 import { Bot } from "src";
-import { TrackObject } from "../types";
 import { NoGuildFoundError } from "../errors";
+import { TrackObject } from "../types";
 
 export default function (client: Bot, guildId: string, newQueue: TrackObject[]): TrackObject[] {
 	let guild = client.servers.get(guildId);

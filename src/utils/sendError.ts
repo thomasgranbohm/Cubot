@@ -25,6 +25,8 @@ export default async function (client: Bot, error: CustomError, message: Message
 					.setColor(Colors[Categories.ERROR])
 					.setTimestamp()
 			);
+		} else {
+			console.error(error)
 		}
 		embed.setTitle(error.name)
 			.setDescription(error.message);

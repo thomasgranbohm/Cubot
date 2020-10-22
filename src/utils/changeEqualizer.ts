@@ -1,7 +1,7 @@
-import { Bot } from "src";
-import { NotPlayingError } from "../errors";
-import { flat } from "../equalizers";
 import { MessageEmbed } from "discord.js";
+import { Bot } from "src";
+import { flat } from "../equalizers";
+import { NotPlayingError } from "../errors";
 import { Equalizer } from "../types";
 
 export default async function (client: Bot, guildId: string, equalizer: Equalizer) {

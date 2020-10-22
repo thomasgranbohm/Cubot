@@ -1,6 +1,6 @@
 import axios from "axios";
-import { TrackObject } from "../types";
 import { LavalinkConfig } from "../config";
+import { TrackObject } from "../types";
 
 export default async function (query: string): Promise<TrackObject[]> {
 	try {

@@ -1,5 +1,5 @@
 import { MessageEmbed, PermissionString } from "discord.js";
-import { Command } from "./classes";
+import { MainCommand } from "./classes";
 import { UPPER_VOLUME_LIMIT } from "./constants";
 
 export class CustomError extends Error {
@@ -13,7 +13,7 @@ export class CustomError extends Error {
 export class ArgumentError extends CustomError {
 	message: string;
 
-	constructor(command: Command, prefix: string) {
+	constructor(command: MainCommand, prefix: string) {
 		super()
 		this.message = "You didn't provide the needed arguments.\n" +
 			`Here is how you use it: \`${command.usage(prefix)}\``
@@ -90,4 +90,8 @@ export class UnexpectedError extends CustomError {
 		super();
 		this.developerMessage = developerMessage;
 	}
+}
+
+export class NoSubCommandFoundError extends CustomError {
+	message: string = "That subcommand doesn't exist.";
 }

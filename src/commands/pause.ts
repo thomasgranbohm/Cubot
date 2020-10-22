@@ -1,10 +1,10 @@
 import { Message, MessageEmbed } from "discord.js";
-import { Command } from "../classes";
+import { MainCommand } from "../classes";
 import { Categories } from "../config";
 import { Bot } from "../index";
 import { checkBotVoice, checkUserVoice, getServerQueue } from "../utils";
 
-export class Pause extends Command {
+export class Pause extends MainCommand {
 
 	constructor(client: Bot) {
 		super(client, {

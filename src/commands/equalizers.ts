@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import { Command } from "../classes";
+import { MainCommand } from "../classes";
 import { Categories } from "../config";
 import * as eqs from "../equalizers";
 import { NoEqualizerFoundError } from "../errors";
@@ -7,7 +7,7 @@ import { Bot } from "../index";
 import { checkBotVoice, checkUserVoice } from "../utils";
 import changeEqualizer from "../utils/changeEqualizer";
 
-export class Equalizers extends Command {
+export class Equalizers extends MainCommand {
 
 	constructor(client: Bot) {
 		super(client, {

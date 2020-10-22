@@ -1,12 +1,12 @@
 import { Message, MessageEmbed } from "discord.js";
-import { Command, TrackEmbed } from "../classes";
+import { MainCommand, TrackEmbed } from "../classes";
 import { Categories } from "../config";
 import { NotPlayingError } from "../errors";
 import { Bot } from "../index";
 import { TrackObject } from "../types";
 import { checkBotVoice, checkUserVoice, getServerQueue, getUserAvatar } from "../utils";
 
-export class Queue extends Command {
+export class Queue extends MainCommand {
 
 	constructor(client: Bot) {
 		super(client, {

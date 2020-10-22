@@ -1,5 +1,5 @@
-import { TrackObject } from "../types";
 import axios from "axios";
+import { TrackObject } from "../types";
 
 export default async function (track: TrackObject): Promise<string | null> {
 	if (!track.uri.includes("youtube") || typeof track.thumbnail === "string") {

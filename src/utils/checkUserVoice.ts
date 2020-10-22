@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { UserNotInChannelError, BotInAnotherVoiceError } from "../errors";
+import { BotInAnotherVoiceError, UserNotInChannelError } from "../errors";
 
 export default function (message: Message): string {
 	if (!message.member?.voice.channelID) {

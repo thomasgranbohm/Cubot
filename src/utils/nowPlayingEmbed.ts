@@ -1,8 +1,8 @@
-import { TrackObject } from "../types";
 import { MessageEmbed } from "discord.js";
-import { NotPlayingError } from "../errors";
-import getUserAvatar from "./getUserAvatar";
 import { TrackEmbed } from "../classes";
+import { NotPlayingError } from "../errors";
+import { TrackObject } from "../types";
+import getUserAvatar from "./getUserAvatar";
 
 export default async function (currentTrack: TrackObject, nextTrack?: TrackObject): Promise<MessageEmbed> {
 	if (!currentTrack) throw new NotPlayingError();

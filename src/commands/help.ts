@@ -1,11 +1,11 @@
 import { Message, MessageEmbed } from "discord.js";
-import { Command } from "../classes";
+import { MainCommand } from "../classes";
 import { Categories } from "../config";
 import { UnexpectedError } from "../errors";
 import { Bot } from "../index";
 import { getGuildFromMessage } from "../utils/";
 
-export class Help extends Command {
+export class Help extends MainCommand {
 
 	constructor(client: Bot) {
 		super(client, {

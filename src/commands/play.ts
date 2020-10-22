@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, User } from "discord.js";
-import { Command, TrackEmbed } from "../classes";
+import { MainCommand, TrackEmbed } from "../classes";
 import { Categories } from "../config";
 import { PLAYLIST_AMOUNT } from "../constants";
 import { NoGuildFoundError, NoResultsFoundError as NoResultsError, NotPlayingError, UnexpectedError } from "../errors";
@@ -18,7 +18,7 @@ let setTrackInfo = async (track: TrackObject, author: User): Promise<TrackObject
 	return track;
 }
 
-export class Play extends Command {
+export class Play extends MainCommand {
 
 	constructor(client: Bot) {
 		super(client, {

@@ -1,11 +1,11 @@
 import { Message, MessageEmbed } from "discord.js";
-import { Command } from "../classes";
+import { MainCommand } from "../classes";
 import { Categories } from "../config";
 import { NotPlayingError } from "../errors";
 import { Bot } from "../index";
 import { checkBotVoice, checkUserVoice } from "../utils";
 
-export class Loop extends Command {
+export class Loop extends MainCommand {
 
 	constructor(client: Bot) {
 		super(client, {

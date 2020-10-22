@@ -1,5 +1,6 @@
 import { PlayerEqualizerBand } from "@lavacord/discord.js";
 import { ClientOptions, Message, User } from "discord.js";
+import { MainCommand } from "./classes";
 import { Categories } from "./config";
 
 export type BotOptions = ClientOptions & {
@@ -7,14 +8,22 @@ export type BotOptions = ClientOptions & {
 	prefix: string,
 };
 
-export type CommandOptions = {
-	description: string,
-	group: Categories,
-	aliases?: string[],
-	examples?: Array<string>,
-	ownerOnly?: boolean,
-	guildOnly?: boolean,
-	needsArgs?: boolean,
+export interface CommandOptions {
+	description: string;
+	aliases?: string[];
+	examples?: Array<string>;
+	needsArgs?: boolean;
+}
+
+export interface MainCommandOptions extends CommandOptions {
+	group: Categories;
+	ownerOnly?: boolean;
+	guildOnly?: boolean;
+	subCommands?: Object;
+}
+
+export interface SubCommandOptions extends CommandOptions {
+	parentCommand: MainCommand;
 }
 
 export type ServerObject = {
