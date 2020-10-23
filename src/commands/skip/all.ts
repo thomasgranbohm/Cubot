@@ -1,16 +1,15 @@
 import { Message, MessageEmbed } from "discord.js";
-import { MainCommand, SubCommand } from "../../../classes";
-import { NotPlayingError } from "../../../errors";
-import { Bot } from "../../../index";
-import { checkBotVoice, checkUserVoice, setServerQueue } from "../../../utils";
+import { MainCommand, SubCommand } from "../../classes";
+import { NotPlayingError } from "../../errors";
+import { Bot } from "../../index";
+import { checkBotVoice, checkUserVoice, setServerQueue } from "../../utils";
 
 export class All extends SubCommand {
 
 	constructor(client: Bot, parentCommand: MainCommand) {
-		super(client, {
+		super(client, parentCommand, {
 			aliases: ["a"],
-			description: "Skips the whole queue.",
-			parentCommand
+			description: "Skips the whole queue."
 		})
 	}
 

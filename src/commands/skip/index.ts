@@ -4,8 +4,7 @@ import { Categories } from "../../config";
 import { NotPlayingError } from "../../errors";
 import { Bot } from "../../index";
 import { checkBotVoice, checkUserVoice, getServerQueue, nowPlayingEmbed } from "../../utils";
-import * as subCommands from "./sub";
-
+import * as subCommands from "./subcommands";
 
 export class Skip extends MainCommand {
 

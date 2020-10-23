@@ -130,8 +130,10 @@ export abstract class SubCommand extends Command {
 
 	protected client: Bot;
 
-	constructor(client: Bot, options: SubCommandOptions) {
+	constructor(client: Bot, parentCommand: MainCommand, options: SubCommandOptions) {
 		super(client, options);
+
+		this.parentCommand = parentCommand;
 	}
 }
 
@@ -144,8 +146,7 @@ export class TrackEmbed extends MessageEmbed {
 
 	async getThumbnail(): Promise<TrackEmbed> {
 		if (!this.track.thumbnail) {
-			let path = await getThumbnail(this.track);
-			this.track.thumbnail = path;
+			this.track.thumbnail = await getThumbnail(this.track);
 		}
 		if (this.track.thumbnail)
 			this
