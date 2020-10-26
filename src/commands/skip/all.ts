@@ -9,7 +9,7 @@ export class All extends SubCommand {
 	constructor(client: Bot, parentCommand: MainCommand) {
 		super(client, parentCommand, {
 			aliases: ["a"],
-			description: "Skips the whole queue."
+			description: "Skips the whole queue.",
 		})
 	}
 

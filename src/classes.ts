@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Bot } from "src";
+import { format } from "util";
 import { Categories } from "./config";
 import { CommandOptions, MainCommandOptions, SubCommandOptions, TrackObject } from "./types";
 import { getThumbnail } from "./utils";
@@ -25,28 +26,16 @@ export abstract class Command {
 	 * @param message The message sent by the user
 	 * @param args Optional arguments
 	 */
-
 	abstract async run(message: Message, args?: string[]): Promise<string | MessageEmbed>
 
-	protected getName() { this.names.slice()[0] }
-
-	protected getExamples(prefix: string): Array<string> {
-		let examples = this.examples
-			.slice(0, 3)
-			.map(example => `\`${prefix}${this.names.slice().shift()} ${example}\``);
-		if (!this.needsArgs) {
-			examples.unshift("`" + prefix + this.names.slice().shift() + "`")
-		}
-		return examples;
-	}
+	protected getName = () => this.names.slice().shift();
 }
 
 export abstract class MainCommand extends Command {
 	group: Categories;
 	ownerOnly: boolean;
 	guildOnly: boolean;
-	subCommands: Map<string, SubCommand> = new Map<string, SubCommand>();
-
+	subCommands: Map<string, SubCommand>;
 
 	constructor(client: Bot, options: MainCommandOptions) {
 		super(client, options)
@@ -55,28 +44,63 @@ export abstract class MainCommand extends Command {
 		this.guildOnly = options.guildOnly || false;
 		this.ownerOnly = options.ownerOnly || false;
 
-		if (!!options.subCommands)
+		if (!!options.subCommands) {
 			this.loadSubCommands(options.subCommands);
-	}
-
-	private loadSubCommands(subCommands: Object) {
-		const entries = Object.entries(subCommands);
-		for (const [name, TempSubCommand] of entries) {
-			this.subCommands.set(name.toLowerCase(), new TempSubCommand(this.client, this));
 		}
 	}
 
-	async handleSubCommand(message: Message, args: string[]): Promise<string | MessageEmbed | undefined> {
-		if (this.subCommands.size === 0)
-			return undefined;
+	getExamples(prefix: string): Array<string> {
+		const baseString = `${prefix}${this.getName()}`;
+		const examples = [
+			baseString,
+			...this.examples
+				.slice(0, 3)
+				.map(example => `\`${prefix}${this.getName()} ${example}\``),
 
-		if (args.length === 0)
+		];
+		if (!!this.subCommands) {
+			examples.push(...this.getSubExamples(baseString))
+		}
+		return examples.map(example => `\`${example}\``);
+	}
+
+	protected getSubExamples(commandString: string): Array<string> {
+		const examples = [];
+		const entries = this.subCommands.entries();
+		// TODO what if command needs args?
+		for (const [name, command] of entries) {
+			const baseString = `${commandString} ${name}`;
+			examples.push(
+				baseString,
+				...command.examples.slice(0, 3)
+					.map(example => `${baseString} ${example}`)
+			);
+		}
+		return examples;
+	}
+
+	private loadSubCommands(subCommands: Object) {
+		this.subCommands = new Map<string, SubCommand>();
+		const entries = Object.entries(subCommands);
+		for (const [name, TempSubCommand] of entries) {
+			this.subCommands.set(
+				name.toLowerCase(),
+				new TempSubCommand(this.client, this)
+			);
+		}
+	}
+
+	async handleSubCommand(
+		message: Message,
+		args: string[]
+	): Promise<string | MessageEmbed | undefined> {
+		if (this.subCommands.size === 0 ||
+			args.length === 0)
 			return undefined;
 
 		const [subname, ...rest] = args;
 
 		const subCommand = this.subCommands.get(subname.toLowerCase());
-
 		if (!subCommand) return undefined;
 
 		return await subCommand.run(message, rest);
@@ -85,7 +109,7 @@ export abstract class MainCommand extends Command {
 	help(prefix: string, extended: boolean = false): string | MessageEmbed {
 		if (extended) {
 			let embed = new MessageEmbed()
-				.setTitle(`Detailed information about ${this.names.slice().shift()}`)
+				.setTitle(`Detailed information about ${this.getName()}`)
 				.addField("Description", this.description)
 
 			let caveats = [];
@@ -98,10 +122,16 @@ export abstract class MainCommand extends Command {
 			caveats = caveats.map(c => (`**${c}**`));
 
 			if (caveats.length > 0) {
-				embed
-					.addField("Caveats", "This command " + (caveats.length > 1 ? caveats.slice(0, caveats.length - 1).join(", ") + " and " : "") + caveats[caveats.length - 1] + ".");
+				embed.addField(
+					"Caveats",
+					format(
+						"This command %s %s.",
+						caveats.length > 1 ? caveats.slice(0, caveats.length - 1).join(", ") + " and " : "",
+						caveats[caveats.length - 1]
+					)
+				);
 			}
-			if (this.examples.length > 0) {
+			if (this.examples.length > 0 || this.subCommands.size > 0) {
 				embed.addField(
 					"Usage",
 					this.getExamples(prefix).join("\n"),
@@ -114,11 +144,11 @@ export abstract class MainCommand extends Command {
 			return embed;
 		}
 
-		return `**${this.names.slice().shift()}** – ${this.description}`;
+		return `**${this.getName()}** – ${this.description}`;
 	}
 
 	usage(prefix: string): string {
-		let string = prefix + this.names.slice().shift();
+		let string = prefix + this.getName();
 		if (this.needsArgs && this.examples.length > 0)
 			string += ` ${this.examples.pop()}`;
 		return string;
