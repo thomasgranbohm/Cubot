@@ -1,6 +1,4 @@
-import {
-	LAVALINK_PASSWORD, LAVALINK_PORT, LAVALINK_URI
-} from "./constants";
+import { LAVALINK } from "./constants";
 
 export enum Categories {
 	VOICE,
@@ -19,15 +17,15 @@ export const Colors = {
 };
 
 export const LavalinkConfig = {
-	host: LAVALINK_URI,
-	port: LAVALINK_PORT,
-	password: LAVALINK_PASSWORD,
+	host: LAVALINK.URI,
+	port: LAVALINK.PORT,
+	password: LAVALINK.PASSWORD,
 	nodes: [
 		{
 			id: "1",
-			host: LAVALINK_URI,
-			port: LAVALINK_PORT,
-			password: LAVALINK_PASSWORD
+			host: LAVALINK.URI,
+			port: LAVALINK.PORT,
+			password: LAVALINK.PASSWORD
 		}
 	]
 }

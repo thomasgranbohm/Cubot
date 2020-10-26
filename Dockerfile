@@ -1,6 +1,6 @@
 FROM node:14
 
-WORKDIR /bot
+WORKDIR /cubot
 
 COPY package.json ./
 COPY yarn.lock ./
