@@ -27,7 +27,7 @@ export class Play extends MainCommand {
 			group: Categories.VOICE,
 			guildOnly: true,
 			needsArgs: true,
-			examples: ["<query>", "<link>"]
+			examples: ["<query | link>"]
 		})
 	}
 

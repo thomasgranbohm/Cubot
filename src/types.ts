@@ -53,3 +53,8 @@ export type Equalizer = {
 	description: String,
 	bands: PlayerEqualizerBand[];
 }
+
+export interface HelpOptions {
+	extended?: boolean,
+	subName?: string
+}

@@ -119,7 +119,8 @@ export class Bot extends Client {
 	// MEH: Message Error Handling
 	handleError(message: Message, error: Error) {
 		if (error instanceof CustomError === false &&
-			error instanceof DiscordAPIError === false) return;
+			error instanceof DiscordAPIError === false)
+			return console.error(error, "Unknown error");
 
 		if (error instanceof DiscordAPIError &&
 			error.message === "Unknown Message" &&

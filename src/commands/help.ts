@@ -1,7 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { MainCommand } from "../classes";
 import { Categories } from "../config";
-import { UnexpectedError } from "../errors";
 import { Bot } from "../index";
 import { getGuildFromMessage } from "../utils/";
 
@@ -20,18 +19,18 @@ export class Help extends MainCommand {
 		let guild = getGuildFromMessage(message)
 		const prefix = await this.client.guildResolver.prefix(guild.id);
 
-		const wanted = args?.shift();
-		if (wanted) {
-			const command = this.client.commands.find((c) => c.names.includes(wanted));
-			if (command) return command.help(prefix, true);
+		const wantedCommand = args?.shift();
+		if (!!wantedCommand) {
+			const command = this.client.commands.find((c) => c.names.includes(wantedCommand));
+			if (!!command) {
+				const wantedSubCommand = args?.shift();
+				if (!!wantedSubCommand && !!command.subCommands && !!command.subCommands.get(wantedSubCommand)) {
+					return command.help(prefix, true, wantedSubCommand)
+				} else {
+					return command.help(prefix, true)
+				}
+			}
 		}
-
-		let helpCommand = this.client.commands.get("help");
-		if (!helpCommand) throw new UnexpectedError("Help not found in commands collection.");
-
-		let helpEmbed = helpCommand.help(prefix, true);
-		if (typeof helpEmbed === "string")
-			throw new UnexpectedError("Commands help command with extended flag returned a string.")
 
 		return new MessageEmbed()
 			.setTitle('List of all commands:')
