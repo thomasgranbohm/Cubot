@@ -1,6 +1,6 @@
-import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
-import { Length } from "class-validator";
-import { Snowflake } from "discord.js";
+import { Length } from 'class-validator';
+import { Snowflake } from 'discord.js';
+import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Guild extends BaseEntity {
@@ -9,5 +9,5 @@ export class Guild extends BaseEntity {
 
 	@Column()
 	@Length(1, 3)
-	prefix: string = "!";
+	prefix: string = '!';
 }

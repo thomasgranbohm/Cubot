@@ -1,18 +1,17 @@
-import { Message, MessageEmbed } from "discord.js";
-import { Command } from "../classes";
-import { Categories } from "../config";
-import { Bot } from "../index";
-import { checkBotVoice, checkUserVoice, getServerQueue } from "../utils";
+import { Message, MessageEmbed } from 'discord.js';
+import { Command } from '../classes';
+import { Categories } from '../config';
+import { Bot } from '../index';
+import { checkBotVoice, checkUserVoice, getServerQueue } from '../utils';
 
 export class Pause extends Command {
-
 	constructor(client: Bot) {
 		super(client, {
-			description: "Pauses the playing track.",
-			aliases: ["resume"],
+			description: 'Pauses the playing track.',
+			aliases: ['resume'],
 			group: Categories.VOICE,
-			guildOnly: true
-		})
+			guildOnly: true,
+		});
 	}
 
 	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
@@ -26,8 +25,8 @@ export class Pause extends Command {
 
 		player?.pause(newState);
 
-		return new MessageEmbed()
-			.setTitle(`${newState ? "Paused" : "Resumed"} ${queue[0].title}`)
+		return new MessageEmbed().setTitle(
+			`${newState ? 'Paused' : 'Resumed'} ${queue[0].title}`
+		);
 	}
-
 }

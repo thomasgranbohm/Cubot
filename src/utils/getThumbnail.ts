@@ -1,8 +1,8 @@
-import { TrackObject } from "../types";
-import axios from "axios";
+import axios from 'axios';
+import { TrackObject } from '../types';
 
 export default async function (track: TrackObject): Promise<string | null> {
-	if (!track.uri.includes("youtube") || typeof track.thumbnail === "string") {
+	if (!track.uri.includes('youtube') || typeof track.thumbnail === 'string') {
 		return null;
 	}
 
@@ -12,8 +12,7 @@ export default async function (track: TrackObject): Promise<string | null> {
 			await axios.get(fullPath);
 			return fullPath;
 		} catch (err) {
-			if (!err.isAxiosError)
-				console.error(err, "Not an axios error in thumbnails")
+			if (!err.isAxiosError) console.error(err, 'Not an axios error in thumbnails');
 			continue;
 		}
 	}

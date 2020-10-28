@@ -1,8 +1,8 @@
-import { Message, MessageEmbed } from "discord.js";
-import { Bot } from "src";
-import { Categories } from "./config";
-import { CommandOptions, TrackObject } from "./types";
-import { getThumbnail } from "./utils";
+import { Message, MessageEmbed } from 'discord.js';
+import { Bot } from 'src';
+import { Categories } from './config';
+import { CommandOptions, TrackObject } from './types';
+import { getThumbnail } from './utils';
 
 export abstract class Command {
 	names: string[];
@@ -27,36 +27,36 @@ export abstract class Command {
 		this.needsArgs = options.needsArgs || false;
 	}
 
-	abstract async run(message: Message, args?: string[]): Promise<string | MessageEmbed>
+	abstract async run(message: Message, args?: string[]): Promise<string | MessageEmbed>;
 
 	help(prefix: string, extended: boolean = false): string | MessageEmbed {
 		if (extended) {
 			let embed = new MessageEmbed()
 				.setTitle(`Detailed information about ${this.names.slice().shift()}`)
-				.addField("Description", this.description)
+				.addField('Description', this.description);
 
 			let caveats = [];
-			if (this.needsArgs)
-				caveats.push("need arguments");
-			if (this.guildOnly)
-				caveats.push("can only be used in guilds");
-			if (this.ownerOnly)
-				caveats.push("is owner only");
-			caveats = caveats.map(c => (`**${c}**`));
+			if (this.needsArgs) caveats.push('need arguments');
+			if (this.guildOnly) caveats.push('can only be used in guilds');
+			if (this.ownerOnly) caveats.push('is owner only');
+			caveats = caveats.map((c) => `**${c}**`);
 
 			if (caveats.length > 0) {
-				embed
-					.addField("Caveats", "This command " + (caveats.length > 1 ? caveats.slice(0, caveats.length - 1).join(", ") + " and " : "") + caveats[caveats.length - 1] + ".");
+				embed.addField(
+					'Caveats',
+					'This command ' +
+						(caveats.length > 1
+							? caveats.slice(0, caveats.length - 1).join(', ') + ' and '
+							: '') +
+						caveats[caveats.length - 1] +
+						'.'
+				);
 			}
 			if (this.examples.length > 0) {
-				embed.addField(
-					"Usage",
-					this.getExamples(prefix).join("\n"),
-					true
-				)
+				embed.addField('Usage', this.getExamples(prefix).join('\n'), true);
 			}
 			if (this.names.length > 1) {
-				embed.addField("Aliases", `\`${this.names.slice(1).join(", ")}\``, true)
+				embed.addField('Aliases', `\`${this.names.slice(1).join(', ')}\``, true);
 			}
 			return embed;
 		}
@@ -67,17 +67,16 @@ export abstract class Command {
 	private getExamples(prefix: string): Array<string> {
 		let examples = this.examples
 			.slice(0, 3)
-			.map(example => `\`${prefix}${this.names.slice().shift()} ${example}\``);
+			.map((example) => `\`${prefix}${this.names.slice().shift()} ${example}\``);
 		if (!this.needsArgs) {
-			examples.unshift("`" + prefix + this.names.slice().shift() + "`")
+			examples.unshift('`' + prefix + this.names.slice().shift() + '`');
 		}
 		return examples;
 	}
 
 	usage(prefix: string): string {
 		let string = prefix + this.names.slice().shift();
-		if (this.needsArgs && this.examples.length > 0)
-			string += ` ${this.examples.pop()}`;
+		if (this.needsArgs && this.examples.length > 0) string += ` ${this.examples.pop()}`;
 		return string;
 	}
 }
@@ -95,11 +94,9 @@ export class TrackEmbed extends MessageEmbed {
 			this.track.thumbnail = path;
 		}
 		if (this.track.thumbnail)
-			this
-				.attachFiles([
-					{ attachment: this.track.thumbnail, name: `thumbnail.jpg` },
-				])
-				.setThumbnail(`attachment://thumbnail.jpg`);
+			this.attachFiles([
+				{ attachment: this.track.thumbnail, name: `thumbnail.jpg` },
+			]).setThumbnail(`attachment://thumbnail.jpg`);
 		return this;
 	}
 }

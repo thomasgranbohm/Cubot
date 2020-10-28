@@ -1,27 +1,26 @@
-import { Message, MessageEmbed } from "discord.js";
-import { Command } from "../classes";
-import { Categories } from "../config";
-import { UPPER_VOLUME_LIMIT } from "../constants";
-import { NotPlayingError, VolumeNotBetweenThresholdError } from "../errors";
-import { Bot } from "../index";
-import { checkBotVoice, checkUserVoice } from "../utils";
+import { Message, MessageEmbed } from 'discord.js';
+import { Command } from '../classes';
+import { Categories } from '../config';
+import { UPPER_VOLUME_LIMIT } from '../constants';
+import { NotPlayingError, VolumeNotBetweenThresholdError } from '../errors';
+import { Bot } from '../index';
+import { checkBotVoice, checkUserVoice } from '../utils';
 
 export class Volume extends Command {
-
 	constructor(client: Bot) {
 		super(client, {
-			aliases: ["vol", "v"],
-			description: "Change the volume of the playing track.",
+			aliases: ['vol', 'v'],
+			description: 'Change the volume of the playing track.',
 			group: Categories.VOICE,
-			guildOnly: true
-		})
+			guildOnly: true,
+		});
 	}
 
 	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
 		await checkUserVoice(message);
 		let guildId = await checkBotVoice(this.client, message);
 
-		const player = this.client.manager.players.get(guildId)
+		const player = this.client.manager.players.get(guildId);
 		if (!player) throw new NotPlayingError();
 
 		const currentVolume = player.state.volume;
@@ -31,9 +30,9 @@ export class Volume extends Command {
 			const newVolume = parseInt(args[0]);
 
 			if (newVolume === NaN || newVolume > UPPER_VOLUME_LIMIT || newVolume < 0)
-				throw new VolumeNotBetweenThresholdError()
+				throw new VolumeNotBetweenThresholdError();
 
-			player.volume(newVolume)
+			player.volume(newVolume);
 			embed
 				.setTitle('Changed volume')
 				.setDescription(`From ${currentVolume} to ${newVolume}!`);
@@ -43,5 +42,4 @@ export class Volume extends Command {
 
 		return embed;
 	}
-
 }

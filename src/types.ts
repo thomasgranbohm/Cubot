@@ -1,49 +1,49 @@
-import { PlayerEqualizerBand } from "@lavacord/discord.js";
-import { ClientOptions, Message, User } from "discord.js";
-import { Categories } from "./config";
+import { PlayerEqualizerBand } from '@lavacord/discord.js';
+import { ClientOptions, Message, User } from 'discord.js';
+import { Categories } from './config';
 
 export type BotOptions = ClientOptions & {
-	owner: string,
-	prefix: string,
+	owner: string;
+	prefix: string;
 };
 
 export type CommandOptions = {
-	description: string,
-	group: Categories,
-	aliases?: string[],
-	examples?: Array<string>,
-	ownerOnly?: boolean,
-	guildOnly?: boolean,
-	needsArgs?: boolean,
-}
+	description: string;
+	group: Categories;
+	aliases?: string[];
+	examples?: Array<string>;
+	ownerOnly?: boolean;
+	guildOnly?: boolean;
+	needsArgs?: boolean;
+};
 
 export type ServerObject = {
-	queue: TrackObject[],
-	boost: boolean,
+	queue: TrackObject[];
+	boost: boolean;
 	playing?: {
-		track: TrackObject,
-		message: Message
-	},
-	equalizer?: Equalizer,
-	loop?: boolean
-}
+		track: TrackObject;
+		message: Message;
+	};
+	equalizer?: Equalizer;
+	loop?: boolean;
+};
 
 export type TrackObject = {
-	identifier: string,
-	isSeekable: boolean,
-	author: string,
-	length: number,
-	isStream: boolean,
-	position: number,
-	title: string,
-	uri: string,
-	track: string,
-	requester: User,
-	thumbnail?: string | null
-}
+	identifier: string;
+	isSeekable: boolean;
+	author: string;
+	length: number;
+	isStream: boolean;
+	position: number;
+	title: string;
+	uri: string;
+	track: string;
+	requester: User;
+	thumbnail?: string | null;
+};
 
 export type Equalizer = {
-	name: String,
-	description: String,
+	name: String;
+	description: String;
 	bands: PlayerEqualizerBand[];
-}
+};
