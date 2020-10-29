@@ -31,7 +31,10 @@ export type ServerObject = {
 		message: Message
 	},
 	equalizer?: Equalizer,
-	loop?: boolean
+	loop:
+	| "none"
+	| "first"
+	| "all"
 }
 
 export type TrackObject = {
