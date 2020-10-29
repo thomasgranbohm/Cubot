@@ -7,15 +7,21 @@ export type BotOptions = ClientOptions & {
 	prefix: string,
 };
 
-export type CommandOptions = {
-	description: string,
-	group: Categories,
-	aliases?: string[],
-	examples?: Array<string>,
-	ownerOnly?: boolean,
-	guildOnly?: boolean,
-	needsArgs?: boolean,
+export interface CommandOptions {
+	description: string;
+	aliases?: string[];
+	examples?: Array<string>;
+	needsArgs?: boolean;
 }
+
+export interface MainCommandOptions extends CommandOptions {
+	group: Categories;
+	ownerOnly?: boolean;
+	guildOnly?: boolean;
+	subCommands?: Object;
+}
+
+export interface SubCommandOptions extends CommandOptions { };
 
 export type ServerObject = {
 	queue: TrackObject[],
@@ -25,7 +31,10 @@ export type ServerObject = {
 		message: Message
 	},
 	equalizer?: Equalizer,
-	loop?: boolean
+	loop:
+	| "none"
+	| "first"
+	| "all"
 }
 
 export type TrackObject = {
@@ -46,4 +55,9 @@ export type Equalizer = {
 	name: String,
 	description: String,
 	bands: PlayerEqualizerBand[];
+}
+
+export interface HelpOptions {
+	extended?: boolean,
+	subName?: string
 }

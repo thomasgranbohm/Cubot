@@ -41,5 +41,41 @@
 			"\t$0",
 			"}"
 		]
+	},
+	"Create subcommand": {
+		"prefix": "sub",
+		"body": [
+			"import { Message, MessageEmbed } from \"discord.js\";",
+			"import { Bot } from \"../../index\";",
+			"import { MainCommand, SubCommand } from \"../../classes\";",
+			"",
+			"export class $1 extends SubCommand {",
+			"",
+			"\tconstructor(client: Bot, parentCommand: MainCommand) {",
+			"\t\tsuper(client, {",
+			"\t\t\tparentCommand,",
+			"\t\t\taliases: [\"$2\"],",
+			"\t\t\tdescription: \"$3\",",
+			"\t\t})",
+			"\t}",
+			"",
+			"\tasync run(message: Message, args?: string[]): Promise<string | MessageEmbed> {",
+			"\t\t${0:throw new Error(\"Method not implemented.\");}",
+			"\t}",
+			"",
+			"}"
+		],
+		"description": "Create subcommand"
+	},
+	"Handle subcommands": {
+		"prefix": "hsub",
+		"body": [
+			"if (args && this.subCommands.size !== 0) {",
+			"\tconst success = await this.handleSubCommand(message, args);",
+			"\tif (!!success)",
+			"\t\treturn success;",
+			"}"
+		],
+		"description": "Handle subcommands"
 	}
 }

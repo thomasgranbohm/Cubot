@@ -1,12 +1,12 @@
 import { Message, MessageEmbed } from "discord.js";
-import { Command } from "../classes";
+import { MainCommand } from "../classes";
 import { Categories } from "../config";
 import { UPPER_VOLUME_LIMIT } from "../constants";
 import { NotPlayingError, VolumeNotBetweenThresholdError } from "../errors";
 import { Bot } from "../index";
 import { checkBotVoice, checkUserVoice } from "../utils";
 
-export class Volume extends Command {
+export class Volume extends MainCommand {
 
 	constructor(client: Bot) {
 		super(client, {

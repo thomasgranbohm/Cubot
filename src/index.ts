@@ -1,6 +1,6 @@
 import { Manager } from "@lavacord/discord.js";
 import { Client, Collection, DiscordAPIError, DMChannel, Message, TextChannel, VoiceState } from "discord.js";
-import { Command } from "./classes";
+import { MainCommand } from "./classes";
 import * as commands from "./commands";
 import { LavalinkConfig } from "./config";
 import { BOT_MESSAGE_DELETE_TIMEOUT, DISCORD_TOKEN, GLOBAL_PREFIX, OWNER, USER_MESSAGE_DELETE_TIMEOUT } from "./constants";
@@ -17,7 +17,7 @@ export class Bot extends Client {
 	public manager: Manager;
 
 	public servers: Collection<String, ServerObject>;
-	public commands: Collection<String, Command>;
+	public commands: Collection<String, MainCommand>;
 
 	public guildResolver: GuildResolver;
 
@@ -27,7 +27,7 @@ export class Bot extends Client {
 		this.owner = owner;
 		this.prefix = prefix;
 
-		this.commands = new Collection<String, Command>();
+		this.commands = new Collection<String, MainCommand>();
 		this.servers = new Collection<String, ServerObject>();
 
 		this.guildResolver = new GuildResolver();
@@ -60,7 +60,7 @@ export class Bot extends Client {
 
 	loadCommands() {
 		const entries = Object.entries(commands);
-		for (let [name, TempCommand] of entries) {
+		for (const [name, TempCommand] of entries) {
 			this.commands.set(name.toLowerCase(), new TempCommand(this));
 		}
 	}
@@ -119,7 +119,8 @@ export class Bot extends Client {
 	// MEH: Message Error Handling
 	handleError(message: Message, error: Error) {
 		if (error instanceof CustomError === false &&
-			error instanceof DiscordAPIError === false) return;
+			error instanceof DiscordAPIError === false)
+			return console.error(error, "Unknown error");
 
 		if (error instanceof DiscordAPIError &&
 			error.message === "Unknown Message" &&
