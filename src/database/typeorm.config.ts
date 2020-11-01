@@ -1,25 +1,30 @@
-import { POSTGRES, PRODUCTION } from "../constants";
-import { Guild } from "./entities/Guild";
+import { POSTGRES } from '../constants';
+import { Guild } from './entities/Guild';
 
 export const TOConfig = {
-	type: "postgres",
-	database: "cubot",
+	host: 'database',
+	type: 'postgres',
+	database: 'cubot',
 	username: POSTGRES.USERNAME,
 	password: POSTGRES.PASSWORD,
-	logging: !PRODUCTION,
+	logging: true,
 	synchronize: true,
 	entities: [Guild],
 	cache: {
-		type: "redis",
+		type: 'redis',
 		duration: 30000,
-		alwaysEnabled: true
-	}
+		alwaysEnabled: true,
+		options: {
+			host: 'cache',
+		},
+	},
 };
 
 export const TOConfigNoDB = {
-	type: "postgres",
+	host: 'database',
+	type: 'postgres',
 	username: POSTGRES.USERNAME,
 	password: POSTGRES.PASSWORD,
-	logging: !PRODUCTION,
+	logging: true,
 	synchronize: true,
 };
