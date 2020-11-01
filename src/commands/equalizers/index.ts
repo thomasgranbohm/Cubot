@@ -22,13 +22,11 @@ export class Equalizers extends MainCommand {
 	}
 
 	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
-		console.warn("eqs")
 		if (!args || args?.length === 0) {
 			args = ["list"];
 		}
 
 		if (args && this.subCommands.size !== 0) {
-			console.log(args)
 			const success = await this.handleSubCommand(message, args);
 			if (!!success)
 				return success;

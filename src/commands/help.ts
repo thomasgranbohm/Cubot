@@ -22,7 +22,7 @@ export class Help extends MainCommand {
 		const wantedCommand = args?.shift();
 		if (!!wantedCommand) {
 			const command = this.client.commands.find((c) => c.names.includes(wantedCommand));
-			if (!!command) {
+			if (command instanceof MainCommand) {
 				const wantedSubCommand = args?.shift();
 				if (!!wantedSubCommand && !!command.subCommands && !!command.subCommands.get(wantedSubCommand)) {
 					return command.help(prefix, true, wantedSubCommand)
@@ -46,7 +46,7 @@ export class Help extends MainCommand {
 							else if (aName < bName) return -1;
 							return 0;
 						})
-						.map((command) => command.help(prefix))
+						.map((command) => command instanceof MainCommand && command.help(prefix))
 						.join("\n"),
 					`**Prefix in this guild:** \`${prefix}\``
 				].join("\n\n")
