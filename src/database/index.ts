@@ -1,27 +1,23 @@
-import { ConnectionOptions, createConnection } from 'typeorm';
+import { Connection, ConnectionOptions, createConnection } from 'typeorm';
+import { BaseTypeORMConfig, TypeORMConfig } from '../config';
 import { POSTGRES } from '../constants';
-import { TOConfig, TOConfigNoDB } from './typeorm.config';
 
-export async function setupDatabase(): Promise<Boolean> {
+export async function setupDatabase(): Promise<Connection> {
 	try {
-		await createConnection(TOConfig as ConnectionOptions);
-		console.log('Connected to database!');
+		return await createConnection(TypeORMConfig as ConnectionOptions);
 	} catch (err) {
 		if (
 			err.code === '3D000' &&
 			err.message === `database "cubot" does not exist`
 		) {
 			// TODO this isnt optimal lmao
-			console.log('Creating database...');
 			const connection = await createConnection(
-				TOConfigNoDB as ConnectionOptions
+				BaseTypeORMConfig as ConnectionOptions
 			);
 			await connection.query(`CREATE DATABASE ${POSTGRES.DATABASE};`);
 			await connection.close();
 			return setupDatabase();
 		}
-		console.error('Could not connect to database...');
-		return false;
+		throw new Error('Could not connect to database...');
 	}
-	return true;
 }
