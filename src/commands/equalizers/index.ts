@@ -20,10 +20,7 @@ export class Equalizers extends MainCommand {
 		});
 	}
 
-	async run(
-		message: Message,
-		args?: string[]
-	): Promise<string | MessageEmbed> {
+	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
 		if (!args || args?.length === 0) {
 			args = ['list'];
 		}
