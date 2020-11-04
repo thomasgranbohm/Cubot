@@ -8,9 +8,10 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "tsc",
+		"build:start": "tsc ; node dist/index.js",
+		"start": "NODE_ENV=production node dist/index.js",
 		"watch": "tsc -w",
-		"dev": "nodemon dist/index.js",
-		"start": "NODE_ENV=production node dist/index.js"
+		"dev": "nodemon dist/index.js"
 	},
 	"devDependencies": {
 		"@types/node": "^14.6.3",

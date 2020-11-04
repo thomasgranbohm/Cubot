@@ -1,14 +1,39 @@
-import { Manager } from "@lavacord/discord.js";
-import { Client, Collection, DiscordAPIError, DMChannel, Message, TextChannel, VoiceState } from "discord.js";
-import { MainCommand } from "./classes";
-import * as commands from "./commands";
-import { LavalinkConfig } from "./config";
-import { BOT_MESSAGE_DELETE_TIMEOUT, DISCORD_TOKEN, GLOBAL_PREFIX, OWNER, USER_MESSAGE_DELETE_TIMEOUT } from "./constants";
-import { setupDatabase } from "./database/index";
-import { GuildResolver } from "./database/resolvers/GuildResolver";
-import { ArgumentError, CustomError, GuildOnlyError, OwnerError } from "./errors";
-import { BotOptions, ServerObject } from "./types";
-import { checkPermissions, deleteMessage, getGuildFromMessage, sendError, sendMessage } from "./utils";
+import { Manager } from '@lavacord/discord.js';
+import {
+	Client,
+	Collection,
+	DiscordAPIError,
+	DMChannel,
+	Message,
+	TextChannel,
+	VoiceState,
+} from 'discord.js';
+import { MainCommand } from './classes';
+import * as commands from './commands';
+import { LavalinkConfig } from './config';
+import {
+	BOT_MESSAGE_DELETE_TIMEOUT,
+	DISCORD_TOKEN,
+	GLOBAL_PREFIX,
+	OWNER,
+	USER_MESSAGE_DELETE_TIMEOUT,
+} from './constants';
+import { setupDatabase } from './database/index';
+import { GuildResolver } from './database/resolvers/GuildResolver';
+import {
+	ArgumentError,
+	CustomError,
+	GuildOnlyError,
+	OwnerError,
+} from './errors';
+import { BotOptions, ServerObject } from './types';
+import {
+	checkPermissions,
+	deleteMessage,
+	getGuildFromMessage,
+	sendError,
+	sendMessage,
+} from './utils';
 
 export class Bot extends Client {
 	public owner: string;
@@ -21,7 +46,10 @@ export class Bot extends Client {
 
 	public guildResolver: GuildResolver;
 
-	constructor(token: string, { owner, prefix, ...clientOptions }: BotOptions) {
+	constructor(
+		token: string,
+		{ owner, prefix, ...clientOptions }: BotOptions
+	) {
 		super({ ...clientOptions });
 
 		this.owner = owner;
@@ -34,7 +62,7 @@ export class Bot extends Client {
 
 		this.manager = new Manager(this, LavalinkConfig.nodes, {
 			user: this.user?.id,
-			shards: (this.shard && this.shard.count) || 1
+			shards: (this.shard && this.shard.count) || 1,
 		});
 
 		this.on('ready', this.onReady);
@@ -47,10 +75,12 @@ export class Bot extends Client {
 	async connectToLavalink(retryIndex = 0) {
 		try {
 			await this.manager.connect();
-			console.log("Successfully connected to Lavalink.")
+			console.log('Successfully connected to Lavalink.');
 		} catch (err) {
 			if (retryIndex === 2) {
-				console.error(`Could not connect to Lavalink on ${LavalinkConfig.host}:${LavalinkConfig.port}! Exiting...`);
+				console.error(
+					`Could not connect to Lavalink on ${LavalinkConfig.host}:${LavalinkConfig.port}! Exiting...`
+				);
 				process.exit(1);
 			}
 			console.log(`#${++retryIndex}. Retrying Lavalink connection...`);
@@ -76,22 +106,27 @@ export class Bot extends Client {
 		const guild = await getGuildFromMessage(message);
 		const prefix = await this.guildResolver.prefix(guild.id);
 
-		const hasPrefix = content.startsWith(prefix) || content.startsWith(prefix.concat(" "));
+		const hasPrefix =
+			content.startsWith(prefix) ||
+			content.startsWith(prefix.concat(' '));
 		const mentionsBot = this.user
 			? mentions.has(this.user, {
-				ignoreEveryone: true,
-				ignoreRoles: true
-			})
+					ignoreEveryone: true,
+					ignoreRoles: true,
+			  })
 			: false;
 
 		if (!hasPrefix && !mentionsBot) return;
 
 		checkPermissions(guild);
 
-		const prefixLength = prefix.length + (+ content.startsWith(prefix.concat(" ")));
-		const [name, ...args] = content.substr(prefixLength).split(" ");
+		const prefixLength =
+			prefix.length + +content.startsWith(prefix.concat(' '));
+		const [name, ...args] = content.substr(prefixLength).split(' ');
 
-		const command = this.commands.find((c) => c.names.includes(mentionsBot ? "help" : name));
+		const command = this.commands.find((c) =>
+			c.names.includes(mentionsBot ? 'help' : name)
+		);
 		if (!command) return;
 
 		if (command.needsArgs && args.length === 0)
@@ -118,30 +153,38 @@ export class Bot extends Client {
 
 	// MEH: Message Error Handling
 	handleError(message: Message, error: Error) {
-		if (error instanceof CustomError === false &&
-			error instanceof DiscordAPIError === false)
-			return console.error(error, "Unknown error");
+		if (
+			error instanceof CustomError === false &&
+			error instanceof DiscordAPIError === false
+		)
+			return console.error(error, 'Unknown error');
 
-		if (error instanceof DiscordAPIError &&
-			error.message === "Unknown Message" &&
-			error.code === 10008)
+		if (
+			error instanceof DiscordAPIError &&
+			error.message === 'Unknown Message' &&
+			error.code === 10008
+		)
 			return;
 
-		if (error instanceof DiscordAPIError)
-			console.error(error);
+		if (error instanceof DiscordAPIError) console.error(error);
 
 		sendError(this, error, message);
 	}
 
 	async onReady() {
 		await setupDatabase();
+		console.log('Connected to database!');
+
 		await this.connectToLavalink();
 
-		this.user?.setActivity({ name: `music! @ me`, type: "LISTENING" });
+		this.user?.setActivity({
+			name: `music! @ me`,
+			type: 'LISTENING',
+		});
 
 		this.loadCommands();
 
-		console.log(`Started at ${new Date().toString().substr(0, 24)}!`)
+		console.log(`Started at ${new Date().toString().substr(0, 24)}!`);
 	}
 
 	async onMessage(message: Message) {
@@ -155,8 +198,7 @@ export class Bot extends Client {
 	async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
 		// TODO also do be kinda ugly
 		const guild = this.guilds.cache.get(oldState.guild.id);
-		if (!guild)
-			return;
+		if (!guild) return;
 
 		let voiceChannelId;
 		if (oldState.channel) voiceChannelId = oldState.channel.id;
@@ -164,16 +206,17 @@ export class Bot extends Client {
 		else return;
 
 		const channel = guild.channels.cache.get(voiceChannelId);
-		if (!channel)
-			return;
+		if (!channel) return;
 
 		const userId = this.user?.id;
-		if (!userId)
-			return;
+		if (!userId) return;
 		const isInVoiceChannel = !!channel.members.get(userId);
-		const onlyPersonInVC = (channel.members.size <= 1 && isInVoiceChannel);
+		const onlyPersonInVC = channel.members.size <= 1 && isInVoiceChannel;
 
-		const justLeftVC = !isInVoiceChannel && channel.members.size >= 1 && oldState.member?.user == this.user;
+		const justLeftVC =
+			!isInVoiceChannel &&
+			channel.members.size >= 1 &&
+			oldState.member?.user == this.user;
 		if (onlyPersonInVC || justLeftVC) {
 			this.manager.leave(oldState.guild.id);
 

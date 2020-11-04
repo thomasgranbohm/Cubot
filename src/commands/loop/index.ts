@@ -1,28 +1,28 @@
-import { Message, MessageEmbed } from "discord.js";
-import { MainCommand } from "../../classes";
-import { Categories } from "../../config";
-import { NotPlayingError } from "../../errors";
-import { Bot } from "../../index";
-import { checkBotVoice, checkUserVoice, getLoopEmbed } from "../../utils";
-import * as subCommands from "./subcommands";
+import { Message, MessageEmbed } from 'discord.js';
+import { MainCommand } from '../../classes';
+import { Categories } from '../../config';
+import { NotPlayingError } from '../../errors';
+import { Bot } from '../../index';
+import { checkBotVoice, checkUserVoice, getLoopEmbed } from '../../utils';
+import * as subCommands from './subcommands';
 
 export class Loop extends MainCommand {
-
 	constructor(client: Bot) {
 		super(client, {
-			aliases: ["l"],
-			description: "Make the bot loop the current track.",
+			aliases: ['l'],
+			description: 'Make the bot loop the current track.',
 			group: Categories.VOICE,
-			subCommands
+			subCommands,
 		});
-		console.log(subCommands)
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
+	async run(
+		message: Message,
+		args?: string[]
+	): Promise<string | MessageEmbed> {
 		if (args && this.subCommands.size !== 0) {
 			const success = await this.handleSubCommand(message, args);
-			if (!!success)
-				return success;
+			if (!!success) return success;
 		}
 
 		await checkUserVoice(message);
@@ -33,14 +33,14 @@ export class Loop extends MainCommand {
 
 		const newServerObject = { ...server };
 		switch (server.loop) {
-			case "none":
-				newServerObject.loop = "first";
+			case 'none':
+				newServerObject.loop = 'first';
 				break;
-			case "first":
-				newServerObject.loop = "all";
+			case 'first':
+				newServerObject.loop = 'all';
 				break;
-			case "all":
-				newServerObject.loop = "none";
+			case 'all':
+				newServerObject.loop = 'none';
 				break;
 		}
 
@@ -48,5 +48,4 @@ export class Loop extends MainCommand {
 
 		return getLoopEmbed(newServerObject.loop);
 	}
-
 }
