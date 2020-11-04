@@ -44,7 +44,7 @@ export class Play extends MainCommand {
 			aliases: ['p', 'add'],
 			description:
 				'Plays the given query or link in your voice channel.',
-			group: Categories.VOICE,
+			category: Categories.VOICE,
 			guildOnly: true,
 			needsArgs: true,
 			examples: ['<query | link>'],

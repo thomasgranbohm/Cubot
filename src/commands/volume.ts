@@ -15,7 +15,7 @@ export class Volume extends MainCommand {
 			aliases: ['vol', 'v'],
 			description:
 				'Change the volume of the playing track.',
-			group: Categories.VOICE,
+			category: Categories.VOICE,
 			guildOnly: true,
 		});
 	}

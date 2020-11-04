@@ -14,7 +14,7 @@ export class Equalizers extends MainCommand {
 			aliases: ['eq', 'equalizer', 'eqs'],
 			description:
 				'Lists all equalizers or sets the current equalizer',
-			group: Categories.VOICE,
+			category: Categories.VOICE,
 			guildOnly: true,
 			examples: ['<name>'],
 			subCommands,

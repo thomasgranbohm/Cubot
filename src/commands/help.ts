@@ -9,7 +9,7 @@ export class Help extends MainCommand {
 		super(client, {
 			aliases: ['h'],
 			description: 'Gets help',
-			group: Categories.MISC,
+			category: Categories.MISC,
 			examples: ['<command>'],
 		});
 	}

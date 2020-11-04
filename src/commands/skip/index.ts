@@ -16,7 +16,7 @@ export class Skip extends MainCommand {
 		super(client, {
 			aliases: ['s'],
 			description: 'Skips the playing track.',
-			group: Categories.VOICE,
+			category: Categories.VOICE,
 			guildOnly: true,
 			subCommands,
 		});

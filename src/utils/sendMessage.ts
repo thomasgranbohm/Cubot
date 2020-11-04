@@ -5,21 +5,25 @@ import {
 	TextChannel,
 	User,
 } from 'discord.js';
-import { Categories, Colors } from '../config';
+import { Categories } from '../config';
 
 export default async function (
 	channel: TextChannel | DMChannel | NewsChannel,
 	pendingMessage: MessageEmbed | string | Error,
-	category?: Categories,
+	category?: string,
 	author?: User
 ) {
 	if (pendingMessage instanceof MessageEmbed) {
 		if (category !== undefined && category !== null) {
-			pendingMessage.setColor(Colors[category]);
+			pendingMessage.setColor(
+				Object.values(Categories).find(
+					(value) => value === category
+				) || Categories.ERROR
+			);
 		}
 	}
 
-	let sentMessage = await channel.send(pendingMessage);
+	const sentMessage = await channel.send(pendingMessage);
 
 	return sentMessage;
 }

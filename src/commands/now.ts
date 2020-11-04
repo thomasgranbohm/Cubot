@@ -15,7 +15,7 @@ export class Now extends MainCommand {
 		super(client, {
 			aliases: ['np'],
 			description: 'Check what is playing.',
-			group: Categories.VOICE,
+			category: Categories.VOICE,
 			guildOnly: true,
 		});
 	}

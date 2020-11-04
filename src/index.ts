@@ -158,7 +158,7 @@ export class Bot extends Client {
 		const sentMessage = await sendMessage(
 			channel,
 			await command.run(message, args),
-			command.group
+			command.category
 		);
 
 		deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);

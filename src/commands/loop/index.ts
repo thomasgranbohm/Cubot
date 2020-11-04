@@ -15,7 +15,7 @@ export class Loop extends MainCommand {
 		super(client, {
 			aliases: ['l'],
 			description: 'Make the bot loop the current track.',
-			group: Categories.VOICE,
+			category: Categories.VOICE,
 			subCommands,
 		});
 	}

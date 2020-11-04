@@ -10,7 +10,7 @@ export class Prefix extends MainCommand {
 		super(client, {
 			aliases: ['pr'],
 			description: 'Get or set the prefix in the guild.',
-			group: Categories.MISC,
+			category: Categories.MISC,
 			needsArgs: true,
 			examples: [`<new prefix>`],
 		});

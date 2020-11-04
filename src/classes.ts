@@ -1,7 +1,6 @@
 import { Collection, Message, MessageEmbed } from 'discord.js';
 import { Bot } from 'src';
 import { format } from 'util';
-import { Categories } from './config';
 import {
 	CommandOptions,
 	MainCommandOptions,
@@ -44,7 +43,7 @@ export abstract class Command {
 }
 
 export abstract class MainCommand extends Command {
-	group: Categories;
+	category: string;
 	ownerOnly: boolean;
 	guildOnly: boolean;
 	subCommands: Collection<string, SubCommand>;
@@ -52,7 +51,7 @@ export abstract class MainCommand extends Command {
 	constructor(client: Bot, options: MainCommandOptions) {
 		super(client, options);
 
-		this.group = options.group;
+		this.category = options.category;
 		this.guildOnly = options.guildOnly || false;
 		this.ownerOnly = options.ownerOnly || false;
 

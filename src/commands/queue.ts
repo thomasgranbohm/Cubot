@@ -17,7 +17,7 @@ export class Queue extends MainCommand {
 			aliases: ['q'],
 			description:
 				'Lists the tracks queued on this server.',
-			group: Categories.VOICE,
+			category: Categories.VOICE,
 			guildOnly: true,
 		});
 	}

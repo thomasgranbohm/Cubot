@@ -13,7 +13,7 @@ export class Pause extends MainCommand {
 		super(client, {
 			description: 'Pauses the playing track.',
 			aliases: ['resume'],
-			group: Categories.VOICE,
+			category: Categories.VOICE,
 			guildOnly: true,
 		});
 	}

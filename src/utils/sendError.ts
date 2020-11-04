@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Bot } from 'src';
-import { Categories, Colors } from '../config';
+import { Categories } from '../config';
 import {
 	BOT_MESSAGE_DELETE_TIMEOUT,
 	PRODUCTION,
@@ -39,7 +39,7 @@ export default async function (
 						'Stack trace:',
 						`\`\`\`${error.stack}\`\`\``
 					)
-					.setColor(Colors[Categories.ERROR])
+					.setColor(Categories.ERROR)
 					.setTimestamp()
 			);
 		} else {
