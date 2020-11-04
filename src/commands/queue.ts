@@ -1,23 +1,31 @@
-import { Message, MessageEmbed } from "discord.js";
-import { MainCommand, TrackEmbed } from "../classes";
-import { Categories } from "../config";
-import { NotPlayingError } from "../errors";
-import { Bot } from "../index";
-import { TrackObject } from "../types";
-import { checkBotVoice, checkUserVoice, getServerQueue, getUserAvatar } from "../utils";
+import { Message, MessageEmbed } from 'discord.js';
+import { MainCommand, TrackEmbed } from '../classes';
+import { Categories } from '../config';
+import { NotPlayingError } from '../errors';
+import { Bot } from '../index';
+import { TrackObject } from '../types';
+import {
+	checkBotVoice,
+	checkUserVoice,
+	getServerQueue,
+	getUserAvatar,
+} from '../utils';
 
 export class Queue extends MainCommand {
-
 	constructor(client: Bot) {
 		super(client, {
-			aliases: ["q"],
-			description: "Lists the tracks queued on this server.",
+			aliases: ['q'],
+			description:
+				'Lists the tracks queued on this server.',
 			group: Categories.VOICE,
-			guildOnly: true
-		})
+			guildOnly: true,
+		});
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
+	async run(
+		message: Message,
+		args?: string[]
+	): Promise<string | MessageEmbed> {
 		let guildId = await checkBotVoice(this.client, message);
 		await checkUserVoice(message);
 
@@ -26,11 +34,22 @@ export class Queue extends MainCommand {
 		if (queue.length === 0) throw new NotPlayingError();
 
 		let currentlyPlaying = queue.shift();
-		let tracks = queue.map(({ title, uri, author }: TrackObject) => ({ title, uri, author }))
+		let tracks = queue.map(
+			({ title, uri, author }: TrackObject) => ({
+				title,
+				uri,
+				author,
+			})
+		);
 
 		if (!currentlyPlaying) throw new NotPlayingError();
 
-		let { author, requester, title, uri } = currentlyPlaying;
+		let {
+			author,
+			requester,
+			title,
+			uri,
+		} = currentlyPlaying;
 
 		let embed = await new TrackEmbed(currentlyPlaying)
 			.setTitle(`Queue for ${message.guild?.name}`)
@@ -40,21 +59,28 @@ export class Queue extends MainCommand {
 			)
 			.setFooter(
 				`Track requested by ${requester.username}`,
-				getUserAvatar(requester),
+				getUserAvatar(requester)
 			)
 			.getThumbnail();
 
 		if (queue.length > 0) {
-			let strings = tracks.slice(0, 5).map(({ title, uri }, i) => `**\`${i + 1}.\`** [${title.length > 48 ? title.substr(0, 48) + "..." : title}](${uri})`);
+			let strings = tracks
+				.slice(0, 5)
+				.map(
+					({ title, uri }, i) =>
+						`**\`${i + 1}.\`** [${
+							title.length > 48
+								? title.substr(0, 48) + '...'
+								: title
+						}](${uri})`
+				);
 			if (queue.length > 5) {
-				strings.push(`\nPlus ${queue.length - 5} more...`);
+				strings.push(
+					`\nPlus ${queue.length - 5} more...`
+				);
 			}
-			embed.addField(
-				`Queue:`,
-				strings.join("\n")
-			);
+			embed.addField(`Queue:`, strings.join('\n'));
 		}
 		return embed;
 	}
-
 }

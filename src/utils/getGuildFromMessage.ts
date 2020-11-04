@@ -1,5 +1,5 @@
-import { Guild, Message } from "discord.js";
-import { UnexpectedError } from "../errors";
+import { Guild, Message } from 'discord.js';
+import { UnexpectedError } from '../errors';
 /**
  * @param message The message to get the guild from
  * @returns {Guild} the guild in which the message was sent
@@ -7,6 +7,7 @@ import { UnexpectedError } from "../errors";
  */
 export default function (message: Message): Guild {
 	let { guild } = message;
-	if (!guild) throw new UnexpectedError("Message didnt have guild");
+	if (!guild)
+		throw new UnexpectedError('Message didnt have guild');
 	return guild;
 }

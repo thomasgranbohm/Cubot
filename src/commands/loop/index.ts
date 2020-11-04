@@ -3,7 +3,11 @@ import { MainCommand } from '../../classes';
 import { Categories } from '../../config';
 import { NotPlayingError } from '../../errors';
 import { Bot } from '../../index';
-import { checkBotVoice, checkUserVoice, getLoopEmbed } from '../../utils';
+import {
+	checkBotVoice,
+	checkUserVoice,
+	getLoopEmbed,
+} from '../../utils';
 import * as subCommands from './subcommands';
 
 export class Loop extends MainCommand {
@@ -21,12 +25,18 @@ export class Loop extends MainCommand {
 		args?: string[]
 	): Promise<string | MessageEmbed> {
 		if (args && this.subCommands.size !== 0) {
-			const success = await this.handleSubCommand(message, args);
+			const success = await this.handleSubCommand(
+				message,
+				args
+			);
 			if (!!success) return success;
 		}
 
 		await checkUserVoice(message);
-		const guildId = await checkBotVoice(this.client, message);
+		const guildId = await checkBotVoice(
+			this.client,
+			message
+		);
 
 		const server = this.client.servers.get(guildId);
 		if (!server) throw new NotPlayingError();

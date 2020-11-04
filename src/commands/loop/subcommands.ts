@@ -1,3 +1,2 @@
-export { All } from "./all";
-export { First } from "./first";
-
+export { All } from './all';
+export { First } from './first';

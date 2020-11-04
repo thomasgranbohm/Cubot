@@ -1,21 +1,27 @@
-import { Message, MessageEmbed } from "discord.js";
-import { MainCommand } from "../classes";
-import { Categories } from "../config";
-import { Bot } from "../index";
-import { checkBotVoice, checkUserVoice, getServerQueue } from "../utils";
+import { Message, MessageEmbed } from 'discord.js';
+import { MainCommand } from '../classes';
+import { Categories } from '../config';
+import { Bot } from '../index';
+import {
+	checkBotVoice,
+	checkUserVoice,
+	getServerQueue,
+} from '../utils';
 
 export class Pause extends MainCommand {
-
 	constructor(client: Bot) {
 		super(client, {
-			description: "Pauses the playing track.",
-			aliases: ["resume"],
+			description: 'Pauses the playing track.',
+			aliases: ['resume'],
 			group: Categories.VOICE,
-			guildOnly: true
-		})
+			guildOnly: true,
+		});
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
+	async run(
+		message: Message,
+		args?: string[]
+	): Promise<string | MessageEmbed> {
 		await checkUserVoice(message);
 		let guildId = checkBotVoice(this.client, message);
 
@@ -26,8 +32,10 @@ export class Pause extends MainCommand {
 
 		player?.pause(newState);
 
-		return new MessageEmbed()
-			.setTitle(`${newState ? "Paused" : "Resumed"} ${queue[0].title}`)
+		return new MessageEmbed().setTitle(
+			`${newState ? 'Paused' : 'Resumed'} ${
+				queue[0].title
+			}`
+		);
 	}
-
 }

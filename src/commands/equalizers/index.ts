@@ -12,7 +12,8 @@ export class Equalizers extends MainCommand {
 	constructor(client: Bot) {
 		super(client, {
 			aliases: ['eq', 'equalizer', 'eqs'],
-			description: 'Lists all equalizers or sets the current equalizer',
+			description:
+				'Lists all equalizers or sets the current equalizer',
 			group: Categories.VOICE,
 			guildOnly: true,
 			examples: ['<name>'],
@@ -20,21 +21,29 @@ export class Equalizers extends MainCommand {
 		});
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
+	async run(
+		message: Message,
+		args?: string[]
+	): Promise<string | MessageEmbed> {
 		if (!args || args?.length === 0) {
 			args = ['list'];
 		}
 
 		if (args && this.subCommands.size !== 0) {
-			const success = await this.handleSubCommand(message, args);
+			const success = await this.handleSubCommand(
+				message,
+				args
+			);
 			if (!!success) return success;
 		}
 
 		const eqName = args.shift()?.toLowerCase();
-		const foundEqualizer = Object.entries(eqs).find(([name, e]) => {
-			if (name === eqName) return e;
-			return undefined;
-		});
+		const foundEqualizer = Object.entries(eqs).find(
+			([name, e]) => {
+				if (name === eqName) return e;
+				return undefined;
+			}
+		);
 
 		if (!foundEqualizer) throw new NoEqualizerFoundError();
 

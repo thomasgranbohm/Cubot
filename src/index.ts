@@ -83,15 +83,23 @@ export class Bot extends Client {
 				);
 				process.exit(1);
 			}
-			console.log(`#${++retryIndex}. Retrying Lavalink connection...`);
-			setTimeout(() => this.connectToLavalink(retryIndex), 5000);
+			console.log(
+				`#${++retryIndex}. Retrying Lavalink connection...`
+			);
+			setTimeout(
+				() => this.connectToLavalink(retryIndex),
+				5000
+			);
 		}
 	}
 
 	loadCommands() {
 		const entries = Object.entries(commands);
 		for (const [name, TempCommand] of entries) {
-			this.commands.set(name.toLowerCase(), new TempCommand(this));
+			this.commands.set(
+				name.toLowerCase(),
+				new TempCommand(this)
+			);
 		}
 	}
 
@@ -104,7 +112,9 @@ export class Bot extends Client {
 		if (channel instanceof DMChannel) return;
 
 		const guild = await getGuildFromMessage(message);
-		const prefix = await this.guildResolver.prefix(guild.id);
+		const prefix = await this.guildResolver.prefix(
+			guild.id
+		);
 
 		const hasPrefix =
 			content.startsWith(prefix) ||
@@ -121,8 +131,11 @@ export class Bot extends Client {
 		checkPermissions(guild);
 
 		const prefixLength =
-			prefix.length + +content.startsWith(prefix.concat(' '));
-		const [name, ...args] = content.substr(prefixLength).split(' ');
+			prefix.length +
+			+content.startsWith(prefix.concat(' '));
+		const [name, ...args] = content
+			.substr(prefixLength)
+			.split(' ');
 
 		const command = this.commands.find((c) =>
 			c.names.includes(mentionsBot ? 'help' : name)
@@ -135,7 +148,10 @@ export class Bot extends Client {
 		if (command.ownerOnly && author.id !== this.owner)
 			throw new OwnerError();
 
-		if (command.guildOnly && channel instanceof TextChannel === false)
+		if (
+			command.guildOnly &&
+			channel instanceof TextChannel === false
+		)
 			throw new GuildOnlyError();
 
 		// TODO this do be kinda ugly tho
@@ -166,7 +182,8 @@ export class Bot extends Client {
 		)
 			return;
 
-		if (error instanceof DiscordAPIError) console.error(error);
+		if (error instanceof DiscordAPIError)
+			console.error(error);
 
 		sendError(this, error, message);
 	}
@@ -184,7 +201,9 @@ export class Bot extends Client {
 
 		this.loadCommands();
 
-		console.log(`Started at ${new Date().toString().substr(0, 24)}!`);
+		console.log(
+			`Started at ${new Date().toString().substr(0, 24)}!`
+		);
 	}
 
 	async onMessage(message: Message) {
@@ -195,23 +214,31 @@ export class Bot extends Client {
 		}
 	}
 
-	async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
+	async onVoiceStateUpdate(
+		oldState: VoiceState,
+		newState: VoiceState
+	) {
 		// TODO also do be kinda ugly
 		const guild = this.guilds.cache.get(oldState.guild.id);
 		if (!guild) return;
 
 		let voiceChannelId;
-		if (oldState.channel) voiceChannelId = oldState.channel.id;
-		else if (newState.channel) voiceChannelId = newState.channel.id;
+		if (oldState.channel)
+			voiceChannelId = oldState.channel.id;
+		else if (newState.channel)
+			voiceChannelId = newState.channel.id;
 		else return;
 
-		const channel = guild.channels.cache.get(voiceChannelId);
+		const channel = guild.channels.cache.get(
+			voiceChannelId
+		);
 		if (!channel) return;
 
 		const userId = this.user?.id;
 		if (!userId) return;
 		const isInVoiceChannel = !!channel.members.get(userId);
-		const onlyPersonInVC = channel.members.size <= 1 && isInVoiceChannel;
+		const onlyPersonInVC =
+			channel.members.size <= 1 && isInVoiceChannel;
 
 		const justLeftVC =
 			!isInVoiceChannel &&

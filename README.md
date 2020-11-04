@@ -24,22 +24,26 @@
 </div>
 
 ## ✨ Features
- - [x] YouTube, SoundCloud, audio file playback.
- - [x] Equalizers
- - [x] Playlist support 
- - [x] Server customizable prefix
+
+-   [x] YouTube, SoundCloud, audio file playback.
+-   [x] Equalizers
+-   [x] Playlist support
+-   [x] Server customizable prefix
 
 ## 🏃 Quick Setup
+
 1. Get the Docker image from the [Docker hub](https://hub.docker.com/r/thomasgranbohm/cubot).
 2. Run `docker-compose up -d`
 
 ### 👷 Alternative setup
+
 1. Install and start [Lavalink](https://github.com/Frederikam/Lavalink)
 2. Run `npm install` or `yarn install`
-3. Rename `default.env` to `.env` and add your Discord token 
+3. Rename `default.env` to `.env` and add your Discord token
 4. Start the bot by running `npm start` or `yarn start`
 
 ## 📌 Dependencies
- - Node.js
- - Discord.js
- - [Lavalink](https://github.com/Frederikam/Lavalink)
+
+-   Node.js
+-   Discord.js
+-   [Lavalink](https://github.com/Frederikam/Lavalink)

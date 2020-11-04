@@ -21,9 +21,9 @@ export abstract class Command {
 	constructor(client: Bot, options: CommandOptions) {
 		this.client = client;
 
-		this.names = [this.constructor.name.toLowerCase()].concat(
-			options.aliases || []
-		);
+		this.names = [
+			this.constructor.name.toLowerCase(),
+		].concat(options.aliases || []);
 		this.description = options.description;
 		this.examples = options.examples || [];
 		this.needsArgs = options.needsArgs || false;
@@ -67,7 +67,10 @@ export abstract class MainCommand extends Command {
 			baseString,
 			...this.examples
 				.slice(0, 3)
-				.map((example) => `\`${prefix}${this.getName()} ${example}\``),
+				.map(
+					(example) =>
+						`\`${prefix}${this.getName()} ${example}\``
+				),
 		];
 		if (!!this.subCommands) {
 			examples.push(...this.getSubExamples(baseString));
@@ -75,7 +78,9 @@ export abstract class MainCommand extends Command {
 		return examples.map((example) => `\`${example}\``);
 	}
 
-	protected getSubExamples(commandString: string): Array<string> {
+	protected getSubExamples(
+		commandString: string
+	): Array<string> {
 		const examples = [];
 		const entries = this.subCommands.entries();
 		// TODO what if command needs args?
@@ -85,7 +90,9 @@ export abstract class MainCommand extends Command {
 				baseString,
 				...command
 					.getExamples(baseString)
-					.map((example) => `${baseString} ${example}`)
+					.map(
+						(example) => `${baseString} ${example}`
+					)
 			);
 		}
 		return examples;
@@ -106,7 +113,8 @@ export abstract class MainCommand extends Command {
 		message: Message,
 		args: string[]
 	): Promise<string | MessageEmbed | undefined> {
-		if (this.subCommands.size === 0 || args.length === 0) return undefined;
+		if (this.subCommands.size === 0 || args.length === 0)
+			return undefined;
 
 		const [subname, ...rest] = args;
 
@@ -130,19 +138,30 @@ export abstract class MainCommand extends Command {
 			const targetedCommand = subCommand || this;
 
 			let embed = new MessageEmbed()
-				.setTitle(`Detailed information about ${this.getName()}`)
-				.addField('Description', targetedCommand.description);
+				.setTitle(
+					`Detailed information about ${this.getName()}`
+				)
+				.addField(
+					'Description',
+					targetedCommand.description
+				);
 
 			if (!!subCommand) {
-				embed.setTitle(`${embed.title}'s \`${subCommand.getName()}\``);
+				embed.setTitle(
+					`${
+						embed.title
+					}'s \`${subCommand.getName()}\``
+				);
 			}
 
 			let caveats = [];
-			if (targetedCommand.needsArgs) caveats.push('need arguments');
+			if (targetedCommand.needsArgs)
+				caveats.push('need arguments');
 			if (targetedCommand instanceof MainCommand) {
 				if (targetedCommand.guildOnly)
 					caveats.push('can only be used in guilds');
-				if (targetedCommand.ownerOnly) caveats.push('is owner only');
+				if (targetedCommand.ownerOnly)
+					caveats.push('is owner only');
 			}
 			caveats = caveats.map((c) => `**${c}**`);
 
@@ -152,8 +171,12 @@ export abstract class MainCommand extends Command {
 					format(
 						'This command %s.',
 						(caveats.length > 1
-							? caveats.slice(0, caveats.length - 1).join(', ') +
-							  ' and '
+							? caveats
+									.slice(
+										0,
+										caveats.length - 1
+									)
+									.join(', ') + ' and '
 							: '') + caveats[caveats.length - 1]
 					)
 				);
@@ -162,7 +185,8 @@ export abstract class MainCommand extends Command {
 			// getExamples for subcommand
 			if (
 				targetedCommand === this &&
-				(this.examples.length > 0 || this.subCommands.size > 0)
+				(this.examples.length > 0 ||
+					this.subCommands.size > 0)
 			) {
 				embed.addField(
 					'Usage',
@@ -173,7 +197,9 @@ export abstract class MainCommand extends Command {
 			if (targetedCommand.names.length > 1) {
 				embed.addField(
 					'Aliases',
-					`\`${targetedCommand.names.slice(1).join(', ')}\``,
+					`\`${targetedCommand.names
+						.slice(1)
+						.join(', ')}\``,
 					true
 				);
 			}
@@ -222,11 +248,16 @@ export class TrackEmbed extends MessageEmbed {
 
 	async getThumbnail(): Promise<TrackEmbed> {
 		if (!this.track.thumbnail) {
-			this.track.thumbnail = await getThumbnail(this.track);
+			this.track.thumbnail = await getThumbnail(
+				this.track
+			);
 		}
 		if (this.track.thumbnail)
 			this.attachFiles([
-				{ attachment: this.track.thumbnail, name: `thumbnail.jpg` },
+				{
+					attachment: this.track.thumbnail,
+					name: `thumbnail.jpg`,
+				},
 			]).setThumbnail(`attachment://thumbnail.jpg`);
 		return this;
 	}
