@@ -1,7 +1,9 @@
 import { DMChannel, Message, MessageEmbed } from 'discord.js';
 import { Categories } from '../config';
+import { BOT_MESSAGE_DELETE_TIMEOUT } from '../constants';
 import { CustomError, UnexpectedError } from '../errors';
 import { deleteFromQueue } from '../messageQueue';
+import deleteMessage from './deleteMessage';
 import getGuildFromMessage from './getGuildFromMessage';
 import sendMessage from './sendMessage';
 
@@ -50,6 +52,9 @@ export default async function (
 		if (rest && !embed.description) embed.setDescription(rest);
 	}
 
+	const sentMessage = await sendMessage(channel, embed, Categories.ERROR);
 	deleteFromQueue(guildId, messageId);
-	sendMessage(channel, embed, Categories.ERROR);
+	if (error.shouldBeDeleted === true) {
+		deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
+	}
 }

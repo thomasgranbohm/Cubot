@@ -140,10 +140,6 @@ export class Bot extends Client {
 			},
 		});
 
-		// deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
-		// if (channel instanceof TextChannel !== false) {
-		// 	deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
-		// }
 	}
 
 	// MEH: Message Error Handling

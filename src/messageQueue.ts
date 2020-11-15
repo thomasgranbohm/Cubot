@@ -1,6 +1,7 @@
-import { Collection } from 'discord.js';
+import { Collection, TextChannel } from 'discord.js';
+import { BOT_MESSAGE_DELETE_TIMEOUT, USER_MESSAGE_DELETE_TIMEOUT } from './constants';
 import { MessageQueue, QueueEntry } from './types';
-import { sendError, sendMessage } from './utils';
+import { deleteMessage, sendError, sendMessage } from './utils';
 
 let isHandling = false;
 
@@ -66,11 +67,18 @@ export const handleMessageQueue = async (guildId: string) => {
 
 		try {
 			const outgoingMessage = await command.run(message, args);
-			await sendMessage(channel, outgoingMessage, category);
+			const sentMessage = await sendMessage(
+				channel,
+				outgoingMessage,
+				category
+			);
+
+			deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
+			if (channel instanceof TextChannel !== false) {
+				deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
+			}
 			deleteFromQueue(guildId, key);
 		} catch (err) {
-			// TODO I don't know why I need to catch here
-			// But otherwise, it throws UnhandledExceptionWarning
 			sendError(err, message);
 		}
 	}
