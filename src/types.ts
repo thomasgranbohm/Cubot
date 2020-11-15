@@ -72,8 +72,8 @@ export type MessageQueue = Collection<string, QueueEntry>;
 
 export type QueueEntry = {
 	channel: TextChannel | NewsChannel;
-	command?: Command;
-	options?: {
+	command: Command;
+	options: {
 		message: Message;
 		args: string[];
 		category: Categories;

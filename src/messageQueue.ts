@@ -1,5 +1,8 @@
 import { Collection, TextChannel } from 'discord.js';
-import { BOT_MESSAGE_DELETE_TIMEOUT, USER_MESSAGE_DELETE_TIMEOUT } from './constants';
+import {
+	BOT_MESSAGE_DELETE_TIMEOUT,
+	USER_MESSAGE_DELETE_TIMEOUT,
+} from './constants';
 import { MessageQueue, QueueEntry } from './types';
 import { deleteMessage, sendError, sendMessage } from './utils';
 
@@ -49,14 +52,11 @@ export const handleMessageQueue = async (guildId: string) => {
 			getMessageQueue(guildId).first(),
 		];
 
-		if (
-			!key ||
-			!value ||
-			!value.command ||
-			!value.channel ||
-			!value.options
-		) {
+		if (!key || !value) {
 			console.log(key, 'Did not handle.', value);
+			if (key) {
+				deleteFromQueue(guildId, key);
+			}
 			break;
 		}
 		const {

@@ -139,7 +139,6 @@ export class Bot extends Client {
 				category: command.group,
 			},
 		});
-
 	}
 
 	// MEH: Message Error Handling
