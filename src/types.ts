@@ -4,6 +4,8 @@ import {
 	Collection,
 	Message,
 	MessageEmbed,
+	NewsChannel,
+	TextChannel,
 	User,
 } from 'discord.js';
 import { Categories } from './config';
@@ -65,11 +67,12 @@ export interface HelpOptions {
 	subName?: string;
 }
 
-export type ReturnMessage = string | MessageEmbed | undefined;
+export type MessageQueue = Collection<string, QueueEntry>;
 
-export interface IQueueMessage {
-	receivedId: string;
-	returningMessage: ReturnMessage;
-}
+export type QueueEntry = {
+	channel: TextChannel | NewsChannel;
+	pendingMessage?: PendingMessage;
+	category?: Categories;
+};
 
-export type IdMessageCollection = Collection<string, ReturnMessage>;
+export type PendingMessage = string | MessageEmbed | undefined;

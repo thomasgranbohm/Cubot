@@ -11,13 +11,7 @@ import {
 import { MainCommand } from './classes';
 import * as commands from './commands';
 import { LavalinkConfig } from './config';
-import {
-	BOT_MESSAGE_DELETE_TIMEOUT,
-	DISCORD_TOKEN,
-	GLOBAL_PREFIX,
-	OWNER,
-	USER_MESSAGE_DELETE_TIMEOUT,
-} from './constants';
+import { DISCORD_TOKEN, GLOBAL_PREFIX, OWNER } from './constants';
 import { setupDatabase } from './database/index';
 import { GuildResolver } from './database/resolvers/GuildResolver';
 import {
@@ -26,14 +20,9 @@ import {
 	GuildOnlyError,
 	OwnerError,
 } from './errors';
+import { addToMessageQueue, updateMessageQueue } from './messageQueue';
 import { BotOptions, ServerObject } from './types';
-import {
-	checkPermissions,
-	deleteMessage,
-	getGuildFromMessage,
-	sendError,
-	sendMessage,
-} from './utils';
+import { checkPermissions, getGuildFromMessage, sendError } from './utils';
 
 export class Bot extends Client {
 	public owner: string;
@@ -96,7 +85,7 @@ export class Bot extends Client {
 	}
 
 	async handleCommand(message: Message) {
-		const { content, author, mentions, channel } = message;
+		const { id: messageId, content, author, mentions, channel } = message;
 
 		const isBot = author.bot;
 		if (isBot) return;
@@ -120,6 +109,12 @@ export class Bot extends Client {
 
 		checkPermissions(guild);
 
+		const { id: guildId } = guild;
+
+		addToMessageQueue(guildId, messageId, {
+			channel,
+		});
+
 		const prefixLength =
 			prefix.length + +content.startsWith(prefix.concat(' '));
 		const [name, ...args] = content.substr(prefixLength).split(' ');
@@ -139,16 +134,17 @@ export class Bot extends Client {
 			throw new GuildOnlyError();
 
 		// TODO this do be kinda ugly tho
-		const sentMessage = await sendMessage(
+		const pendingMessage = await command.run(message, args);
+		updateMessageQueue(guildId, messageId, {
 			channel,
-			await command.run(message, args),
-			command.group
-		);
+			pendingMessage,
+			category: command.group,
+		});
 
-		deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
-		if (channel instanceof TextChannel !== false) {
-			deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
-		}
+		// deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
+		// if (channel instanceof TextChannel !== false) {
+		// 	deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
+		// }
 	}
 
 	// MEH: Message Error Handling
