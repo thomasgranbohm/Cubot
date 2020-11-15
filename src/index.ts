@@ -20,9 +20,9 @@ import {
 	GuildOnlyError,
 	OwnerError,
 } from './errors';
-import { addToMessageQueue } from './messageQueue';
 import { BotOptions, ServerObject } from './types';
 import { checkPermissions, getGuildFromMessage, sendError } from './utils';
+import { addToCommandQueue } from './utils/commandQueue';
 
 export class Bot extends Client {
 	public owner: string;
@@ -130,7 +130,7 @@ export class Bot extends Client {
 			throw new GuildOnlyError();
 
 		// TODO this do be kinda ugly tho
-		addToMessageQueue(guildId, messageId, {
+		addToCommandQueue(guildId, messageId, {
 			channel,
 			command,
 			options: {

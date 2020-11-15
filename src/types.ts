@@ -68,7 +68,7 @@ export interface HelpOptions {
 	subName?: string;
 }
 
-export type MessageQueue = Collection<string, QueueEntry>;
+export type CommandQueue = Collection<string, QueueEntry>;
 
 export type QueueEntry = {
 	channel: TextChannel | NewsChannel;

@@ -2,15 +2,15 @@ import { Collection, TextChannel } from 'discord.js';
 import {
 	BOT_MESSAGE_DELETE_TIMEOUT,
 	USER_MESSAGE_DELETE_TIMEOUT,
-} from './constants';
-import { MessageQueue, QueueEntry } from './types';
-import { deleteMessage, sendError, sendMessage } from './utils';
+} from '../constants';
+import { CommandQueue, QueueEntry } from '../types';
+import { deleteMessage, sendError, sendMessage } from '../utils';
 
 let isHandling = false;
 
-const messageCollection = new Collection<string, MessageQueue>();
+const messageCollection = new Collection<string, CommandQueue>();
 
-export const getMessageQueue = (guildId: string): MessageQueue => {
+export const getCommandQueue = (guildId: string): CommandQueue => {
 	let queue = messageCollection.get(guildId);
 	if (!queue) {
 		queue = new Collection();
@@ -19,37 +19,33 @@ export const getMessageQueue = (guildId: string): MessageQueue => {
 	return queue;
 };
 
-const setInMessageQueue = (
+const setInCommandQueue = (
 	guildId: string,
 	receivedId: string,
 	queueEntry: QueueEntry
 ) => {
-	try {
-		const queue = getMessageQueue(guildId);
-		queue.set(receivedId, queueEntry);
-		if (!!queueEntry.command && isHandling === false) {
-			handleMessageQueue(guildId);
-		}
-	} catch (error) {
-		console.error('wtf got error', error);
+	const queue = getCommandQueue(guildId);
+	queue.set(receivedId, queueEntry);
+	if (!!queueEntry.command && isHandling === false) {
+		handleCommandQueue(guildId);
 	}
 };
 
-export const addToMessageQueue = setInMessageQueue;
+export const addToCommandQueue = setInCommandQueue;
 
-export const updateMessageQueue = setInMessageQueue;
+export const updateCommandQueue = setInCommandQueue;
 
 export const deleteFromQueue = (guildId: string, receivedId: string) => {
-	const queue = getMessageQueue(guildId);
+	const queue = getCommandQueue(guildId);
 	queue.delete(receivedId);
 };
 
-export const handleMessageQueue = async (guildId: string) => {
-	while (getMessageQueue(guildId).size > 0) {
+export const handleCommandQueue = async (guildId: string) => {
+	while (getCommandQueue(guildId).size > 0) {
 		isHandling = true;
 		const [key, value] = [
-			getMessageQueue(guildId).firstKey(),
-			getMessageQueue(guildId).first(),
+			getCommandQueue(guildId).firstKey(),
+			getCommandQueue(guildId).first(),
 		];
 
 		if (!key || !value) {
@@ -59,6 +55,7 @@ export const handleMessageQueue = async (guildId: string) => {
 			}
 			break;
 		}
+		
 		const {
 			channel,
 			command,

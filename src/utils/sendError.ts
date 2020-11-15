@@ -2,7 +2,7 @@ import { DMChannel, Message, MessageEmbed } from 'discord.js';
 import { Categories } from '../config';
 import { BOT_MESSAGE_DELETE_TIMEOUT } from '../constants';
 import { CustomError, UnexpectedError } from '../errors';
-import { deleteFromQueue } from '../messageQueue';
+import { deleteFromQueue } from '../utils/commandQueue';
 import deleteMessage from './deleteMessage';
 import getGuildFromMessage from './getGuildFromMessage';
 import sendMessage from './sendMessage';
