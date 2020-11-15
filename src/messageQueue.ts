@@ -1,52 +1,80 @@
 import { Collection } from 'discord.js';
 import { MessageQueue, QueueEntry } from './types';
-import { sendMessage } from './utils';
+import { sendError, sendMessage } from './utils';
+
+let isHandling = false;
 
 const messageCollection = new Collection<string, MessageQueue>();
 
-export function getMessageQueue(guildId: string): MessageQueue {
+export const getMessageQueue = (guildId: string): MessageQueue => {
 	let queue = messageCollection.get(guildId);
 	if (!queue) {
 		queue = new Collection();
 		messageCollection.set(guildId, queue);
 	}
 	return queue;
-}
+};
+
+const setInMessageQueue = (
+	guildId: string,
+	receivedId: string,
+	queueEntry: QueueEntry
+) => {
+	try {
+		const queue = getMessageQueue(guildId);
+		queue.set(receivedId, queueEntry);
+		if (!!queueEntry.command && isHandling === false) {
+			handleMessageQueue(guildId);
+		}
+	} catch (error) {
+		console.error('wtf got error', error);
+	}
+};
 
 export const addToMessageQueue = setInMessageQueue;
 
 export const updateMessageQueue = setInMessageQueue;
 
-function setInMessageQueue(
-	guildId: string,
-	receivedId: string,
-	queueEntry: QueueEntry
-) {
-	const queue = getMessageQueue(guildId);
-	queue.set(receivedId, queueEntry);
-	if (!!queueEntry.pendingMessage) {
-		handleMessageQueue(guildId);
-	}
-}
-
-export function deleteFromQueue(guildId: string, receivedId: string) {
+export const deleteFromQueue = (guildId: string, receivedId: string) => {
 	const queue = getMessageQueue(guildId);
 	queue.delete(receivedId);
-}
+};
 
 export const handleMessageQueue = async (guildId: string) => {
 	while (getMessageQueue(guildId).size > 0) {
+		isHandling = true;
 		const [key, value] = [
 			getMessageQueue(guildId).firstKey(),
 			getMessageQueue(guildId).first(),
 		];
-		if (!key || !value || !value.pendingMessage) {
-			console.log(key, 'Did not handle.');
+
+		if (
+			!key ||
+			!value ||
+			!value.command ||
+			!value.channel ||
+			!value.options
+		) {
+			console.log(key, 'Did not handle.', value);
 			break;
 		}
-		await sendMessage(value);
-		deleteFromQueue(guildId, key);
+		const {
+			channel,
+			command,
+			options: { args, category, message },
+		} = value;
+
+		try {
+			const outgoingMessage = await command.run(message, args);
+			await sendMessage(channel, outgoingMessage, category);
+			deleteFromQueue(guildId, key);
+		} catch (err) {
+			// TODO I don't know why I need to catch here
+			// But otherwise, it throws UnhandledExceptionWarning
+			sendError(err, message);
+		}
 	}
+	isHandling = false;
 };
 
 export default messageCollection;

@@ -1,17 +1,16 @@
 import { DMChannel, Message, MessageEmbed } from 'discord.js';
-import { Bot } from 'src';
-import { Categories, Colors } from '../config';
-import { PRODUCTION } from '../constants';
+import { Categories } from '../config';
 import { CustomError, UnexpectedError } from '../errors';
-import { updateMessageQueue } from '../messageQueue';
+import { deleteFromQueue } from '../messageQueue';
 import getGuildFromMessage from './getGuildFromMessage';
+import sendMessage from './sendMessage';
 
 export default async function (
-	client: Bot,
+	// client: Bot,
 	error: CustomError,
 	message: Message
 ) {
-	const { author, content, channel, id: messageId } = message;
+	const { channel, id: messageId } = message;
 
 	if (channel instanceof DMChannel) return;
 
@@ -21,25 +20,27 @@ export default async function (
 	const embed = error.embed || new MessageEmbed();
 
 	if (error instanceof UnexpectedError) {
-		if (PRODUCTION) {
-			const developer = await client.users.fetch(client.owner);
+		// TODO Commented out for now
+		// Maybe figure out a good way to send to developer.
+		// if (PRODUCTION) {
+		// 	const developer = await client.users.fetch(client.owner);
 
-			const DMChannel = await developer.createDM();
+		// 	const DMChannel = await developer.createDM();
 
-			DMChannel.send(
-				new MessageEmbed()
-					.setTitle('Ran into some problems chief')
-					.setDescription(
-						`**${author.tag}** tried to run \`${content}\` in ${guild?.name}.`
-					)
-					.addField('Developer message:', error.developerMessage)
-					.addField('Stack trace:', `\`\`\`${error.stack}\`\`\``)
-					.setColor(Colors[Categories.ERROR])
-					.setTimestamp()
-			);
-		} else {
-			console.error(error);
-		}
+		// 	DMChannel.send(
+		// 		new MessageEmbed()
+		// 			.setTitle('Ran into some problems chief')
+		// 			.setDescription(
+		// 				`**${author.tag}** tried to run \`${content}\` in ${guild?.name}.`
+		// 			)
+		// 			.addField('Developer message:', error.developerMessage)
+		// 			.addField('Stack trace:', `\`\`\`${error.stack}\`\`\``)
+		// 			.setColor(Colors[Categories.ERROR])
+		// 			.setTimestamp()
+		// 	);
+		// } else {
+		console.error(error);
+		// }
 		embed.setTitle(error.name).setDescription(error.message);
 	} else {
 		const [title, ...rest] = error.message.split('\n');
@@ -49,9 +50,6 @@ export default async function (
 		if (rest && !embed.description) embed.setDescription(rest);
 	}
 
-	updateMessageQueue(guildId, messageId, {
-		channel,
-		pendingMessage: embed,
-		category: Categories.ERROR,
-	});
+	deleteFromQueue(guildId, messageId);
+	sendMessage(channel, embed, Categories.ERROR);
 }

@@ -1,18 +1,20 @@
-import { MessageEmbed } from 'discord.js';
-import { QueueEntry } from 'src/types';
-import { Colors } from '../config';
+import { MessageEmbed, NewsChannel, TextChannel } from 'discord.js';
+import { Categories, Colors } from '../config';
+import { OutgoingMessage } from '../types';
 
 // TODO Shouldnt this use guildid
-export default async function (queueEntry: QueueEntry) {
-	const { category, channel, pendingMessage } = queueEntry;
-
-	if (pendingMessage instanceof MessageEmbed) {
+export default async function (
+	channel: TextChannel | NewsChannel,
+	outgoingMessage: OutgoingMessage,
+	category: Categories
+) {
+	if (outgoingMessage instanceof MessageEmbed) {
 		if (category !== undefined && category !== null) {
-			pendingMessage.setColor(Colors[category]);
+			outgoingMessage.setColor(Colors[category]);
 		}
 	}
 
-	let sentMessage = await channel.send(pendingMessage);
+	let sentMessage = await channel.send(outgoingMessage);
 
 	return sentMessage;
 }

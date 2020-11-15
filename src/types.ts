@@ -8,6 +8,7 @@ import {
 	TextChannel,
 	User,
 } from 'discord.js';
+import { Command } from './classes';
 import { Categories } from './config';
 
 export type BotOptions = ClientOptions & {
@@ -71,8 +72,12 @@ export type MessageQueue = Collection<string, QueueEntry>;
 
 export type QueueEntry = {
 	channel: TextChannel | NewsChannel;
-	pendingMessage?: PendingMessage;
-	category?: Categories;
+	command?: Command;
+	options?: {
+		message: Message;
+		args: string[];
+		category: Categories;
+	};
 };
 
-export type PendingMessage = string | MessageEmbed | undefined;
+export type OutgoingMessage = string | MessageEmbed | undefined;

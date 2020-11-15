@@ -20,7 +20,7 @@ import {
 	GuildOnlyError,
 	OwnerError,
 } from './errors';
-import { addToMessageQueue, updateMessageQueue } from './messageQueue';
+import { addToMessageQueue } from './messageQueue';
 import { BotOptions, ServerObject } from './types';
 import { checkPermissions, getGuildFromMessage, sendError } from './utils';
 
@@ -111,10 +111,6 @@ export class Bot extends Client {
 
 		const { id: guildId } = guild;
 
-		addToMessageQueue(guildId, messageId, {
-			channel,
-		});
-
 		const prefixLength =
 			prefix.length + +content.startsWith(prefix.concat(' '));
 		const [name, ...args] = content.substr(prefixLength).split(' ');
@@ -134,11 +130,14 @@ export class Bot extends Client {
 			throw new GuildOnlyError();
 
 		// TODO this do be kinda ugly tho
-		const pendingMessage = await command.run(message, args);
-		updateMessageQueue(guildId, messageId, {
+		addToMessageQueue(guildId, messageId, {
 			channel,
-			pendingMessage,
-			category: command.group,
+			command,
+			options: {
+				message,
+				args,
+				category: command.group,
+			},
 		});
 
 		// deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
@@ -164,7 +163,7 @@ export class Bot extends Client {
 
 		if (error instanceof DiscordAPIError) console.error(error);
 
-		sendError(this, error, message);
+		sendError(error, message);
 	}
 
 	async onReady() {
