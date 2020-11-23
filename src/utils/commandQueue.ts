@@ -1,4 +1,4 @@
-import { Collection, TextChannel } from 'discord.js';
+import { Collection, Snowflake, TextChannel } from 'discord.js';
 import {
 	BOT_MESSAGE_DELETE_TIMEOUT,
 	USER_MESSAGE_DELETE_TIMEOUT,
@@ -6,17 +6,28 @@ import {
 import { CommandQueue, QueueEntry } from '../types';
 import { deleteMessage, sendError, sendMessage } from '../utils';
 
-let isHandling = false;
+type GuildType = {
+	queue: CommandQueue;
+	isHandling: boolean;
+};
+// <GuildId, CommandQueue>
+const messageCollection = new Collection<Snowflake, GuildType>();
 
-const messageCollection = new Collection<string, CommandQueue>();
-
-export const getCommandQueue = (guildId: string): CommandQueue => {
-	let queue = messageCollection.get(guildId);
-	if (!queue) {
-		queue = new Collection();
-		messageCollection.set(guildId, queue);
+export const getGuild = (guildId: string): GuildType => {
+	let guild = messageCollection.get(guildId);
+	if (!guild) {
+		const queue: CommandQueue = new Collection();
+		guild = {
+			queue,
+			isHandling: false,
+		};
+		messageCollection.set(guildId, guild);
 	}
-	return queue;
+	return guild;
+};
+
+const setInMessageCollection = (guildId: string, newSetting: GuildType) => {
+	messageCollection.set(guildId, newSetting);
 };
 
 const setInCommandQueue = (
@@ -24,7 +35,8 @@ const setInCommandQueue = (
 	receivedId: string,
 	queueEntry: QueueEntry
 ) => {
-	const queue = getCommandQueue(guildId);
+	const guild = getGuild(guildId);
+	const { isHandling, queue } = guild;
 	queue.set(receivedId, queueEntry);
 	if (!!queueEntry.command && isHandling === false) {
 		handleCommandQueue(guildId);
@@ -36,17 +48,15 @@ export const addToCommandQueue = setInCommandQueue;
 export const updateCommandQueue = setInCommandQueue;
 
 export const deleteFromQueue = (guildId: string, receivedId: string) => {
-	const queue = getCommandQueue(guildId);
+	const { queue } = getGuild(guildId);
 	queue.delete(receivedId);
 };
 
 export const handleCommandQueue = async (guildId: string) => {
-	while (getCommandQueue(guildId).size > 0) {
-		isHandling = true;
-		const [key, value] = [
-			getCommandQueue(guildId).firstKey(),
-			getCommandQueue(guildId).first(),
-		];
+	const { queue } = getGuild(guildId);
+	while (queue.size > 0) {
+		setInMessageCollection(guildId, { queue, isHandling: true });
+		const [key, value] = [queue.firstKey(), queue.first()];
 
 		if (!key || !value) {
 			console.log(key, 'Did not handle.', value);
@@ -55,7 +65,7 @@ export const handleCommandQueue = async (guildId: string) => {
 			}
 			break;
 		}
-		
+
 		const {
 			channel,
 			command,
@@ -74,12 +84,13 @@ export const handleCommandQueue = async (guildId: string) => {
 			if (channel instanceof TextChannel !== false) {
 				deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
 			}
-			deleteFromQueue(guildId, key);
 		} catch (err) {
 			sendError(err, message);
+		} finally {
+			deleteFromQueue(guildId, key);
 		}
 	}
-	isHandling = false;
+	setInMessageCollection(guildId, { queue, isHandling: false });
 };
 
 export default messageCollection;
