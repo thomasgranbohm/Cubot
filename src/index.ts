@@ -11,13 +11,7 @@ import {
 import { MainCommand } from './classes';
 import * as commands from './commands';
 import { LavalinkConfig } from './config';
-import {
-	BOT_MESSAGE_DELETE_TIMEOUT,
-	DISCORD_TOKEN,
-	GLOBAL_PREFIX,
-	OWNER,
-	USER_MESSAGE_DELETE_TIMEOUT,
-} from './constants';
+import { DISCORD_TOKEN, GLOBAL_PREFIX, OWNER } from './constants';
 import { setupDatabase } from './database/index';
 import { GuildResolver } from './database/resolvers/GuildResolver';
 import {
@@ -27,13 +21,8 @@ import {
 	OwnerError,
 } from './errors';
 import { BotOptions, ServerObject } from './types';
-import {
-	checkPermissions,
-	deleteMessage,
-	getGuildFromMessage,
-	sendError,
-	sendMessage,
-} from './utils';
+import { checkPermissions, getGuildFromMessage, sendError } from './utils';
+import { addToCommandQueue } from './utils/commandQueue';
 
 export class Bot extends Client {
 	public owner: string;
@@ -96,7 +85,7 @@ export class Bot extends Client {
 	}
 
 	async handleCommand(message: Message) {
-		const { content, author, mentions, channel } = message;
+		const { id: messageId, content, author, mentions, channel } = message;
 
 		const isBot = author.bot;
 		if (isBot) return;
@@ -120,6 +109,8 @@ export class Bot extends Client {
 
 		checkPermissions(guild);
 
+		const { id: guildId } = guild;
+
 		const prefixLength =
 			prefix.length + +content.startsWith(prefix.concat(' '));
 		const [name, ...args] = content.substr(prefixLength).split(' ');
@@ -139,16 +130,15 @@ export class Bot extends Client {
 			throw new GuildOnlyError();
 
 		// TODO this do be kinda ugly tho
-		const sentMessage = await sendMessage(
+		addToCommandQueue(guildId, messageId, {
 			channel,
-			await command.run(message, args),
-			command.group
-		);
-
-		deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
-		if (channel instanceof TextChannel !== false) {
-			deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
-		}
+			command,
+			options: {
+				message,
+				args,
+				category: command.group,
+			},
+		});
 	}
 
 	// MEH: Message Error Handling
@@ -168,7 +158,7 @@ export class Bot extends Client {
 
 		if (error instanceof DiscordAPIError) console.error(error);
 
-		sendError(this, error, message);
+		sendError(error, message);
 	}
 
 	async onReady() {
