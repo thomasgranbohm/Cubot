@@ -11,7 +11,7 @@ import {
 import { MainCommand } from './classes';
 import * as commands from './commands';
 import { LavalinkConfig } from './config';
-import { DISCORD_TOKEN, GLOBAL_PREFIX, OWNER } from './constants';
+import { DISCORD_TOKEN, GLOBAL_PREFIX, OWNER, PRODUCTION } from './constants';
 import { setupDatabase } from './database/index';
 import { GuildResolver } from './database/resolvers/GuildResolver';
 import {
@@ -23,6 +23,8 @@ import {
 import { BotOptions, ServerObject } from './types';
 import { checkPermissions, getGuildFromMessage, sendError } from './utils';
 import { addToCommandQueue } from './utils/commandQueue';
+
+console.warn = PRODUCTION ? () => {} : console.warn;
 
 export class Bot extends Client {
 	public owner: string;

@@ -11,23 +11,19 @@ type GuildType = {
 	isHandling: boolean;
 };
 // <GuildId, CommandQueue>
-const messageCollection = new Collection<Snowflake, GuildType>();
+const guildCollection = new Collection<Snowflake, GuildType>();
 
 export const getGuild = (guildId: string): GuildType => {
-	let guild = messageCollection.get(guildId);
+	let guild = guildCollection.get(guildId);
 	if (!guild) {
 		const queue: CommandQueue = new Collection();
 		guild = {
 			queue,
 			isHandling: false,
 		};
-		messageCollection.set(guildId, guild);
+		guildCollection.set(guildId, guild);
 	}
 	return guild;
-};
-
-const setInMessageCollection = (guildId: string, newSetting: GuildType) => {
-	messageCollection.set(guildId, newSetting);
 };
 
 const setInCommandQueue = (
@@ -52,45 +48,51 @@ export const deleteFromQueue = (guildId: string, receivedId: string) => {
 	queue.delete(receivedId);
 };
 
-export const handleCommandQueue = async (guildId: string) => {
+export const handleCommandQueue = async (guildId: string): Promise<any> => {
 	const { queue } = getGuild(guildId);
-	while (queue.size > 0) {
-		setInMessageCollection(guildId, { queue, isHandling: true });
-		const [key, value] = [queue.firstKey(), queue.first()];
 
-		if (!key || !value) {
-			console.log(key, 'Did not handle.', value);
-			if (key) {
-				deleteFromQueue(guildId, key);
-			}
-			break;
-		}
+	if (queue.size === 0) {
+		guildCollection.set(guildId, { queue, isHandling: false });
+		console.log(guildId, 'finished being handled');
+		return;
+	}
 
-		const {
-			channel,
-			command,
-			options: { args, category, message },
-		} = value;
+	guildCollection.set(guildId, { queue, isHandling: true });
+	const [key, value] = [queue.firstKey(), queue.first()];
 
-		try {
-			const outgoingMessage = await command.run(message, args);
-			const sentMessage = await sendMessage(
-				channel,
-				outgoingMessage,
-				category
-			);
-
-			deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
-			if (channel instanceof TextChannel !== false) {
-				deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
-			}
-		} catch (err) {
-			sendError(err, message);
-		} finally {
+	if (!key || !value) {
+		console.log(key, 'Did not handle.', value);
+		if (key) {
 			deleteFromQueue(guildId, key);
 		}
+		return;
 	}
-	setInMessageCollection(guildId, { queue, isHandling: false });
+
+	const {
+		channel,
+		command,
+		options: { args, category, message },
+	} = value;
+
+	try {
+		const outgoingMessage = await command.run(message, args);
+		const sentMessage = await sendMessage(
+			channel,
+			outgoingMessage,
+			category
+		);
+
+		deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
+		if (channel instanceof TextChannel !== false) {
+			deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
+		}
+	} catch (err) {
+		sendError(err, message);
+	} finally {
+		deleteFromQueue(guildId, key);
+		console.log(key, 'got handled. Amount left:', queue.size);
+		return handleCommandQueue(guildId);
+	}
 };
 
-export default messageCollection;
+export default guildCollection;
