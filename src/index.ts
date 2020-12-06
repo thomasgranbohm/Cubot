@@ -20,6 +20,7 @@ import {
 	GuildOnlyError,
 	OwnerError,
 } from './errors';
+import * as logger from './logger';
 import { BotOptions, ServerObject } from './types';
 import { checkPermissions, getGuildFromMessage, sendError } from './utils';
 import { addToCommandQueue } from './utils/commandQueue';
@@ -72,15 +73,15 @@ export class Bot extends Client {
 		const connectToLavalink = async (retryIndex = 0) => {
 			try {
 				await this.manager.connect();
-				console.log('Successfully connected to Lavalink.');
+				logger.log('Successfully connected to Lavalink.');
 			} catch (err) {
 				if (retryIndex === 2) {
-					console.error(
+					logger.error(
 						`Could not connect to Lavalink on ${LavalinkConfig.host}:${LavalinkConfig.port}! Exiting...`
 					);
 					process.exit(1);
 				}
-				console.log(
+				logger.warn(
 					`#${++retryIndex}. Retrying Lavalink connection...`
 				);
 				setTimeout(() => connectToLavalink(retryIndex), 5000);
@@ -96,7 +97,7 @@ export class Bot extends Client {
 			type: 'LISTENING',
 		});
 
-		console.log(`Started at ${new Date().toString().substr(0, 24)}!`);
+		logger.log(`Started at ${new Date().toString().substr(0, 24)}!`);
 	}
 
 	private async onMessage(message: Message) {

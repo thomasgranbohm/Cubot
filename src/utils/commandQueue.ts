@@ -3,6 +3,7 @@ import {
 	BOT_MESSAGE_DELETE_TIMEOUT,
 	USER_MESSAGE_DELETE_TIMEOUT,
 } from '../constants';
+import * as logger from '../logger';
 import { CommandQueue, QueueEntry } from '../types';
 import { deleteMessage, sendError, sendMessage } from '../utils';
 
@@ -59,7 +60,7 @@ export const handleCommandQueue = async (guildId: string) => {
 		const [key, value] = [queue.firstKey(), queue.first()];
 
 		if (!key || !value) {
-			console.log(key, 'Did not handle.', value);
+			logger.log(key, 'Did not handle.', value);
 			if (key) {
 				deleteFromQueue(guildId, key);
 			}

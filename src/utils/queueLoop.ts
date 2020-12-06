@@ -1,6 +1,7 @@
 import { Player } from '@lavacord/discord.js';
 import { getServerQueue, setServerQueue } from '.';
 import { Bot } from '../';
+import * as logger from '../logger';
 
 export default async function queueLoop(
 	client: Bot,
@@ -15,7 +16,7 @@ export default async function queueLoop(
 	player.play(track.track);
 
 	player.once('end', async (data) => {
-		if (data.reason === 'REPLACED') console.warn('Track was replaced...');
+		if (data.reason === 'REPLACED') logger.warn('Track was replaced...');
 		const server = client.servers.get(guildId);
 		queue = getServerQueue(client, guildId);
 		if (server && queue.length !== 0) {

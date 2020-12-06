@@ -1,23 +1,31 @@
-import axios from "axios";
-import { LavalinkConfig } from "../config";
-import { TrackObject } from "../types";
+import axios from 'axios';
+import { LavalinkConfig } from '../config';
+import { TrackObject } from '../types';
+import * as logger from "../logger";
 
 export default async function (query: string): Promise<TrackObject[]> {
 	try {
 		const res = await axios.get(
-			`http://${LavalinkConfig.host}:${LavalinkConfig.port}/loadtracks?identifier=${encodeURIComponent(query)}`,
+			`http://${LavalinkConfig.host}:${
+				LavalinkConfig.port
+			}/loadtracks?identifier=${encodeURIComponent(query)}`,
 			{
 				headers: {
-					Authorization: LavalinkConfig.password
-				}
+					Authorization: LavalinkConfig.password,
+				},
 			}
 		);
 		return res.data.tracks.map((t: any) => {
-			return { ...t.info, track: t.track } as TrackObject
+			return { ...t.info, track: t.track } as TrackObject;
 		});
 	} catch (error) {
-		console.error(error, `http://${LavalinkConfig.host}:${LavalinkConfig.port}/loadtracks?identifier=${encodeURIComponent(query)}`, "wtf")
+		logger.error(
+			error,
+			`http://${LavalinkConfig.host}:${
+				LavalinkConfig.port
+			}/loadtracks?identifier=${encodeURIComponent(query)}`,
+			'wtf'
+		);
 		return new Array<TrackObject>();
 	}
-
 }

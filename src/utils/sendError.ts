@@ -2,6 +2,7 @@ import { DMChannel, Message, MessageEmbed } from 'discord.js';
 import { Categories } from '../config';
 import { BOT_MESSAGE_DELETE_TIMEOUT } from '../constants';
 import { CustomError, UnexpectedError } from '../errors';
+import * as logger from '../logger';
 import { deleteFromQueue } from '../utils/commandQueue';
 import deleteMessage from './deleteMessage';
 import getGuildFromMessage from './getGuildFromMessage';
@@ -41,7 +42,7 @@ export default async function (
 		// 			.setTimestamp()
 		// 	);
 		// } else {
-		console.error(error);
+		logger.error(error);
 		// }
 		embed.setTitle(error.name).setDescription(error.message);
 	} else {
