@@ -55,9 +55,15 @@ export class Bot extends Client {
 			shards: (this.shard && this.shard.count) || 1,
 		});
 
-		this.on('ready', this.onReady);
-		this.on('voiceStateUpdate', this.onVoiceStateUpdate);
-		this.on('message', this.onMessage);
+		this.on('ready', () => this.onError(this.onReady));
+		this.on('message', (message: Message) =>
+			this.onError(this.onMessage, message)
+		);
+		this.on(
+			'voiceStateUpdate',
+			(oldState: VoiceState, newState: VoiceState) =>
+				this.onError(this.onVoiceStateUpdate, oldState, newState)
+		);
 
 		this.login(token);
 	}
@@ -101,85 +107,60 @@ export class Bot extends Client {
 	}
 
 	private async onMessage(message: Message) {
-		try {
-			const {
-				id: messageId,
-				content,
-				author,
-				mentions,
-				channel,
-			} = message;
+		const { id: messageId, content, author, mentions, channel } = message;
 
-			const isBot = author.bot;
-			if (isBot) return;
+		const isBot = author.bot;
+		if (isBot) return;
 
-			if (channel instanceof DMChannel) return;
+		if (channel instanceof DMChannel) return;
 
-			const guild = await getGuildFromMessage(message);
-			const prefix = await this.guildResolver.prefix(guild.id);
+		const guild = await getGuildFromMessage(message);
+		const prefix = await this.guildResolver.prefix(guild.id);
 
-			const hasPrefix =
-				content.startsWith(prefix) ||
-				content.startsWith(prefix.concat(' '));
-			const mentionsBot = this.user
-				? mentions.has(this.user, {
-						ignoreEveryone: true,
-						ignoreRoles: true,
-				  })
-				: false;
+		const hasPrefix =
+			content.startsWith(prefix) ||
+			content.startsWith(prefix.concat(' '));
+		const mentionsBot = this.user
+			? mentions.has(this.user, {
+					ignoreEveryone: true,
+					ignoreRoles: true,
+			  })
+			: false;
 
-			if (!hasPrefix && !mentionsBot) return;
+		if (!hasPrefix && !mentionsBot) return;
 
-			checkPermissions(guild);
+		checkPermissions(guild);
 
-			const { id: guildId } = guild;
+		const { id: guildId } = guild;
 
-			const prefixLength =
-				prefix.length + +content.startsWith(prefix.concat(' '));
-			const [name, ...args] = content.substr(prefixLength).split(' ');
+		const prefixLength =
+			prefix.length + +content.startsWith(prefix.concat(' '));
+		const [name, ...args] = content.substr(prefixLength).split(' ');
 
-			const command = this.commands.find((c) =>
-				c.names.includes(mentionsBot ? 'help' : name)
-			);
-			if (!command) return;
+		const command = this.commands.find((c) =>
+			c.names.includes(mentionsBot ? 'help' : name)
+		);
+		if (!command) return;
 
-			if (command.needsArgs && args.length === 0)
-				throw new ArgumentError(command, prefix);
+		if (command.needsArgs && args.length === 0)
+			throw new ArgumentError(command, prefix);
 
-			if (command.ownerOnly && author.id !== this.owner)
-				throw new OwnerError();
+		if (command.ownerOnly && author.id !== this.owner)
+			throw new OwnerError();
 
-			if (command.guildOnly && channel instanceof TextChannel === false)
-				throw new GuildOnlyError();
+		if (command.guildOnly && channel instanceof TextChannel === false)
+			throw new GuildOnlyError();
 
-			// TODO this do be kinda ugly tho
-			addToCommandQueue(guildId, messageId, {
-				channel,
-				command,
-				options: {
-					message,
-					args,
-					category: command.group,
-				},
-			});
-		} catch (error) {
-			if (
-				error instanceof CustomError === false &&
-				error instanceof DiscordAPIError === false
-			)
-				return console.error(error, 'Unknown error');
-
-			if (
-				error instanceof DiscordAPIError &&
-				error.message === 'Unknown Message' &&
-				error.code === 10008
-			)
-				return;
-
-			if (error instanceof DiscordAPIError) console.error(error);
-
-			sendError(error, message);
-		}
+		// TODO this do be kinda ugly tho
+		addToCommandQueue(guildId, messageId, {
+			channel,
+			command,
+			options: {
+				message,
+				args,
+				category: command.group,
+			},
+		});
 	}
 
 	private async onVoiceStateUpdate(
@@ -213,6 +194,43 @@ export class Bot extends Client {
 			if (this.servers.get(oldState.guild.id)) {
 				this.servers.delete(oldState.guild.id);
 			}
+		}
+	}
+
+	private async onError(onReady: () => void): Promise<void>;
+	private async onError(onMessage: Function, message: Message): Promise<void>;
+	private async onError(
+		onVoiceStateUpdate: Function,
+		oldState: VoiceState,
+		newState: VoiceState
+	): Promise<void>;
+	private async onError(
+		f: Function,
+		firstInput?: VoiceState | Message,
+		secondInput?: VoiceState
+	): Promise<void> {
+		try {
+			if (!firstInput && !secondInput) await f();
+			else if (!!firstInput && !secondInput) await f(firstInput);
+			else if (!!firstInput && !!secondInput)
+				await f(firstInput, secondInput);
+		} catch (error) {
+			if (
+				error instanceof CustomError === false &&
+				error instanceof DiscordAPIError === false
+			)
+				return logger.error(error, 'Unknown error');
+
+			if (
+				error instanceof DiscordAPIError &&
+				error.message === 'Unknown Message' &&
+				error.code === 10008
+			)
+				return;
+
+			if (!!firstInput && firstInput instanceof Message)
+				sendError(error, firstInput);
+			logger.error(error);
 		}
 	}
 }
