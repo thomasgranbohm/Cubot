@@ -55,10 +55,12 @@ export const deleteFromQueue = (guildId: string, receivedId: string) => {
 
 export const handleCommandQueue = async (guildId: string) => {
 	const { queue } = getGuild(guildId);
-	while (queue.size > 0) {
-		setInMessageCollection(guildId, { queue, isHandling: true });
-		const [key, value] = [queue.firstKey(), queue.first()];
 
+	setInMessageCollection(guildId, { queue, isHandling: true });
+
+	const [key, value] = [queue.firstKey(), queue.first()];
+
+	try {
 		if (!key || !value) {
 			logger.log(key, 'Did not handle.', value);
 			if (key) {
@@ -66,30 +68,26 @@ export const handleCommandQueue = async (guildId: string) => {
 			}
 			break;
 		}
-
 		const {
 			channel,
 			command,
 			options: { args, category, message },
 		} = value;
+		const outgoingMessage = await command.run(message, args);
+		const sentMessage = await sendMessage(
+			channel,
+			outgoingMessage,
+			category
+		);
 
-		try {
-			const outgoingMessage = await command.run(message, args);
-			const sentMessage = await sendMessage(
-				channel,
-				outgoingMessage,
-				category
-			);
-
-			deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
-			if (channel instanceof TextChannel !== false) {
-				deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
-			}
-		} catch (err) {
-			sendError(err, message);
-		} finally {
-			deleteFromQueue(guildId, key);
+		deleteMessage(sentMessage, BOT_MESSAGE_DELETE_TIMEOUT);
+		if (channel instanceof TextChannel !== false) {
+			deleteMessage(message, USER_MESSAGE_DELETE_TIMEOUT);
 		}
+	} catch (err) {
+		sendError(err, message);
+	} finally {
+		deleteFromQueue(guildId, key);
 	}
 	setInMessageCollection(guildId, { queue, isHandling: false });
 };
