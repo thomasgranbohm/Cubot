@@ -6,14 +6,16 @@
 		<img alt="Invite Link"
 			src="https://img.shields.io/badge/INVITE-bot-%237289DA?style=for-the-badge&logoColor=white">
 	</a>
+<!--
 	<a href="https://discord.gg/Cak7Srv">
 		<img alt="Support Server"
 			src="https://img.shields.io/discord/755725963039604807?color=%237289DA&label=server&logoColor=white&style=for-the-badge">
-	</a><br/>
+	</a><br />
 	<a href="https://nodejs.org/en/download/">
 		<img alt="Node.js"
 			src="https://img.shields.io/badge/NODE.JS-v13.14-darkgreen?style=for-the-badge">
 	</a>
+-->
 	<a href="https://hub.docker.com/r/thomasgranbohm/cubot">
 		<img alt="Docker Cloud Build Status"
 			src="https://img.shields.io/docker/cloud/build/thomasgranbohm/cubot?color=blue&style=for-the-badge&label=docker">

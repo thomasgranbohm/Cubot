@@ -22,7 +22,7 @@
 	},
 	"dependencies": {
 		"@lavacord/discord.js": "^0.0.7",
-		"axios": "^0.20.0",
+		"axios": "^0.21.1",
 		"class-validator": "^0.12.2",
 		"discord.js": "^12.3.1",
 		"dotenv": "^8.2.0",
