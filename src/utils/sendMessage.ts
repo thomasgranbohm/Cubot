@@ -5,7 +5,7 @@ import { OutgoingMessage } from '../types';
 // TODO Shouldnt this use guildid
 export default async function (
 	channel: TextChannel | NewsChannel,
-	outgoingMessage: OutgoingMessage,
+	outgoingMessage: Exclude<OutgoingMessage, undefined>,
 	category: Categories
 ) {
 	if (outgoingMessage instanceof MessageEmbed) {
@@ -14,7 +14,7 @@ export default async function (
 		}
 	}
 
-	let sentMessage = await channel.send(outgoingMessage);
+	const sentMessage = await channel.send(outgoingMessage);
 
 	return sentMessage;
 }

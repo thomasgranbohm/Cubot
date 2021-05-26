@@ -33,7 +33,7 @@ export abstract class Command {
 	 * @param message The message sent by the user
 	 * @param args Optional arguments
 	 */
-	abstract async run(
+	abstract run(
 		message: Message,
 		args?: string[]
 	): Promise<string | MessageEmbed>;
