@@ -13,7 +13,7 @@
 			"\t\tsuper(client, {",
 			"\t\t\taliases: [\"$2\"],",
 			"\t\t\tdescription: \"$3\",",
-			"\t\t\tgroup: Categories.${4:MISC}",
+			"\t\t\tcategory: Categories.${4:MISC}",
 			"\t\t})",
 			"\t}",
 			"\t",
@@ -36,11 +36,7 @@
 	},
 	"Create Util": {
 		"prefix": "util",
-		"body": [
-			"export default function ($1) {",
-			"\t$0",
-			"}"
-		]
+		"body": ["export default function ($1) {", "\t$0", "}"]
 	},
 	"Create subcommand": {
 		"prefix": "sub",

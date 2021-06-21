@@ -22,7 +22,7 @@ export abstract class Command {
 		this.client = client;
 
 		this.names = [this.constructor.name.toLowerCase()].concat(
-			options.aliases || []
+			(options.aliases || []).sort()
 		);
 		this.description = options.description;
 		this.examples = options.examples || [];
@@ -44,7 +44,7 @@ export abstract class Command {
 }
 
 export abstract class MainCommand extends Command {
-	group: Categories;
+	category: Categories;
 	ownerOnly: boolean;
 	guildOnly: boolean;
 	subCommands: Collection<string, SubCommand>;
@@ -52,7 +52,7 @@ export abstract class MainCommand extends Command {
 	constructor(client: Bot, options: MainCommandOptions) {
 		super(client, options);
 
-		this.group = options.group;
+		this.category = options.category;
 		this.guildOnly = options.guildOnly || false;
 		this.ownerOnly = options.ownerOnly || false;
 
@@ -173,7 +173,10 @@ export abstract class MainCommand extends Command {
 			if (targetedCommand.names.length > 1) {
 				embed.addField(
 					'Aliases',
-					`\`${targetedCommand.names.slice(1).join(', ')}\``,
+					targetedCommand.names
+						.slice(1)
+						.map((alias) => `\`${alias}\``)
+						.join(', '),
 					true
 				);
 			}

@@ -30,8 +30,9 @@ export class Bot extends Client {
 
 	public manager: Manager;
 
-	public servers: Collection<String, ServerObject>;
+	public categories: Array<string>;
 	public commands: Collection<String, MainCommand>;
+	public servers: Collection<String, ServerObject>;
 
 	public guildResolver: GuildResolver;
 
@@ -44,6 +45,7 @@ export class Bot extends Client {
 		this.owner = owner;
 		this.prefix = prefix;
 
+		this.categories = new Array();
 		this.commands = new Collection<String, MainCommand>();
 		this.servers = new Collection<String, ServerObject>();
 
@@ -80,7 +82,11 @@ export class Bot extends Client {
 	loadCommands() {
 		const entries = Object.entries(commands);
 		for (const [name, TempCommand] of entries) {
-			this.commands.set(name.toLowerCase(), new TempCommand(this));
+			const command = new TempCommand(this);
+			this.commands.set(name.toLowerCase(), command);
+			if (!this.categories.includes(command.category)) {
+				this.categories.push(command.category);
+			}
 		}
 	}
 
@@ -136,7 +142,7 @@ export class Bot extends Client {
 			options: {
 				message,
 				args,
-				category: command.group,
+				category: command.category,
 			},
 		});
 	}

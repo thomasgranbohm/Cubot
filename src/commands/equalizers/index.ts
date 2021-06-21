@@ -13,14 +13,17 @@ export class Equalizers extends MainCommand {
 		super(client, {
 			aliases: ['eq', 'equalizer', 'eqs'],
 			description: 'Lists all equalizers or sets the current equalizer',
-			group: Categories.VOICE,
+			category: Categories.VOICE,
 			guildOnly: true,
 			examples: ['<name>'],
 			subCommands,
 		});
 	}
 
-	async run(message: Message, args?: string[]): Promise<string | MessageEmbed> {
+	async run(
+		message: Message,
+		args?: string[]
+	): Promise<string | MessageEmbed> {
 		if (!args || args?.length === 0) {
 			args = ['list'];
 		}

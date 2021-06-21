@@ -2,11 +2,11 @@ import { LAVALINK, POSTGRES, PRODUCTION } from './constants';
 import { Guild } from './database/entities/Guild';
 
 export enum Categories {
-	VOICE,
-	UTILS,
-	MISC,
-	ADMIN,
-	ERROR,
+	VOICE = "VOICE",
+	UTILS = "UTILS",
+	MISC = "MISC",
+	ADMIN = "ADMIN",
+	ERROR = "ERROR",
 }
 
 export const Colors = {

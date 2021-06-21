@@ -24,7 +24,7 @@ export interface CommandOptions {
 }
 
 export interface MainCommandOptions extends CommandOptions {
-	group: Categories;
+	category: Categories;
 	ownerOnly?: boolean;
 	guildOnly?: boolean;
 	subCommands?: Object;
