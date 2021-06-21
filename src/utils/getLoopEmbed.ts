@@ -8,7 +8,7 @@ export default function (loop: string): MessageEmbed {
 			embed.setTitle("No repeats :arrow_forward:")
 			break;
 		case "first":
-			embed.setTitle("Repeating first:repeat_one:")
+			embed.setTitle("Repeating first :repeat_one:")
 			break;
 		case "all":
 			embed.setTitle("On repeat :repeat:")

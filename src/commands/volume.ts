@@ -29,8 +29,19 @@ export class Volume extends MainCommand {
 		const currentVolume = player.state.volume;
 
 		let embed = new MessageEmbed();
-		if (args && args.length > 0) {
-			const newVolume = parseInt(args[0]);
+		if (args && args.length !== 0) {
+			const first = args.pop() || '0';
+			const shouldAdd = first?.startsWith('+');
+			const shouldRemove = first?.startsWith('-');
+
+			const currentVolume = await player.state.volume;
+
+			let newVolume = 0;
+			if (shouldAdd || shouldRemove) {
+				newVolume = currentVolume + parseInt(first);
+			} else {
+				newVolume = parseInt(first);
+			}
 
 			if (
 				newVolume === NaN ||
@@ -39,7 +50,7 @@ export class Volume extends MainCommand {
 			)
 				throw new VolumeNotBetweenThresholdError();
 
-			player.volume(newVolume);
+			await player.volume(newVolume);
 			embed
 				.setTitle('Changed volume')
 				.setDescription(`From ${currentVolume} to ${newVolume}!`);
