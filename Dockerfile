@@ -13,5 +13,5 @@ RUN yarn build
 
 ENV NODE_ENV production
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "--max-old-space-size=16384",  "dist/index.js"]
 
