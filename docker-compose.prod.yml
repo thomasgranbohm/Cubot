@@ -26,8 +26,8 @@ services:
             - ./application.yml:/opt/Lavalink/application.yml
         restart: always
     bot:
-        image: node:14
-        command: bash -c "npm run dev || (npm install && npm run dev)"
+        build: .
+        image: thomasgranbohm/cubot
         depends_on:
             - database
             - cache
@@ -36,9 +36,7 @@ services:
             - USING_COMPOSE=true
         env_file:
             - .env
-        volumes:
-            - ./:/home/node/cubot
-        working_dir: /home/node/cubot
+        restart: always
 volumes:
     database-data:
     cache-data:

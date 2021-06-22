@@ -1,12 +1,12 @@
-import { LAVALINK, POSTGRES, PRODUCTION } from './constants';
+import { LAVALINK, DATABASE, PRODUCTION } from './constants';
 import { Guild } from './database/entities/Guild';
 
 export enum Categories {
-	VOICE = "VOICE",
-	UTILS = "UTILS",
-	MISC = "MISC",
-	ADMIN = "ADMIN",
-	ERROR = "ERROR",
+	VOICE = 'VOICE',
+	UTILS = 'UTILS',
+	MISC = 'MISC',
+	ADMIN = 'ADMIN',
+	ERROR = 'ERROR',
 }
 
 export const Colors = {
@@ -32,10 +32,10 @@ export const LavalinkConfig = {
 };
 
 export const BaseTypeORMConfig = {
-	host: 'database',
+	host: DATABASE.HOST,
 	type: 'postgres',
-	username: POSTGRES.USERNAME,
-	password: POSTGRES.PASSWORD,
+	username: DATABASE.USERNAME,
+	password: DATABASE.PASSWORD,
 	logging: !PRODUCTION,
 	synchronize: true,
 };

@@ -1,6 +1,6 @@
 import { Connection, ConnectionOptions, createConnection } from 'typeorm';
 import { BaseTypeORMConfig, TypeORMConfig } from '../config';
-import { POSTGRES } from '../constants';
+import { DATABASE } from '../constants';
 
 export async function setupDatabase(): Promise<Connection> {
 	try {
@@ -14,7 +14,7 @@ export async function setupDatabase(): Promise<Connection> {
 			const connection = await createConnection(
 				BaseTypeORMConfig as ConnectionOptions
 			);
-			await connection.query(`CREATE DATABASE ${POSTGRES.DATABASE};`);
+			await connection.query(`CREATE DATABASE ${DATABASE.DATABASE};`);
 			await connection.close();
 			return setupDatabase();
 		}

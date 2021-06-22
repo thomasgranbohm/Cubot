@@ -3,7 +3,6 @@ import { MainCommand, TrackEmbed } from '../classes';
 import { Categories } from '../config';
 import { NotPlayingError } from '../errors';
 import { Bot } from '../index';
-import { TrackObject } from '../types';
 import {
 	checkBotVoice,
 	checkUserVoice,
@@ -33,17 +32,13 @@ export class Queue extends MainCommand {
 		if (queue.length === 0) throw new NotPlayingError();
 
 		let currentlyPlaying = queue.shift();
-		let tracks = queue.map(({ title, uri, author }: TrackObject) => ({
-			title,
-			uri,
-			author,
-		}));
+		let tracks = queue.slice();
 
 		if (!currentlyPlaying) throw new NotPlayingError();
 
 		let { author, requester, title, uri } = currentlyPlaying;
 
-		let embed = await new TrackEmbed(currentlyPlaying)
+		let embed = await new TrackEmbed(currentlyPlaying, { amount: 5 })
 			.setTitle(`Queue for ${message.guild?.name}`)
 			.addField(
 				`Currently playing`,
@@ -56,20 +51,13 @@ export class Queue extends MainCommand {
 			.getThumbnail();
 
 		if (queue.length > 0) {
-			let strings = tracks
-				.slice(0, 5)
-				.map(
-					({ title, uri }, i) =>
-						`**\`${i + 1}.\`** [${
-							title.length > 48
-								? title.substr(0, 48) + '...'
-								: title
-						}](${uri})`
-				);
-			if (queue.length > 5) {
-				strings.push(`\nPlus ${queue.length - 5} more...`);
-			}
-			embed.addField(`Queue:`, strings.join('\n'));
+			let strings = tracks.map(
+				({ title, uri }, i) =>
+					`**\`${i + 1}.\`** [${
+						title.length > 48 ? title.substr(0, 48) + '...' : title
+					}](${uri})`
+			);
+			embed.setDescription(strings);
 		}
 		return embed;
 	}

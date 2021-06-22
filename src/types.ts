@@ -8,7 +8,7 @@ import {
 	TextChannel,
 	User,
 } from 'discord.js';
-import { Command } from './classes';
+import { Command, CustomEmbed } from './classes';
 import { Categories } from './config';
 
 export type BotOptions = ClientOptions & {
@@ -80,4 +80,9 @@ export type QueueEntry = {
 	};
 };
 
-export type OutgoingMessage = string | MessageEmbed | undefined;
+export type OutgoingMessage = string | MessageEmbed | CustomEmbed | undefined;
+
+export type CustomEmbedOptions = {
+	scroll?: boolean,
+	amount?: number;
+};

@@ -166,6 +166,8 @@ export class Bot extends Client {
 
 		if (error instanceof DiscordAPIError) console.error(error);
 
+		console.log('Got error:', error);
+
 		sendError(error, message);
 	}
 

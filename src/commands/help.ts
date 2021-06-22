@@ -1,5 +1,5 @@
 import { Collection, Message, MessageEmbed } from 'discord.js';
-import { MainCommand } from '../classes';
+import { CustomEmbed, MainCommand } from '../classes';
 import { Categories } from '../config';
 import { Bot } from '../index';
 import { getGuildFromMessage } from '../utils/';
@@ -8,7 +8,8 @@ export class Help extends MainCommand {
 	constructor(client: Bot) {
 		super(client, {
 			aliases: ['h'],
-			description: 'Gets help about a command or command category, or a list of all commands.',
+			description:
+				'Gets help about a command or command category, or a list of all commands.',
 			category: Categories.MISC,
 			examples: ['<command>', '<category>'],
 		});
@@ -21,28 +22,17 @@ export class Help extends MainCommand {
 		const getHelpMessage = (
 			commands: Collection<String, MainCommand> = this.client.commands
 		) => {
-			return [
-				commands
-					.sort((a, b) => {
-						let aName = a.names.slice().shift(),
-							bName = b.names.slice().shift();
-						if (!aName || !bName) return 0;
+			return commands
+				.sort((a, b) => {
+					let aName = a.names.slice().shift(),
+						bName = b.names.slice().shift();
+					if (!aName || !bName) return 0;
 
-						if (aName > bName) return 1;
-						else if (aName < bName) return -1;
-						return 0;
-					})
-					.map((command) => command.help(prefix) as string),
-				[
-					`**Prefix in this guild:** \`${prefix}\``,
-					`**Available categories:** ${this.client.categories
-						.sort()
-						.map((category) => `\`${category.toLowerCase()}\``)
-						.join(', ')}`,
-				],
-			]
-				.map((arr) => arr.join('\n'))
-				.join('\n\n');
+					if (aName > bName) return 1;
+					else if (aName < bName) return -1;
+					return 0;
+				})
+				.map((command) => command.help(prefix) as string);
 		};
 
 		let guild = getGuildFromMessage(message);
@@ -69,7 +59,7 @@ export class Help extends MainCommand {
 				(category) => category.toLowerCase() === wanted.toLowerCase()
 			);
 			if (!!category) {
-				return new MessageEmbed()
+				return new CustomEmbed()
 					.setTitle(
 						`List of every \`${category.toLowerCase()}\` command:`
 					)
@@ -79,12 +69,33 @@ export class Help extends MainCommand {
 								(c) => c.category === category
 							)
 						)
+					)
+					.setFixedDescription(
+						[
+							`**Prefix in this guild:** \`${prefix}\``,
+							`**Available categories:** ${this.client.categories
+								.sort()
+								.map(
+									(category) =>
+										`\`${category.toLowerCase()}\``
+								)
+								.join(', ')}`,
+						].join('\n')
 					);
 			}
 		}
 
-		return new MessageEmbed()
+		return new CustomEmbed()
 			.setTitle('List of all commands:')
-			.setDescription(getHelpMessage());
+			.setDescription(getHelpMessage())
+			.setFixedDescription(
+				[
+					`**Prefix in this guild:** \`${prefix}\``,
+					`**Available categories:** ${this.client.categories
+						.sort()
+						.map((category) => `\`${category.toLowerCase()}\``)
+						.join(', ')}`,
+				].join('\n')
+			);
 	}
 }

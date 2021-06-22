@@ -1,4 +1,5 @@
 import { MessageEmbed, NewsChannel, TextChannel } from 'discord.js';
+import { CustomEmbed } from '../classes';
 import { Categories, Colors } from '../config';
 import { OutgoingMessage } from '../types';
 
@@ -15,6 +16,10 @@ export default async function (
 	}
 
 	const sentMessage = await channel.send(outgoingMessage);
+	
+	if (outgoingMessage instanceof CustomEmbed) {
+		await outgoingMessage.listen(sentMessage);
+	}
 
 	return sentMessage;
 }

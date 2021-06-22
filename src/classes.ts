@@ -1,9 +1,14 @@
-import { Collection, Message, MessageEmbed } from 'discord.js';
+import { Collection, Message, MessageEmbed, MessageReaction } from 'discord.js';
 import { Bot } from 'src';
 import { format } from 'util';
 import { Categories } from './config';
 import {
+	BOT_MESSAGE_DELETE_TIMEOUT,
+	MESSAGE_EMBED_MAX_LINES,
+} from './constants';
+import {
 	CommandOptions,
+	CustomEmbedOptions,
 	MainCommandOptions,
 	SubCommandOptions,
 	TrackObject,
@@ -216,10 +221,86 @@ export abstract class SubCommand extends Command {
 	}
 }
 
-export class TrackEmbed extends MessageEmbed {
-	track: TrackObject;
-	constructor(track: TrackObject) {
+export class CustomEmbed extends MessageEmbed {
+	amount: number;
+	currentIndex: number;
+	fixedDescription?: string | null;
+	pages: Array<Array<string>>;
+	scroll: boolean;
+
+	constructor(data?: CustomEmbedOptions) {
 		super();
+
+		this.amount = data?.amount || MESSAGE_EMBED_MAX_LINES;
+		this.currentIndex = 0;
+		this.pages = new Array();
+		this.scroll = !!data?.scroll || true;
+	}
+
+	setFixedDescription(data: string | null) {
+		this.fixedDescription = data;
+		return this.updateDescription();
+	}
+
+	setDescription(data: string | string[]) {
+		const pages: Array<Array<string>> = new Array();
+		const lines = typeof data === 'string' ? data.split('\n') : data;
+		for (const line of lines) {
+			const pageIndex = Math.floor(lines.indexOf(line) / this.amount);
+			if (!pages[pageIndex] || pages[pageIndex].length === this.amount) {
+				pages.push(new Array());
+			}
+			pages[pageIndex].push(line);
+		}
+		this.pages = pages;
+		return this.updateDescription();
+	}
+
+	private updateDescription() {
+		this.description =
+			[
+				this.pages[this.currentIndex].join('\n'),
+				this.fixedDescription,
+			].join('\n\n') || null;
+		return this;
+	}
+
+	async listen(message: Message) {
+		if (this.scroll && this.pages.length > 1) {
+			await message.react('⬅');
+			await message.react('➡');
+
+			const collector = message.createReactionCollector(
+				(reaction: MessageReaction) =>
+					reaction.emoji.name === '⬅' || reaction.emoji.name === '➡',
+				{ time: BOT_MESSAGE_DELETE_TIMEOUT * 1000 }
+			);
+			collector.on('collect', async (r, u) => {
+				const { name } = r.emoji;
+				if (name === '⬅') {
+					this.currentIndex =
+						(this.pages.length + this.currentIndex - 1) %
+						this.pages.length;
+				} else if (name === '➡') {
+					this.currentIndex =
+						(this.pages.length + this.currentIndex + 1) %
+						this.pages.length;
+				}
+				await r.users.remove(u);
+				message.edit(this.updateDescription());
+			});
+			setTimeout(
+				() => collector.stop(),
+				BOT_MESSAGE_DELETE_TIMEOUT * 1000
+			);
+		}
+	}
+}
+
+export class TrackEmbed extends CustomEmbed {
+	track: TrackObject;
+	constructor(track: TrackObject, options?: CustomEmbedOptions) {
+		super(options);
 		this.track = track;
 	}
 
