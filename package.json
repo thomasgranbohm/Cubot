@@ -1,9 +1,13 @@
 {
 	"name": "cubot",
-	"version": "2.0.0",
-	"shortDesc": "CuBot is a discord-bot",
+	"version": "0.2.0",
+	"shortDesc": "Cubot is a discord-bot",
 	"keywords": [],
-	"author": "thomasgranbohm",
+	"author": {
+		"name": "Thomas Granbohm",
+		"email": "thomas.granbohm@gmail.com",
+		"url": "https://granbohm.dev"
+	},
 	"main": "index.js",
 	"license": "MIT",
 	"scripts": {
@@ -24,13 +28,18 @@
 	"dependencies": {
 		"@lavacord/discord.js": "^0.0.7",
 		"axios": "^0.21.1",
+		"bufferutil": "^4.0.3",
 		"class-validator": "^0.12.2",
 		"discord.js": "^12.3.1",
 		"dotenv": "^8.2.0",
+		"erlpack": "discord/erlpack",
 		"pg": "^8.3.3",
 		"redis": "^3.0.2",
 		"sharp": "^0.26.0",
+		"sodium": "^3.0.2",
 		"typeorm": "^0.2.26",
-		"yaml": "^1.10.0"
+		"utf-8-validate": "^5.0.5",
+		"yaml": "^1.10.0",
+		"zlib-sync": "^0.1.7"
 	}
 }

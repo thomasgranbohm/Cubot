@@ -59,7 +59,7 @@ export const handleCommandQueue = async (guildId: string) => {
 		const [key, value] = [queue.firstKey(), queue.first()];
 
 		if (!key || !value) {
-			console.log(key, 'Did not handle.', value);
+			console.error(key, 'Did not handle.', value);
 			if (key) {
 				deleteFromQueue(guildId, key);
 			}

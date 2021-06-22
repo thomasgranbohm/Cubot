@@ -68,7 +68,6 @@ export class Bot extends Client {
 	async connectToLavalink(retryIndex = 0) {
 		try {
 			await this.manager.connect();
-			console.log('Successfully connected to Lavalink.');
 		} catch (err) {
 			if (retryIndex === 2) {
 				console.error(
@@ -166,14 +165,11 @@ export class Bot extends Client {
 
 		if (error instanceof DiscordAPIError) console.error(error);
 
-		console.log('Got error:', error);
-
 		sendError(error, message);
 	}
 
 	async onReady() {
 		await setupDatabase();
-		console.log('Connected to database!');
 
 		await this.connectToLavalink();
 
@@ -184,7 +180,11 @@ export class Bot extends Client {
 
 		this.loadCommands();
 
-		console.log(`Started at ${new Date().toString().substr(0, 24)}!`);
+		console.log(
+			`${new Date().toString().substr(0, 24)} - Started version: ${
+				process.env.npm_package_version
+			}`
+		);
 	}
 
 	async onMessage(message: Message) {
