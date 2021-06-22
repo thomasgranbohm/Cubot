@@ -1,22 +1,24 @@
 import { Message } from 'discord.js';
+import { hasSpecificPermission } from './checkPermissions';
+import getGuildFromMessage from './getGuildFromMessage';
 
 /**
  * @param message The **message** to be sent
  * @param timeout The **timeout** in seconds until message should be deleted
  */
 export default async function (message: Message, timeout: number) {
-	if (
-		!message.guild?.me?.permissions.has('MANAGE_MESSAGES') &&
-		message.author == message.guild?.me?.user
-	) {
-		setTimeout(async () => {
-			if (!message.guild || !message.guild.me) return;
+	const guild = getGuildFromMessage(message);
+	if (!hasSpecificPermission(guild, 'MANAGE_MESSAGES')) {
+		if (message.author == message.guild?.me?.user) {
+			setTimeout(async () => {
+				if (!guild || !guild.me) return;
 
-			const { me } = message.guild;
-			message.reactions.cache.map((reaction) =>
-				reaction.users.remove(me)
-			);
-		}, timeout * 1000);
+				const { me } = guild;
+				message.reactions.cache.map((reaction) =>
+					reaction.users.remove(me)
+				);
+			}, timeout * 1000);
+		}
 		return;
 	}
 	console.warn(

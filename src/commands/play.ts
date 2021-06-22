@@ -68,7 +68,8 @@ export class Play extends MainCommand {
 		let queue = getServerQueue(this.client, guildId);
 		let playlist = query.includes('list');
 		let tracks = await getTracks(
-			query.startsWith('http') ? query : `ytsearch:${query}`
+			query.startsWith('http') ? query : `ytsearch:${query}`,
+			guild
 		);
 
 		if (tracks.length === 0) throw new NoResultsError();

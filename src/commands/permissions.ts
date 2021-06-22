@@ -38,7 +38,7 @@ export class Permissions extends MainCommand {
 				}${type === 'not in use' ? ' *not in use*' : ''}`;
 			});
 
-		return new CustomEmbed()
+		return new CustomEmbed({ guild })
 			.setTitle('Permissions:')
 			.setDescription(missingPermissions);
 	}

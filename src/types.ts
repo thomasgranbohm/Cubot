@@ -2,6 +2,7 @@ import { PlayerEqualizerBand } from '@lavacord/discord.js';
 import {
 	ClientOptions,
 	Collection,
+	Guild,
 	Message,
 	MessageEmbed,
 	NewsChannel,
@@ -54,6 +55,7 @@ export type TrackObject = {
 	uri: string;
 	track: string;
 	requester: User;
+	guild: Guild;
 	thumbnail?: string | null;
 };
 
@@ -83,6 +85,7 @@ export type QueueEntry = {
 export type OutgoingMessage = string | MessageEmbed | CustomEmbed | undefined;
 
 export type CustomEmbedOptions = {
+	guild: Guild;
 	scroll?: boolean;
 	amount?: number;
 };

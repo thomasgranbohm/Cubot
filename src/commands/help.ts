@@ -59,7 +59,7 @@ export class Help extends MainCommand {
 				(category) => category.toLowerCase() === wanted.toLowerCase()
 			);
 			if (!!category) {
-				return new CustomEmbed()
+				return new CustomEmbed({ guild })
 					.setTitle(
 						`List of every \`${category.toLowerCase()}\` command:`
 					)
@@ -85,7 +85,7 @@ export class Help extends MainCommand {
 			}
 		}
 
-		return new CustomEmbed()
+		return new CustomEmbed({ guild })
 			.setTitle('List of all commands:')
 			.setDescription(getHelpMessage())
 			.setFixedDescription(

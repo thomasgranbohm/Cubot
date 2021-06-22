@@ -16,7 +16,9 @@ export class List extends SubCommand {
 		message: Message,
 		args?: string[]
 	): Promise<string | MessageEmbed> {
-		let embed = new CustomEmbed()
+		const guild = getGuildFromMessage(message);
+
+		const embed = new CustomEmbed({ guild })
 			.setTitle('List of all equalizers')
 			.setDescription(
 				Object.entries(eqs).map(
@@ -24,7 +26,6 @@ export class List extends SubCommand {
 				)
 			);
 
-		const guild = getGuildFromMessage(message);
 		if (guild) {
 			const server = this.client.servers.get(guild.id);
 			if (server) {

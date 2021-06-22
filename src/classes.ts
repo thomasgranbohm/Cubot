@@ -1,4 +1,10 @@
-import { Collection, Message, MessageEmbed, MessageReaction } from 'discord.js';
+import {
+	Collection,
+	Guild,
+	Message,
+	MessageEmbed,
+	MessageReaction,
+} from 'discord.js';
 import { Bot } from 'src';
 import { format } from 'util';
 import { Categories } from './config';
@@ -225,14 +231,16 @@ export class CustomEmbed extends MessageEmbed {
 	amount: number;
 	currentIndex: number;
 	fixedDescription?: string | null;
+	guild: Guild;
 	pages: Array<Array<string>>;
 	scroll: boolean;
 
-	constructor(data?: CustomEmbedOptions) {
+	constructor(data: CustomEmbedOptions) {
 		super();
 
 		this.amount = data?.amount || MESSAGE_EMBED_MAX_LINES;
 		this.currentIndex = 0;
+		this.guild = data.guild;
 		this.pages = new Array();
 		this.scroll = !!data?.scroll || true;
 	}
@@ -300,8 +308,11 @@ export class CustomEmbed extends MessageEmbed {
 
 export class TrackEmbed extends CustomEmbed {
 	track: TrackObject;
-	constructor(track: TrackObject, options?: CustomEmbedOptions) {
-		super(options);
+	constructor(
+		track: TrackObject,
+		options?: Omit<CustomEmbedOptions, 'guild'>
+	) {
+		super({ ...options, guild: track.guild });
 		this.track = track;
 	}
 
