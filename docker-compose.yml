@@ -8,7 +8,6 @@ services:
             - "5432:5432"
         volumes:
             - database-data:/var/lib/postgresql/data/
-        restart: always
     cache:
         image: bitnami/redis
         environment:
@@ -17,14 +16,12 @@ services:
             - "6379:6379"
         volumes:
             - cache-data:/bitnami/redis/data
-        restart: always
     lavalink:
         image: fredboat/lavalink:dev
         ports:
             - "2333:2333"
         volumes:
             - ./application.yml:/opt/Lavalink/application.yml
-        restart: always
     bot:
         image: node:14
         command: bash -c "npm run dev || (npm install && npm run dev)"
