@@ -1,5 +1,5 @@
 export { default as checkBotVoice } from './checkBotVoice';
-export { default as checkPermissions } from './checkPermissions';
+export * from './checkPermissions';
 export { default as checkUserVoice } from './checkUserVoice';
 export { default as commandQueue } from './commandQueue';
 export { default as deleteMessage } from './deleteMessage';

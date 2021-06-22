@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import YAML from 'yaml';
+import { PermissionArrayType } from './types';
 config({ path: resolve(process.cwd(), '.env') });
 
 const {
@@ -48,7 +49,87 @@ export const LAVALINK = (
 		  })()
 ) as { URI: string; PORT: number; PASSWORD: string };
 
-export const PERMISSIONS_INTEGER = 305659632;
+export const PERMISSIONS_INTEGER = 2251947968;
+export const PERMISSION_DETAILS: PermissionArrayType = {
+	ADD_REACTIONS: {
+		name: 'Add reactions',
+		description: 'Give the bot the ability to add reactions to messages.',
+	},
+	VIEW_AUDIT_LOG: {
+		name: 'View audit log',
+		description: 'View the logs of actions by admins and such.',
+		type: 'not in use',
+	},
+	PRIORITY_SPEAKER: {
+		name: 'Priority speaker',
+		description: 'Make the bot a priority speaker.',
+		type: 'not in use',
+	},
+	STREAM: {
+		name: 'Stream',
+		description: 'Stream video when that feature is available to bots.',
+		type: 'not in use',
+	},
+	VIEW_CHANNEL: {
+		name: 'View channel',
+		description: 'View the channel that we are in.',
+		type: 'critical',
+	},
+	SEND_MESSAGES: {
+		name: 'Send messages',
+		description: 'Send messages in this guild.',
+		type: 'critical',
+	},
+	SEND_TTS_MESSAGES: {
+		name: 'Send TTS messages',
+		description: 'Send text-to-speech messages.',
+	},
+	MANAGE_MESSAGES: {
+		name: 'Manage messages',
+		description: 'Remove messages and reactions, used for clean up.',
+	},
+	EMBED_LINKS: {
+		name: 'Embed links',
+		description: 'Send messages with links.',
+		type: 'critical',
+	},
+	ATTACH_FILES: {
+		name: 'Attach files',
+		description: 'Send thumbnails for videos.',
+		type: 'critical',
+	},
+	READ_MESSAGE_HISTORY: {
+		name: 'Read message history',
+		description: 'View the message history.',
+		type: 'not in use',
+	},
+	VIEW_GUILD_INSIGHTS: {
+		name: 'View guild insights',
+		description: 'View stats about this guild.',
+		type: 'not in use',
+	},
+	CONNECT: {
+		name: 'Connect',
+		description: 'Connect to a voice channel.',
+		type: 'critical',
+	},
+	SPEAK: {
+		name: 'Speak',
+		description: 'Output audio to a voice channel',
+		type: 'critical',
+	},
+	USE_VAD: {
+		name: 'Use VAD',
+		description: 'Use voice activation detection.',
+		type: 'not in use',
+	},
+	CHANGE_NICKNAME: {
+		name: 'Change nickname',
+		description: 'Change my own nickname.',
+		type: 'not in use',
+	},
+};
+
 export const UPPER_VOLUME_LIMIT = 300;
 export const PLAYLIST_AMOUNT = 15;
 

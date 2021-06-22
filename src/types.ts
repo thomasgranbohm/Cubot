@@ -83,6 +83,14 @@ export type QueueEntry = {
 export type OutgoingMessage = string | MessageEmbed | CustomEmbed | undefined;
 
 export type CustomEmbedOptions = {
-	scroll?: boolean,
+	scroll?: boolean;
 	amount?: number;
+};
+
+export type PermissionArrayType = {
+	[key: string]: {
+		name: string;
+		description: string;
+		type?: 'critical' | 'not in use';
+	};
 };

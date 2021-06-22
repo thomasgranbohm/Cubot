@@ -21,7 +21,7 @@ import {
 	OwnerError,
 } from './errors';
 import { BotOptions, ServerObject } from './types';
-import { checkPermissions, getGuildFromMessage, sendError } from './utils';
+import { getGuildFromMessage, hasEveryPermission, sendError } from './utils';
 import { addToCommandQueue } from './utils/commandQueue';
 
 console.warn = PRODUCTION ? () => {} : console.warn;
@@ -114,7 +114,7 @@ export class Bot extends Client {
 
 		if (!hasPrefix && !mentionsBot) return;
 
-		checkPermissions(guild);
+		hasEveryPermission(guild);
 
 		const { id: guildId } = guild;
 
@@ -227,4 +227,4 @@ export class Bot extends Client {
 	}
 }
 
-new Bot(DISCORD_TOKEN, { owner: OWNER, prefix: GLOBAL_PREFIX });
+export default new Bot(DISCORD_TOKEN, { owner: OWNER, prefix: GLOBAL_PREFIX });

@@ -286,7 +286,8 @@ export class CustomEmbed extends MessageEmbed {
 						(this.pages.length + this.currentIndex + 1) %
 						this.pages.length;
 				}
-				await r.users.remove(u);
+				if (message.guild?.me?.permissions.has('MANAGE_MESSAGES'))
+					await r.users.remove(u);
 				message.edit(this.updateDescription());
 			});
 			setTimeout(

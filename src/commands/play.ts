@@ -6,7 +6,7 @@ import {
 	NoGuildFoundError,
 	NoResultsFoundError as NoResultsError,
 	NotPlayingError,
-	UnexpectedError
+	UnexpectedError,
 } from '../errors';
 import { Bot } from '../index';
 import { TrackObject } from '../types';
@@ -19,7 +19,7 @@ import {
 	initiatePlayer,
 	nowPlayingEmbed,
 	queueLoop,
-	setServerQueue
+	setServerQueue,
 } from '../utils';
 
 let setTrackInfo = async (
@@ -56,9 +56,10 @@ export class Play extends MainCommand {
 	): Promise<string | MessageEmbed> {
 		let voiceId = checkUserVoice(message);
 
-		const guildId = message.guild?.id;
+		const guild = message.guild;
+		if (!guild) throw new NoGuildFoundError();
 
-		if (!guildId) throw new NoGuildFoundError();
+		const guildId = guild.id;
 
 		await initiatePlayer(this.client, guildId);
 
