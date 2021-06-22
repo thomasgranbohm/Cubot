@@ -13,6 +13,7 @@ export const hasSpecificPermission = (
 ) => {
 	if (guild && guild.me) {
 		let { permissions } = guild.me;
+
 		let missingPermissions = new Permissions(PERMISSIONS_INTEGER)
 			.toArray()
 			.filter((perm: PermissionString) =>
@@ -21,7 +22,8 @@ export const hasSpecificPermission = (
 					? perm
 					: undefined
 			);
-		return missingPermissions.includes(permission);
+
+		return !missingPermissions.includes(permission);
 	}
 	return false;
 };
