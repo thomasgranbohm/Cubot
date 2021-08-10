@@ -1,7 +1,7 @@
 {
 	"name": "cubot",
 	"version": "0.2.0",
-	"shortDesc": "Cubot is a discord-bot",
+	"shortDesc": "Cubot is a Discord bot",
 	"keywords": [],
 	"author": {
 		"name": "Thomas Granbohm",
@@ -12,9 +12,7 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "tsc",
-		"build:start": "tsc ; node dist/index.js",
 		"start": "NODE_ENV=production node dist/index.js",
-		"watch": "tsc -w",
 		"dev": "ts-node-dev src/"
 	},
 	"devDependencies": {
