@@ -1,97 +1,27 @@
-import { MessageEmbed, PermissionString } from 'discord.js';
-import { MainCommand } from './classes';
-import { PERMISSION_DETAILS, UPPER_VOLUME_LIMIT } from './constants';
+export const BotNotInVoiceChannelError = new Error(
+	'I am not in a voice channel.'
+);
 
-export class CustomError extends Error {
-	name: string;
-	message: string;
-	embed?: MessageEmbed;
-	developerMessage?: string;
-	shouldBeDeleted?: boolean = true;
-}
+export const BotInVoiceChannelError = new Error(
+	'I am already in a voice channel.'
+);
 
-export class ArgumentError extends CustomError {
-	message: string;
+export const UserNotInVoiceChannelError = new Error(
+	'You are not in a voice channel.'
+);
 
-	constructor(command: MainCommand, prefix: string) {
-		super();
-		this.message =
-			"You didn't provide the needed arguments.\n" +
-			`Here is how you use it: \`${command.usage(prefix)}\``;
-	}
-}
+export const UserInVoiceChannelError = new Error(
+	'You are already in a voice channel.'
+);
 
-export class OwnerError extends CustomError {
-	message: string = 'Only the owner of this bot can use this command.';
-}
+export const StageSupportError = new Error(
+	'I do not support stage channels yet.'
+);
 
-export class GuildOnlyError extends CustomError {
-	message: string = 'This command can only be used in a guild.';
-}
+export const NoArgumentsProvidedError = new Error(
+	'You did not include enough arguments.'
+);
 
-export class UserNotInChannelError extends CustomError {
-	message: string = 'You are not in a voice channel.';
-}
+export const NotPlayingError = new Error('I am not playing anything.');
 
-export class NoResultsFoundError extends CustomError {
-	message: string = 'No results found. Please try again!';
-}
-
-export class NoNodeFoundError extends CustomError {
-	message: string = 'No audio node found. Please contact the owner!';
-}
-
-export class NotPlayingError extends CustomError {
-	message: string = "I'm not playing anything.";
-}
-
-export class NoGuildFoundError extends CustomError {
-	message: string = 'No guild found.';
-}
-export class BotNotInVoiceError extends CustomError {
-	message: string = "I'm not in a voice channel.";
-}
-export class BotInAnotherVoiceError extends CustomError {
-	message: string = "I'm already in another voice channel.";
-}
-
-export class VolumeNotBetweenThresholdError extends CustomError {
-	message: string = `Volume needs to be between 0 and ${UPPER_VOLUME_LIMIT}.`;
-}
-
-export class MissingPermissionsError extends CustomError {
-	message: string = 'Please give me these missing permissions';
-	shouldBeDeleted = false;
-
-	constructor(missingPermissions: Array<PermissionString>) {
-		super();
-		this.embed = new MessageEmbed().setDescription(
-			missingPermissions
-				.sort((a: string, b: string) => a.localeCompare(b))
-				.map((perm) => {
-					const { name, description } = PERMISSION_DETAILS[perm];
-					return `**${name}** - ${description}`;
-				})
-		);
-	}
-}
-
-export class NoEqualizerFoundError extends CustomError {
-	message: string = "That equalizer doesn't exist.";
-}
-
-export class UnexpectedError extends CustomError {
-	name: string = 'Oops, an actual error...';
-	message: string =
-		'Sorry about that. Please try again!\n' +
-		'Reoccurring issue? [Please report it!](https://github.com/thomasgranbohm/CuBot/issues)';
-	developerMessage: string;
-	constructor(developerMessage: string) {
-		super();
-		this.developerMessage = developerMessage;
-	}
-}
-
-export class NoSubCommandFoundError extends CustomError {
-	message: string = "That subcommand doesn't exist.";
-}
+export const VolumeNotInRangeError = new Error('That volume is not in range.');

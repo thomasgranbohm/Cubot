@@ -23,7 +23,7 @@ services:
         volumes:
             - ./application.yml:/opt/Lavalink/application.yml
     bot:
-        image: node:14
+        image: node:16
         command: bash -c "npm run dev || (npm install && npm run dev)"
         depends_on:
             - database
