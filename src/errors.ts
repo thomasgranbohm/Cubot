@@ -25,3 +25,7 @@ export const NoArgumentsProvidedError = new Error(
 export const NotPlayingError = new Error('I am not playing anything.');
 
 export const VolumeNotInRangeError = new Error('That volume is not in range.');
+
+export const NotYoutubeLinkError = new Error(
+	'That link is not a YouTube link.'
+);

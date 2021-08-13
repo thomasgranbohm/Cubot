@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { subscriptions } from '../classes/Bot';
 import Command from '../classes/Command';
 import { Categories } from '../constants';
-import { BotNotInVoiceChannelError } from '../errors';
+import { BotNotInVoiceChannelError, NotPlayingError } from '../errors';
 
 class Skip extends Command {
 	constructor() {
@@ -18,6 +18,8 @@ class Skip extends Command {
 		const subscription = subscriptions.get(message.guildId);
 		if (!subscription) throw BotNotInVoiceChannelError;
 
+		if (!subscription.current) throw NotPlayingError;
+		
 		subscription.player.stop();
 	}
 }

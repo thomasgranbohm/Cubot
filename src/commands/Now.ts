@@ -20,13 +20,20 @@ class Now extends Command {
 		const subscription = subscriptions.get(message.guildId);
 		if (!subscription) throw BotNotInVoiceChannelError;
 
-		const { getInfo } = subscription.current;
-
 		return {
 			embeds: [
 				new Embed(this)
 					.setTitle('Now playing 🎶')
-					.setDescription(getInfo()),
+					.setDescription(subscription.current.getInfo())
+					.setThumbnail(subscription.current.thumbnail)
+					.setFooter(
+						`Track requested by ${subscription.current.requester.username}`,
+						subscription.current.requester.avatarURL({
+							dynamic: true,
+							format: 'webp',
+							size: 64,
+						})
+					),
 			],
 		};
 	}

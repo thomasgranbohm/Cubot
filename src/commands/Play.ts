@@ -4,12 +4,11 @@ import Command from '../classes/Command';
 import Embed from '../classes/Embed';
 import Subscription from '../classes/Subscription';
 import Track from '../classes/Track';
-import { Categories } from '../constants';
+import { Categories, YOUTUBE_REGEX } from '../constants';
+import { NotYoutubeLinkError } from '../errors';
 import Messaging from '../namespaces/Messaging';
 import Voice from '../namespaces/Voice';
 import { MessageReturnType } from '../types';
-
-let i = 0;
 
 class Play extends Command {
 	constructor() {
@@ -22,7 +21,10 @@ class Play extends Command {
 		});
 	}
 
-	async run(message: Message): Promise<MessageReturnType | null> {
+	async run(
+		message: Message,
+		args: string[]
+	): Promise<MessageReturnType | null> {
 		let subscription = subscriptions.get(message.guildId);
 		if (!subscription) {
 			if (message.member.voice.channel) {
@@ -34,18 +36,29 @@ class Play extends Command {
 			}
 		}
 
-		const track = new Track({
-			creator: 'Nintendogs',
-			title: `banger_${++i}.flac`,
-			url: 'https://granbohm.dev/misc/banger_3.flac',
-			onStart: (t: Track) =>
-				Messaging.send(message, {
+		const url = args.join(' ');
+		if (!YOUTUBE_REGEX.test(url)) throw NotYoutubeLinkError;
+
+		const track = await Track.create(url, {
+			requester: message.author,
+			onStart: (t: Track) => {
+				return Messaging.send(message, {
 					embeds: [
 						new Embed(this)
 							.setTitle('Now playing 🎶')
-							.setDescription(t.getInfo()),
+							.setDescription(t.getInfo())
+							.setThumbnail(t.thumbnail)
+							.setFooter(
+								`Track requested by ${t.requester.username}`,
+								t.requester.avatarURL({
+									dynamic: true,
+									format: 'webp',
+									size: 64,
+								})
+							),
 					],
-				}),
+				});
+			},
 		});
 
 		const queue = subscription.addToQueue(track);
@@ -54,7 +67,16 @@ class Play extends Command {
 				embeds: [
 					new Embed(this)
 						.setTitle('Added to queue 📃')
-						.setDescription(track.getInfo()),
+						.setDescription(track.getInfo())
+						.setThumbnail(track.thumbnail)
+						.setFooter(
+							`Track requested by ${track.requester.username}`,
+							track.requester.avatarURL({
+								dynamic: true,
+								format: 'webp',
+								size: 64,
+							})
+						),
 				],
 			};
 	}

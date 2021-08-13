@@ -23,12 +23,14 @@
 	"dependencies": {
 		"@discordjs/opus": "^0.5.3",
 		"@discordjs/voice": "^0.6.0",
+		"@lavacord/discord.js": "^0.0.7",
 		"bufferutil": "^4.0.3",
 		"discord.js": "^13.0.0",
 		"dotenv": "^8.2.0",
 		"libsodium-wrappers": "^0.7.9",
 		"sodium": "^3.0.2",
 		"utf-8-validate": "^5.0.5",
+		"ytdl-core": "^4.9.1",
 		"zlib-sync": "^0.1.7"
 	}
 }

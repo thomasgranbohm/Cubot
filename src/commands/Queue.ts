@@ -19,7 +19,9 @@ class Queue extends Command {
 		const subscription = subscriptions.get(message.guildId);
 		if (!subscription) throw BotNotInVoiceChannelError;
 
-		if (subscription.queue.length === 0) throw NotPlayingError;
+		const { queue, current } = subscription;
+
+		if (!current) throw NotPlayingError;
 
 		return {
 			embeds: [
@@ -27,14 +29,27 @@ class Queue extends Command {
 					.setTitle('Queue')
 					.setDescription(
 						[
-							subscription.current.getInfo(),
-							subscription.queue
-								.map(
-									({ getInfo }, i) =>
-										`\`${i + 1}.\` ${getInfo()}`
-								)
-								.join('\n'),
+							queue.length > 0
+								? queue
+										.map(
+											(track, i) =>
+												`\`${
+													i + 1
+												}.\` ${track.getInfo()}`
+										)
+										.join('\n')
+								: 'The queue is empty.',
+							`**Currently playing**\n${current.getInfo()}`,
 						].join('\n\n')
+					)
+					.setThumbnail(current.thumbnail)
+					.setFooter(
+						`Track requested by ${current.requester.username}`,
+						current.requester.avatarURL({
+							dynamic: true,
+							format: 'webp',
+							size: 64,
+						})
 					),
 			],
 		};

@@ -14,7 +14,14 @@ import {
 namespace Voice {
 	export const create = async (channel: VoiceChannel | StageChannel) => {
 		const existing_connection = get(channel);
-		if (!!existing_connection) throw BotInVoiceChannelError;
+		if (
+			!!existing_connection &&
+			existing_connection.state.status !==
+				VoiceConnectionStatus.Destroyed &&
+			existing_connection.state.status !==
+				VoiceConnectionStatus.Disconnected
+		)
+			throw BotInVoiceChannelError;
 
 		const connection = joinVoiceChannel({
 			channelId: channel.id,

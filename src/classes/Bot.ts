@@ -32,7 +32,6 @@ type BotOptions = {
 export const subscriptions = new Collection<Snowflake, Subscription>();
 export const commands = new Collection<string, Command>();
 export const prefix = '1';
-
 class Bot extends Client {
 	constructor({ token, ...options }: BotOptions) {
 		super(options);
@@ -77,16 +76,15 @@ class Bot extends Client {
 
 	async onMessageCreate(message: Message) {
 		const { author, content, system } = message;
-
+		
 		if (system || author?.bot) return;
 		if (content.startsWith(prefix) === false) return;
 
-		const [target, ...rest] = content
-			.slice(prefix.length)
-			.split(' ')
-			.map((a) => a.toLowerCase());
+		const [target, ...rest] = content.slice(prefix.length).split(' ');
 
-		const command = commands.find((c) => c.names.includes(target));
+		const command = commands.find((c) =>
+			c.names.includes(target.toLowerCase())
+		);
 		if (!command) {
 			debug('Could not find command', `\x1b[47m\x1b[30m${target}\x1b[0m`);
 			Messaging.remove(message);
@@ -102,6 +100,7 @@ class Bot extends Client {
 
 			Messaging.send(message, payload);
 		} catch (err) {
+			error(err);
 			Messaging.send(message, {
 				embeds: [
 					new MessageEmbed()
