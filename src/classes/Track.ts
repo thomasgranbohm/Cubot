@@ -1,6 +1,8 @@
 import { AudioResource, createAudioResource } from '@discordjs/voice';
 import { User } from 'discord.js';
 import ytdl, { getBasicInfo } from 'ytdl-core';
+import { YOUTUBE_REGEX } from '../constants';
+import { NotYoutubeLinkError } from '../errors';
 
 export interface TrackData {
 	creator: string;
@@ -41,6 +43,8 @@ class Track implements TrackData {
 		url: string,
 		params: Pick<TrackData, 'onStart' | 'requester'>
 	) {
+		if (!YOUTUBE_REGEX.test(url)) throw NotYoutubeLinkError;
+
 		const info = await getBasicInfo(url);
 
 		return new Track({

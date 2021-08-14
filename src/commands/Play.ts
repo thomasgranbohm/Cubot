@@ -5,7 +5,7 @@ import Embed from '../classes/Embed';
 import Subscription from '../classes/Subscription';
 import Track from '../classes/Track';
 import { Categories, YOUTUBE_REGEX } from '../constants';
-import { NotYoutubeLinkError } from '../errors';
+import { NotYoutubeLinkError, UserNotInVoiceChannelError } from '../errors';
 import Messaging from '../namespaces/Messaging';
 import Voice from '../namespaces/Voice';
 import { MessageReturnType } from '../types';
@@ -26,6 +26,7 @@ class Play extends Command {
 		args: string[]
 	): Promise<MessageReturnType | null> {
 		let subscription = subscriptions.get(message.guildId);
+
 		if (!subscription) {
 			if (message.member.voice.channel) {
 				const { channel } = message.member.voice;
@@ -33,7 +34,7 @@ class Play extends Command {
 
 				subscription = new Subscription(connection);
 				subscriptions.set(message.guildId, subscription);
-			}
+			} else throw UserNotInVoiceChannelError;
 		}
 
 		const url = args.join(' ');
@@ -41,21 +42,20 @@ class Play extends Command {
 
 		const track = await Track.create(url, {
 			requester: message.author,
-			onStart: (t: Track) => {
+			onStart: () => {
 				return Messaging.send(message, {
 					embeds: [
-						new Embed(this)
-							.setTitle('Now playing 🎶')
-							.setDescription(t.getInfo())
-							.setThumbnail(t.thumbnail)
-							.setFooter(
-								`Track requested by ${t.requester.username}`,
-								t.requester.avatarURL({
-									dynamic: true,
-									format: 'webp',
-									size: 64,
-								})
-							),
+						new Embed(this).setTitle('Now playing 🎶'),
+						// .setDescription(t.getInfo())
+						// .setThumbnail(t.thumbnail)
+						// .setFooter(
+						// 	`Track requested by ${t.requester.username}`,
+						// 	t.requester.avatarURL({
+						// 		dynamic: true,
+						// 		format: 'webp',
+						// 		size: 64,
+						// 	})
+						// ),
 					],
 				});
 			},

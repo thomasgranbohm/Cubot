@@ -1,17 +1,16 @@
 import {
 	AudioPlayer,
 	AudioPlayerStatus,
-	AudioResource,
 	createAudioPlayer,
 	VoiceConnection,
 	VoiceConnectionDisconnectReason,
-	VoiceConnectionStatus
+	VoiceConnectionStatus,
 } from '@discordjs/voice';
 import { promisify } from 'util';
 import { VolumeNotInRangeError } from '../errors';
-import { error } from '../logger';
+import { debug, error } from '../logger';
 import { subscriptions } from './Bot';
-import Track, { TrackData } from './Track';
+import Track from './Track';
 
 export const LoopValues = ['all', 'first', undefined];
 
@@ -20,6 +19,7 @@ class Subscription {
 	current: Track;
 	loop: typeof LoopValues[number];
 	player: AudioPlayer;
+	previous: Track;
 	processing: boolean;
 	queue: Track[];
 	volume: number;
@@ -28,19 +28,21 @@ class Subscription {
 		this.connection = connection;
 		this.loop = undefined;
 		this.player = createAudioPlayer();
+		this.previous = undefined;
 		this.processing = false;
 		this.queue = [];
 		this.volume = 1;
 
 		this.connection.on('stateChange', async (_, new_state) => {
+			debug('New connection state:', new_state.status);
 			if (new_state.status === VoiceConnectionStatus.Disconnected) {
 				if (
 					new_state.reason ===
 						VoiceConnectionDisconnectReason.WebSocketClose &&
 					new_state.closeCode === 4014
 				) {
-					// This event also occurs when the bot is moved to another voice channel
-					// TODO: Right now, it just disconnects.
+					// TODO: This event also occurs when the bot is moved to another voice channel
+					// Right now, it just disconnects.
 					// try {
 					// 	await entersState(
 					// 		this.connection,
@@ -65,16 +67,16 @@ class Subscription {
 
 		this.player.on('error', (err) => error(err));
 
-		this.player.on('stateChange', (oldState, new_state) => {
+		this.player.on('stateChange', (old_state, new_state) => {
+			debug('New player state:', new_state.status);
 			if (
-				oldState.status !== AudioPlayerStatus.Idle &&
+				old_state.status !== AudioPlayerStatus.Idle &&
 				new_state.status === AudioPlayerStatus.Idle
 			) {
+				// Track ended
+				this.previous = this.current;
+				this.current = null;
 				this.processQueue();
-			} else if (new_state.status === AudioPlayerStatus.Playing) {
-				(
-					new_state.resource as AudioResource<TrackData>
-				).metadata.onStart(this.current);
 			}
 		});
 
@@ -94,9 +96,8 @@ class Subscription {
 		return this.queue;
 	}
 
-	nextLoop(): typeof LoopValues[number] {
-		this.loop =
-			LoopValues[(LoopValues.indexOf(this.loop) + 1) % LoopValues.length];
+	setLoop(new_loop: typeof LoopValues[number]) {
+		this.loop = new_loop;
 		this.processQueue();
 		return this.loop;
 	}
@@ -116,11 +117,12 @@ class Subscription {
 			return;
 		this.processing = true;
 
-		if (this.loop === 'all') {
-			this.queue.push(this.current);
-		}
-
-		if (this.loop !== 'first') {
+		if (this.loop === 'first') {
+			this.current = this.previous;
+		} else {
+			if (this.loop === 'all') {
+				this.queue.push(this.previous);
+			}
 			this.current = this.queue.shift();
 		}
 
@@ -130,8 +132,9 @@ class Subscription {
 			);
 			this.player.play(resource);
 			this.processing = false;
-		} catch (error) {
+		} catch (err) {
 			this.processing = false;
+			error(err);
 			return this.processQueue();
 		}
 	}

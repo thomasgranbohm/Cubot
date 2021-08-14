@@ -19,7 +19,8 @@ class Loop extends Command {
 		const subscription = subscriptions.get(message.guildId);
 		if (!subscription) throw BotNotInVoiceChannelError;
 
-		const loop = subscription.nextLoop();
+		const loop = subscription.setLoop('all');
+
 		return {
 			embeds: [
 				new Embed(this).setTitle(

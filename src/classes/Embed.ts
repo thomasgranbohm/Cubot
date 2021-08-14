@@ -11,6 +11,10 @@ class Embed extends MessageEmbed {
 		if (command) this.setColor(command.category as ColorResolvable);
 		else this.setColor(Categories.MISC as ColorResolvable);
 	}
+
+	addNowPlayingRow(paused?: boolean) {
+		
+	}
 }
 
 export default Embed;

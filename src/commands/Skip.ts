@@ -19,7 +19,7 @@ class Skip extends Command {
 		if (!subscription) throw BotNotInVoiceChannelError;
 
 		if (!subscription.current) throw NotPlayingError;
-		
+
 		subscription.player.stop();
 	}
 }

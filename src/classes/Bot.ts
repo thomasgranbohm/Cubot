@@ -8,6 +8,7 @@ import {
 	MessageEmbed,
 	Snowflake,
 } from 'discord.js';
+import Deploy from '../commands/Deploy';
 import Help from '../commands/Help';
 import Join from '../commands/Join';
 import Loop from '../commands/Loop';
@@ -20,9 +21,19 @@ import Skip from '../commands/Skip';
 import Volume from '../commands/Volume';
 import { Categories } from '../constants';
 import { NoArgumentsProvidedError } from '../errors';
+import JoinInteraction from '../interactions/Join';
+import LoopInteraction from '../interactions/Loop';
+import NowInteraction from '../interactions/Now';
+import PauseInteraction from '../interactions/Pause';
+import PlayInteraction from '../interactions/Play';
+import QueueInteraction from '../interactions/Queue';
+import SkipInteraction from '../interactions/Skip';
+import VolumeInteraction from '../interactions/Volume';
 import { debug, error, log } from '../logger';
 import Messaging from '../namespaces/Messaging';
 import Command from './Command';
+import Embed from './Embed';
+import CustomInteraction from './Interaction';
 import Subscription from './Subscription';
 
 type BotOptions = {
@@ -31,6 +42,7 @@ type BotOptions = {
 
 export const subscriptions = new Collection<Snowflake, Subscription>();
 export const commands = new Collection<string, Command>();
+export const interactions = new Collection<string, CustomInteraction>();
 export const prefix = '1';
 class Bot extends Client {
 	constructor({ token, ...options }: BotOptions) {
@@ -45,20 +57,34 @@ class Bot extends Client {
 		this.on('ready', () => log('Ready!'));
 
 		for (const Class of [
-			Skip,
-			Join,
-			Play,
-			Ping,
-			Now,
-			Queue,
-			Pause,
+			Deploy,
 			Help,
+			Join,
 			Loop,
+			Now,
+			Pause,
+			Ping,
+			Play,
+			Queue,
+			Skip,
 			Volume,
 		]) {
 			const C = new Class();
-
 			commands.set(C.names.slice()[0], C);
+		}
+
+		for (const Class of [
+			JoinInteraction,
+			LoopInteraction,
+			NowInteraction,
+			PauseInteraction,
+			PlayInteraction,
+			QueueInteraction,
+			SkipInteraction,
+			VolumeInteraction,
+		]) {
+			const C = new Class();
+			interactions.set(C.name, C);
 		}
 
 		this.captureError(this.login)(token);
@@ -76,7 +102,7 @@ class Bot extends Client {
 
 	async onMessageCreate(message: Message) {
 		const { author, content, system } = message;
-		
+
 		if (system || author?.bot) return;
 		if (content.startsWith(prefix) === false) return;
 
@@ -114,16 +140,31 @@ class Bot extends Client {
 	}
 
 	async onInteractionCreate(interaction: Interaction) {
-		// if (!interaction.channel) return;
-		// if (interaction instanceof MessageComponentInteraction) {
-		// 	const command = commands.find((c) =>
-		// 		c.names.includes(interaction.customId)
-		// 	);
-		// 	if (!command) return;
-		// 	const payload = await command.run(interaction.message as Message);
-		// 	if (interaction.message instanceof Message && payload)
-		// 		interaction.reply(payload);
-		// }
+		if (!interaction.channel) return null;
+		if (!interaction.isCommand() && !interaction.isButton()) return null;
+
+		const query = interaction.isCommand()
+			? interaction.commandName
+			: interaction.isMessageComponent()
+			? interaction.customId
+			: '';
+
+		const matching_interaction = interactions.get(query);
+		if (!matching_interaction) return;
+
+		try {
+			await matching_interaction.run(interaction);
+		} catch (err) {
+			error(err);
+			interaction.reply({
+				embeds: [
+					new Embed()
+						.setColor(Categories.ERROR as ColorResolvable)
+						.setTitle(err.message),
+				],
+				ephemeral: true,
+			});
+		}
 	}
 }
 
