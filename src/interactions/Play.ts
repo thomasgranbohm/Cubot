@@ -6,7 +6,7 @@ import Subscription from '../classes/Subscription';
 import Track from '../classes/Track';
 import { UserNotInVoiceChannelError } from '../errors';
 import Voice from '../namespaces/Voice';
-import { NowPlayingRow } from '../NowPlayingRow';
+import { NowPlayingRow } from '../interactions/Now';
 
 class PlayInteraction extends CustomInteraction {
 	constructor() {

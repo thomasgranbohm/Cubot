@@ -15,6 +15,7 @@ class VolumeInteraction extends CustomInteraction {
 					name: 'amount',
 					type: 'NUMBER',
 					description: 'The new volume level.',
+					required: true,
 				},
 			],
 		});
