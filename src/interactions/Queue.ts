@@ -2,6 +2,7 @@ import { ButtonInteraction, CommandInteraction } from 'discord.js';
 import { subscriptions } from '../classes/Bot';
 import Embed from '../classes/Embed';
 import CustomInteraction from '../classes/Interaction';
+import { Categories } from '../constants';
 import { BotNotInVoiceChannelError, NotPlayingError } from '../errors';
 import { MessageReturnType } from '../types';
 import { NowPlayingRow } from './Now';
@@ -11,6 +12,7 @@ class QueueInteraction extends CustomInteraction {
 		super({
 			name: 'queue',
 			description: 'Lists the tracks queued on this server.',
+			category: Categories.VOICE,
 		});
 	}
 	run(
@@ -25,7 +27,7 @@ class QueueInteraction extends CustomInteraction {
 
 		interaction.reply({
 			embeds: [
-				new Embed()
+				new Embed(this)
 					.setTitle('Queue')
 					.setDescription(
 						[

@@ -2,6 +2,7 @@ import { GuildMember, Interaction } from 'discord.js';
 import { subscriptions } from '../classes/Bot';
 import CustomInteraction from '../classes/Interaction';
 import Subscription from '../classes/Subscription';
+import { Categories } from '../constants';
 import Voice from '../namespaces/Voice';
 
 class JoinInteraction extends CustomInteraction {
@@ -9,6 +10,7 @@ class JoinInteraction extends CustomInteraction {
 		super({
 			name: 'join',
 			description: 'Joins your voice channel.',
+			category: Categories.VOICE
 		});
 	}
 

@@ -4,24 +4,32 @@ import {
 	ButtonInteraction,
 	CommandInteraction,
 } from 'discord.js';
+import { Categories } from '../constants';
 import { MessageReturnType } from '../types';
 
-abstract class CustomInteraction implements ApplicationCommandData {
+interface CustomInteractionOptions extends ApplicationCommandData {
+	category: Categories;
+}
+
+abstract class CustomInteraction implements CustomInteractionOptions {
 	name: string;
 	description: string;
+	category: Categories;
 	options?: ApplicationCommandOptionData[];
 	defaultPermission?: boolean;
 
 	constructor({
 		name,
 		description,
+		category,
 		defaultPermission,
 		options,
-	}: ApplicationCommandData) {
+	}: CustomInteractionOptions) {
 		this.name = name;
 		this.description = description;
-		this.defaultPermission = defaultPermission;
+		this.category = category;
 		this.options = options;
+		this.defaultPermission = defaultPermission;
 	}
 
 	abstract run(

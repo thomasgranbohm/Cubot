@@ -8,27 +8,10 @@ import {
 	MessageEmbed,
 	Snowflake,
 } from 'discord.js';
-import Deploy from '../commands/Deploy';
-import Help from '../commands/Help';
-import Join from '../commands/Join';
-import Loop from '../commands/Loop';
-import Now from '../commands/Now';
-import Pause from '../commands/Pause';
-import Ping from '../commands/Ping';
-import Play from '../commands/Play';
-import Queue from '../commands/Queue';
-import Skip from '../commands/Skip';
-import Volume from '../commands/Volume';
+import * as commandClasses from '../commands/';
 import { Categories } from '../constants';
 import { NoArgumentsProvidedError } from '../errors';
-import JoinInteraction from '../interactions/Join';
-import LoopInteraction from '../interactions/Loop';
-import NowInteraction from '../interactions/Now';
-import PauseInteraction from '../interactions/Pause';
-import PlayInteraction from '../interactions/Play';
-import QueueInteraction from '../interactions/Queue';
-import SkipInteraction from '../interactions/Skip';
-import VolumeInteraction from '../interactions/Volume';
+import * as interactionClasses from '../interactions/';
 import { debug, error, log } from '../logger';
 import Messaging from '../namespaces/Messaging';
 import Command from './Command';
@@ -40,9 +23,10 @@ type BotOptions = {
 	token: Snowflake;
 } & ClientOptions;
 
-export const subscriptions = new Collection<Snowflake, Subscription>();
 export const commands = new Collection<string, Command>();
 export const interactions = new Collection<string, CustomInteraction>();
+export const subscriptions = new Collection<Snowflake, Subscription>();
+
 export const prefix = '1';
 class Bot extends Client {
 	constructor({ token, ...options }: BotOptions) {
@@ -56,33 +40,12 @@ class Bot extends Client {
 
 		this.on('ready', () => log('Ready!'));
 
-		for (const Class of [
-			Deploy,
-			Help,
-			Join,
-			Loop,
-			Now,
-			Pause,
-			Ping,
-			Play,
-			Queue,
-			Skip,
-			Volume,
-		]) {
+		for (const Class of Object.values(commandClasses)) {
 			const C = new Class();
-			commands.set(C.names.slice()[0], C);
+			commands.set(C.name, C);
 		}
 
-		for (const Class of [
-			JoinInteraction,
-			LoopInteraction,
-			NowInteraction,
-			PauseInteraction,
-			PlayInteraction,
-			QueueInteraction,
-			SkipInteraction,
-			VolumeInteraction,
-		]) {
+		for (const Class of Object.values(interactionClasses)) {
 			const C = new Class();
 			interactions.set(C.name, C);
 		}

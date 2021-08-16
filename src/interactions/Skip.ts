@@ -2,6 +2,7 @@ import { ButtonInteraction, CommandInteraction } from 'discord.js';
 import { subscriptions } from '../classes/Bot';
 import Embed from '../classes/Embed';
 import CustomInteraction from '../classes/Interaction';
+import { Categories } from '../constants';
 import { BotNotInVoiceChannelError, NotPlayingError } from '../errors';
 import { MessageReturnType } from '../types';
 
@@ -10,6 +11,7 @@ class SkipInteraction extends CustomInteraction {
 		super({
 			name: 'skip',
 			description: 'Skips the playing track.',
+			category: Categories.VOICE,
 		});
 	}
 
@@ -27,7 +29,7 @@ class SkipInteraction extends CustomInteraction {
 
 		interaction.reply({
 			embeds: [
-				new Embed()
+				new Embed(this)
 					.setTitle('Skipped ⏩')
 					.setDescription(subscription.current.getInfo())
 					.setThumbnail(subscription.current.thumbnail)

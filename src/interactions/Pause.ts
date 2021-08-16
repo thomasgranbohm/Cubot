@@ -2,6 +2,7 @@ import { AudioPlayerStatus } from '@discordjs/voice';
 import { ButtonInteraction, CommandInteraction } from 'discord.js';
 import { subscriptions } from '../classes/Bot';
 import CustomInteraction from '../classes/Interaction';
+import { Categories } from '../constants';
 import { BotNotInVoiceChannelError, NotPlayingError } from '../errors';
 import { MessageReturnType } from '../types';
 import { NowPlayingRow } from './Now';
@@ -11,6 +12,7 @@ class PauseInteraction extends CustomInteraction {
 		super({
 			name: 'pause',
 			description: 'Pauses the playing track.',
+			category: Categories.VOICE,
 		});
 	}
 

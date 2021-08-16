@@ -2,6 +2,7 @@ import { ButtonInteraction, CommandInteraction } from 'discord.js';
 import { subscriptions } from '../classes/Bot';
 import Embed from '../classes/Embed';
 import CustomInteraction from '../classes/Interaction';
+import { Categories } from '../constants';
 import { BotNotInVoiceChannelError } from '../errors';
 import { MessageReturnType } from '../types';
 
@@ -10,6 +11,7 @@ class LoopInteraction extends CustomInteraction {
 		super({
 			name: 'loop',
 			description: 'Make the bot loop the current track.',
+			category: Categories.VOICE,
 			options: [
 				{
 					name: 'all',
@@ -44,7 +46,7 @@ class LoopInteraction extends CustomInteraction {
 		const loop = subscription.setLoop(next_loop);
 
 		interaction.reply({
-			embeds: [new Embed().setTitle(`Looping ${loop}.`)],
+			embeds: [new Embed(this).setTitle(`Looping ${loop}.`)],
 		});
 	}
 }

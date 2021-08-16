@@ -8,6 +8,7 @@ import {
 import { subscriptions } from '../classes/Bot';
 import Embed from '../classes/Embed';
 import CustomInteraction from '../classes/Interaction';
+import { Categories } from '../constants';
 import { BotNotInVoiceChannelError } from '../errors';
 import { MessageReturnType } from '../types';
 
@@ -30,6 +31,7 @@ class NowInteraction extends CustomInteraction {
 		super({
 			name: 'np',
 			description: 'Check what track is playing.',
+			category: Categories.VOICE,
 		});
 	}
 	run(
@@ -40,7 +42,7 @@ class NowInteraction extends CustomInteraction {
 
 		interaction.reply({
 			embeds: [
-				new Embed()
+				new Embed(this)
 					.setTitle('Now playing 🎶')
 					.setDescription(subscription.current.getInfo())
 					.setThumbnail(subscription.current.thumbnail)

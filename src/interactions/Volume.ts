@@ -2,6 +2,7 @@ import { ButtonInteraction, CommandInteraction } from 'discord.js';
 import { subscriptions } from '../classes/Bot';
 import Embed from '../classes/Embed';
 import CustomInteraction from '../classes/Interaction';
+import { Categories } from '../constants';
 import { BotNotInVoiceChannelError } from '../errors';
 import { MessageReturnType } from '../types';
 
@@ -10,6 +11,7 @@ class VolumeInteraction extends CustomInteraction {
 		super({
 			name: 'volume',
 			description: 'Change the volume of the bot.',
+			category: Categories.VOICE,
 			options: [
 				{
 					name: 'amount',
@@ -32,7 +34,7 @@ class VolumeInteraction extends CustomInteraction {
 			subscription.setVolume(Number(new_volume));
 
 			interaction.reply({
-				embeds: [new Embed().setTitle(`New volume: ${new_volume}`)],
+				embeds: [new Embed(this).setTitle(`New volume: ${new_volume}`)],
 			});
 		}
 	}

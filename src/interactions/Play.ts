@@ -7,12 +7,14 @@ import Track from '../classes/Track';
 import { UserNotInVoiceChannelError } from '../errors';
 import Voice from '../namespaces/Voice';
 import { NowPlayingRow } from '../interactions/Now';
+import { Categories } from '../constants';
 
 class PlayInteraction extends CustomInteraction {
 	constructor() {
 		super({
 			name: 'play',
 			description: 'Plays the given query or link in your voice channel.',
+			category: Categories.VOICE,
 			options: [
 				{
 					name: 'song',
@@ -45,7 +47,7 @@ class PlayInteraction extends CustomInteraction {
 			onStart: (t: Track) => {
 				const toReply = {
 					embeds: [
-						new Embed()
+						new Embed(this)
 							.setTitle('Now playing 🎶')
 							.setDescription(t.getInfo())
 							.setThumbnail(t.thumbnail)
@@ -70,7 +72,7 @@ class PlayInteraction extends CustomInteraction {
 		if (queue.length > 0)
 			interaction.reply({
 				embeds: [
-					new Embed()
+					new Embed(this)
 						.setTitle('Added to queue 📃')
 						.setDescription(track.getInfo())
 						.setThumbnail(track.thumbnail)
@@ -87,7 +89,7 @@ class PlayInteraction extends CustomInteraction {
 		else {
 			interaction.reply({
 				embeds: [
-					new Embed()
+					new Embed(this)
 						.setTitle('Now playing 🎶')
 						.setDescription(track.getInfo())
 						.setThumbnail(track.thumbnail)
