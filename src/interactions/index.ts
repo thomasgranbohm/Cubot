@@ -1,3 +1,4 @@
+export { default as Help } from './Help';
 export { default as Join } from './Join';
 export { default as Loop } from './Loop';
 export { default as Now } from './Now';
