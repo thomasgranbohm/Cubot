@@ -76,7 +76,6 @@ class Bot extends Client {
 		);
 		if (!command) {
 			debug('Could not find command', `\x1b[47m\x1b[30m${target}\x1b[0m`);
-			Messaging.remove(message);
 			return;
 		}
 
