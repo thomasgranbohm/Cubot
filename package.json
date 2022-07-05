@@ -22,7 +22,7 @@
 	},
 	"dependencies": {
 		"@discordjs/builders": "^0.5.0",
-		"@discordjs/opus": "^0.5.3",
+		"@discordjs/opus": "^0.8.0",
 		"@discordjs/voice": "^0.6.0",
 		"@lavacord/discord.js": "^0.0.7",
 		"bufferutil": "^4.0.3",
